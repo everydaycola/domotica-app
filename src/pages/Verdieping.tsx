@@ -1,5 +1,6 @@
 import {useParams} from "react-router-dom";
 import CustomAppBar from "../components/appBar/AppBar.tsx";
+import ActionsSpeedDial from "../components/actionsSpeedDial/ActionsSpeedDial.tsx";
 import {GeneralContext} from "../context/GeneralContext.ts";
 import {useContext} from "react";
 import {BaseFloorPlan} from "../components/floorPlan/BaseFloorPlan.tsx";
@@ -18,6 +19,7 @@ export function Verdieping() {
 
             <Box sx={{display: 'flex', justifyContent: 'center', m: 5}}>
                 <BaseFloorPlan/>
+                <ActionsSpeedDial/>
             </Box>
         </>
     )
