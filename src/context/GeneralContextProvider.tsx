@@ -7,13 +7,14 @@ interface GenralContextProviderProps {
 }
 
 export default function GenralContextProvider({children}: GenralContextProviderProps) {
-    const [floor, setFloor] = useState<number | null>(null)
+    const [floorNumber, setFloorNumberState] = useState<number | null>(null)
+    const setFloorNumber = (floor: number) => setFloorNumberState(floor)
 
     return (
         <GeneralContext.Provider value={
             {
-                floor: floor,
-                setFloor: setFloor
+                floorNumber: floorNumber,
+                setFloorNumber: setFloorNumber
             }
         }>
 

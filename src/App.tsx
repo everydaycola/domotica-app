@@ -1,7 +1,12 @@
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
-import {Verdieping} from "./pages/Verdieping.tsx";
+import {Floor} from "./pages/Floor.tsx";
 import GenralContextProvider from "./context/GeneralContextProvider.tsx";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import axios from "axios";
+
+axios.defaults.baseURL = 'http://localhost:3000'
+const queryClient = new QueryClient()
 
 const theme = createTheme({
         colorSchemes: {
@@ -14,17 +19,18 @@ const theme = createTheme({
 function App() {
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline/>
-            <GenralContextProvider>
-                <BrowserRouter>
-
-                    <Routes>
-                        <Route path="/verdieping/:id" element={<Verdieping/>}/>
-                        <Route path="/verdieping" element={<Navigate to="/verdieping/1"/>}/>
-                        <Route path="/" element={<Navigate to="/verdieping/1"/>}/>
-                    </Routes>
-                </BrowserRouter>
-        </GenralContextProvider>
+            <QueryClientProvider client={queryClient}>
+                <CssBaseline/>
+                <GenralContextProvider>
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/floor/:id" element={<Floor/>}/>
+                            <Route path="/floor" element={<Navigate to="/floor/1"/>}/>
+                            <Route path="/" element={<Navigate to="/floor/1"/>}/>
+                        </Routes>
+                    </BrowserRouter>
+                </GenralContextProvider>
+            </QueryClientProvider>
         </ThemeProvider>
     )
 }

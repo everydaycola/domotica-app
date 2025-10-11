@@ -11,6 +11,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditFloorDialog from "../components/dialogs/EditFloorDialog.tsx";
 import AddItemDialog from "../components/dialogs/AddItemDialog.tsx";
 import DeleteConfirmDialog from "../components/dialogs/DeleteConfirmDialog.tsx";
+import {useFloor} from "../../hooks/useFloor.ts";
 
 const actions: Action[] = [
   { icon: <AspectRatioIcon />, name: "Edit" },
@@ -18,13 +19,14 @@ const actions: Action[] = [
   { icon: <DeleteForeverIcon />, name: "Delete" },
 ];
 
-export function Verdieping() {
-  const { id: floor } = useParams();
-  const { setFloor } = useContext(GeneralContext);
+export function Floor() {
+  const { id: floorNumber } = useParams();
+  const { setFloorNumber } = useContext(GeneralContext);
+  const {floor, isLoading, isError} = useFloor(floorNumber!)
 
   useEffect(() => {
-    setFloor(floor ? parseInt(floor) : 1);
-  }, [floor, setFloor]);
+    setFloorNumber(floorNumber ? parseInt(floorNumber) : 1);
+  }, [floorNumber, setFloorNumber]);
 
   const [openDialog, setOpenDialog] = useState<null | "Edit" | "Add" | "Delete">(null);
 
@@ -36,12 +38,15 @@ export function Verdieping() {
 
   const closeDialog = () => setOpenDialog(null);
 
+    if (isLoading) return <div>Loading...</div>
+    if (isError || !floor) return <div>Error</div>
+
   return (
     <>
       <CustomAppBar />
 
       <Box sx={{ display: "flex", justifyContent: "center", m: 5 }}>
-        <BaseFloorPlan />
+        <BaseFloorPlan ratio={floor.ratio} />
         <ActionsSpeedDial actions={actions} onAction={handleAction} />
       </Box>
 

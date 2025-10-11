@@ -1,8 +1,11 @@
 import {Box} from "@mui/material";
 
-export function BaseFloorPlan() {
-    const ratio = 1.5
-    
+export interface BaseFloorPlanProps {
+    ratio: number;
+}
+
+
+export function BaseFloorPlan({ratio}: BaseFloorPlanProps) {
     return (
         <Box sx={{
             width: '70vw',

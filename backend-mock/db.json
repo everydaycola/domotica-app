@@ -2,17 +2,7 @@
   "floors": [
     {
       "id": 1,
-      "ratio": 1.5,
-      "name": "1",
-      "description": "1",
-      "image": "1",
-      "rooms": [
-        {
-          "id": 1,
-          "name": "1",
-          "description": "1"
-        }
-      ]
+      "ratio": 1.5
     }
   ]
 }

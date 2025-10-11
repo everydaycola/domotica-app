@@ -10,7 +10,7 @@ import {GeneralContext} from "../../context/GeneralContext.ts";
 
 export default function CustomAppBar() {
 
-    const {floor} = useContext(GeneralContext)
+    const {floorNumber} = useContext(GeneralContext)
 
     return (
         <Box>
@@ -23,7 +23,7 @@ export default function CustomAppBar() {
                         component="div"
                         sx={{flexGrow: 1, textAlign: 'center'}}
                     >
-                        Verdieping {floor}
+                        Verdieping {floorNumber}
                     </Typography>
                     <div>
                         <ThemeButton/>
