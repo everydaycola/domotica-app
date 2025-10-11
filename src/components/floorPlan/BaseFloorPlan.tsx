@@ -1,11 +1,12 @@
 import {Box} from "@mui/material";
 
 export function BaseFloorPlan() {
+    const ratio = 1.5
+    
     return (
         <Box sx={{
-            width: '100%',
-            height: '100%',
-            minHeight: '100vh',
+            width: '70vw',
+            aspectRatio: ratio,
             bgcolor: 'background.paper',
             display: 'flex',
             gap: 2,
