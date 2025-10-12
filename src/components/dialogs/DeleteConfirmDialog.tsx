@@ -1,5 +1,4 @@
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -17,10 +16,11 @@ export interface DeleteConfirmDialogProps {
   onConfirm?: (values: DeleteFormValues) => void; // optional placeholder
   title?: string;
   message?: string;
+  confirmDisabled?: boolean;
 }
 
-export default function DeleteConfirmDialog({ open, onClose, onConfirm, title = 'Delete item', message = 'Are you sure you want to delete this item?' }: DeleteConfirmDialogProps) {
-  const { register, handleSubmit, reset } = useForm<DeleteFormValues>();
+export default function DeleteConfirmDialog({ open, onClose, onConfirm, title = 'Delete item', message = 'Are you sure you want to delete this item?', confirmDisabled = false }: DeleteConfirmDialogProps) {
+  const {handleSubmit, reset } = useForm<DeleteFormValues>();
 
   const handleClose = () => {
     onClose();
@@ -38,19 +38,11 @@ export default function DeleteConfirmDialog({ open, onClose, onConfirm, title = 
       <DialogContent>
         <DialogContentText sx={{ mb: 1 }}>{message}</DialogContentText>
         <form id="delete-confirm-form" onSubmit={handleSubmit(submit)}>
-          <TextField
-            margin="dense"
-            label="Reason (optional)"
-            type="text"
-            fullWidth
-            variant="standard"
-            {...register('reason')}
-          />
         </form>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button color="error" type="submit" form="delete-confirm-form">Delete</Button>
+        <Button color="error" type="submit" form="delete-confirm-form" disabled={confirmDisabled}>Delete</Button>
       </DialogActions>
     </Dialog>
   );

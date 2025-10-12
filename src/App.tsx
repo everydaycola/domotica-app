@@ -25,8 +25,8 @@ function App() {
                     <BrowserRouter>
                         <Routes>
                             <Route path="/floor/:id" element={<Floor/>}/>
-                            <Route path="/floor" element={<Navigate to="/floor/1"/>}/>
-                            <Route path="/" element={<Navigate to="/floor/1"/>}/>
+                            <Route path="/floor" element={<Navigate to="/floor/0"/>}/>
+                            <Route path="/" element={<Navigate to="/floor/0"/>}/>
                         </Routes>
                     </BrowserRouter>
                 </GenralContextProvider>

@@ -5,56 +5,59 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import * as React from "react";
 
 export interface EditFloorFormValues {
-  name: string;
-  description: string;
+  ratio: number;
 }
 
 export interface EditFloorDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit?: (values: EditFloorFormValues) => void; // optional, not implemented yet
+  initialRatio: number;
+  onSubmit: (values: EditFloorFormValues) => void;
 }
 
-export default function EditFloorDialog({ open, onClose, onSubmit }: EditFloorDialogProps) {
-  const { register, handleSubmit, reset } = useForm<EditFloorFormValues>();
+export default function EditFloorDialog({ open, onClose, initialRatio, onSubmit }: EditFloorDialogProps) {
+  const { register, handleSubmit, reset, setValue } = useForm<EditFloorFormValues>({
+    defaultValues: { ratio: initialRatio }
+  });
 
   const handleClose = () => {
     onClose();
-    reset();
+    reset({ ratio: initialRatio });
   };
 
   const submit: SubmitHandler<EditFloorFormValues> = (data) => {
-    // functionality intentionally not implemented
-    if (onSubmit) onSubmit(data);
+    const ratio = Number(data.ratio);
+    if (ratio > 0) {
+      onSubmit({ ratio });
+    }
     handleClose();
   };
 
+  // Ensure the input reflects updated initialRatio when dialog opens for different floors
+  React.useEffect(() => {
+    if (open) {
+      setValue('ratio', initialRatio);
+    }
+  }, [open, initialRatio, setValue]);
+
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-      <DialogTitle>Edit floor</DialogTitle>
+      <DialogTitle>Edit floor ratio</DialogTitle>
       <DialogContent>
         <form id="edit-floor-form" onSubmit={handleSubmit(submit)}>
           <TextField
             autoFocus
             required
             margin="dense"
-            label="Floor name"
-            type="text"
+            label="Ratio (width / length)"
+            type="number"
             fullWidth
             variant="standard"
-            {...register('name', { required: true })}
-          />
-          <TextField
-            margin="dense"
-            label="Description"
-            type="text"
-            fullWidth
-            variant="standard"
-            multiline
-            minRows={2}
-            {...register('description')}
+            inputProps={{step: "0.01"}}
+            {...register('ratio', { required: true, valueAsNumber: true, min: 0.01 })}
           />
         </form>
       </DialogContent>

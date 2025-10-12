@@ -1,8 +1,8 @@
 import {createContext} from 'react'
 
 export interface GeneralContextType {
-    floorNumber: number | null
-    setFloorNumber: (floor: number) => void
+    floorNumber: string | null
+    setFloorNumber: (floor: string) => void
 }
 
 export const GeneralContext = createContext<GeneralContextType>({

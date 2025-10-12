@@ -1,4 +1,4 @@
 export type Floor = {
-    id: number;
+    id: string;
     ratio: number;
 };

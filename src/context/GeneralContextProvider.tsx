@@ -2,13 +2,13 @@ import {type ReactNode, useState} from 'react'
 import {GeneralContext} from "./GeneralContext.ts";
 
 
-interface GenralContextProviderProps {
+interface GeneralContextProviderProps {
     children: ReactNode
 }
 
-export default function GenralContextProvider({children}: GenralContextProviderProps) {
-    const [floorNumber, setFloorNumberState] = useState<number | null>(null)
-    const setFloorNumber = (floor: number) => setFloorNumberState(floor)
+export default function GenralContextProvider({children}: GeneralContextProviderProps) {
+    const [floorNumber, setFloorNumberState] = useState<string | null>(null)
+    const setFloorNumber = (floor: string) => setFloorNumberState(floor)
 
     return (
         <GeneralContext.Provider value={
