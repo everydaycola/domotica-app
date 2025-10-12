@@ -4,7 +4,7 @@ import ActionsSpeedDial, { type Action } from "../components/actionsSpeedDial/Ac
 import { GeneralContext } from "../context/GeneralContext.ts";
 import { useContext, useEffect, useState } from "react";
 import { BaseFloorPlan } from "../components/floorPlan/BaseFloorPlan.tsx";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import AspectRatioIcon from "@mui/icons-material/AspectRatio";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -25,15 +25,15 @@ export function Floor() {
   const { setFloorNumber } = useContext(GeneralContext);
   const { floor, isLoading, isError } = useFloor(floorNumber!);
 
-    const isGroundFloor = floorNumber === "0";
+  const isGroundFloor = floorNumber === "0";
 
-    const updateFloorMutation = useUpdateFloor(floorNumber!);
-    const createFloorMutation = useCreateFloor();
-    const deleteFloorMutation = useDeleteFloor(floorNumber!);
+  const updateFloorMutation = useUpdateFloor(floorNumber!);
+  const createFloorMutation = useCreateFloor();
+  const deleteFloorMutation = useDeleteFloor(floorNumber!);
 
-    useEffect(() => {
-        setFloorNumber(floorNumber ? floorNumber : "1");
-    }, [floorNumber, setFloorNumber]);
+  useEffect(() => {
+    setFloorNumber(floorNumber ? floorNumber : "1");
+  }, [floorNumber, setFloorNumber]);
 
   const [openDialog, setOpenDialog] = useState<null | "Edit" | "Add" | "Delete">(null);
 
@@ -52,25 +52,38 @@ export function Floor() {
     <>
       <CustomAppBar />
 
-      <Box sx={{ display: "flex", justifyContent: "center", m: 5 }}>
-        <BaseFloorPlan ratio={floor.ratio} />
+      <Box sx={{ display: "flex", flexDirection: 'column', alignItems: "center", m: 5, gap: 2 }}>
+        {/* Name and optional description above the floor plan */}
+        <Box sx={{ textAlign: 'center', width: '100%' }}>
+          <Typography variant="h5" component="h1">{floor.name}</Typography>
+          {floor.description && (
+            <Typography variant="body2" color="text.secondary">{floor.description}</Typography>
+          )}
+        </Box>
+
+        <BaseFloorPlan widthMm={floor.widthMm} heightMm={floor.heightMm} />
         <ActionsSpeedDial actions={actions} onAction={handleAction} />
       </Box>
 
       <EditFloorDialog
         open={openDialog === "Edit"}
         onClose={closeDialog}
-        initialRatio={floor.ratio}
-        onSubmit={({ ratio }) => {
-          updateFloorMutation.mutate({ ratio });
+        initialValues={{
+          name: floor.name,
+          description: floor.description ?? '',
+          widthMm: floor.widthMm,
+          heightMm: floor.heightMm,
+        }}
+        onSubmit={({ name, description, widthMm, heightMm }) => {
+          updateFloorMutation.mutate({ name, description: description || undefined, widthMm, heightMm });
         }}
       />
 
       <AddItemDialog
         open={openDialog === "Add"}
         onClose={closeDialog}
-        onSubmit={({ id, ratio }) => {
-          createFloorMutation.mutate({ id, ratio }, {
+        onSubmit={({ id, name, description, widthMm, heightMm }) => {
+          createFloorMutation.mutate({ id, name, description, widthMm, heightMm }, {
             onSuccess: (newFloor) => {
               navigate(`/floor/${newFloor.id}`);
             }

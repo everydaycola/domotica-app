@@ -6,7 +6,7 @@ export async function getFloors(id: string) {
     return floors as Floor;
 }
 
-export async function createFloor(floor: Pick<Floor, 'id' | 'ratio'>) {
+export async function createFloor(floor: Pick<Floor, 'id' | 'name' | 'widthMm' | 'heightMm'> & { description?: string }) {
     const { data } = await axios.post('/floors', floor);
     return data as Floor;
 }

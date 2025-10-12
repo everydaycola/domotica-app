@@ -23,7 +23,7 @@ export function useUpdateFloor(id: string) {
 
 export function useCreateFloor() {
     return useMutation({
-        mutationFn: (floor: Pick<Floor, 'id' | 'ratio'>) => createFloor(floor)
+        mutationFn: (floor: Pick<Floor, 'id' | 'name' | 'widthMm' | 'heightMm'> & { description?: string }) => createFloor(floor)
     });
 }
 

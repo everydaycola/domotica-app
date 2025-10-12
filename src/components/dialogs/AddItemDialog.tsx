@@ -8,7 +8,10 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 
 export interface AddItemFormValues {
   id: string;
-  ratio: number;
+  name: string;
+  description?: string;
+  widthMm: number;
+  heightMm: number;
 }
 
 export interface AddItemDialogProps {
@@ -19,18 +22,28 @@ export interface AddItemDialogProps {
 
 export default function AddItemDialog({ open, onClose, onSubmit }: AddItemDialogProps) {
   const { register, handleSubmit, reset } = useForm<AddItemFormValues>({
-      defaultValues: {id: '', ratio: 1}
+      defaultValues: {id: '', name: '', description: '', widthMm: 1000, heightMm: 1000}
   });
 
   const handleClose = () => {
     onClose();
-      reset({id: '', ratio: 1});
+    reset({id: '', name: '', description: '', widthMm: 1000, heightMm: 1000});
   };
 
   const submit: SubmitHandler<AddItemFormValues> = (data) => {
-      const ratio = Number(data.ratio);
-      if (onSubmit && data.id && ratio > 0) onSubmit({id: data.id, ratio});
-      handleClose();
+    const widthMm = Number(data.widthMm);
+    const heightMm = Number(data.heightMm);
+    const name = String(data.name).trim();
+    const description = data.description?.trim();
+
+    const validDims = widthMm >= 100 && widthMm <= 100000 && heightMm >= 100 && heightMm <= 100000;
+    const validName = name.length > 0 && name.length <= 100;
+    const validDesc = !description || description.length <= 500;
+
+    if (onSubmit && data.id && validDims && validName && validDesc) {
+      onSubmit({ id: data.id, name, description, widthMm, heightMm });
+    }
+    handleClose();
   };
 
   return (
@@ -51,12 +64,41 @@ export default function AddItemDialog({ open, onClose, onSubmit }: AddItemDialog
           <TextField
             required
             margin="dense"
-            label="Ratio (width / length)"
+            label="Name"
+            type="text"
+            fullWidth
+            variant="standard"
+            inputProps={{ maxLength: 100 }}
+            {...register('name', { required: true, minLength: 1, maxLength: 100 })}
+          />
+          <TextField
+            margin="dense"
+            label="Description (optional)"
+            type="text"
+            fullWidth
+            variant="standard"
+            inputProps={{ maxLength: 500 }}
+            {...register('description', { maxLength: 500 })}
+          />
+          <TextField
+            required
+            margin="dense"
+            label="Width (mm)"
             type="number"
             fullWidth
             variant="standard"
-            inputProps={{step: "0.01"}}
-            {...register('ratio', { required: true, valueAsNumber: true, min: 0.01 })}
+            inputProps={{ step: "1", min: 100, max: 100000 }}
+            {...register('widthMm', { required: true, valueAsNumber: true, min: 100, max: 100000 })}
+          />
+          <TextField
+            required
+            margin="dense"
+            label="Height (mm)"
+            type="number"
+            fullWidth
+            variant="standard"
+            inputProps={{ step: "1", min: 100, max: 100000 }}
+            {...register('heightMm', { required: true, valueAsNumber: true, min: 100, max: 100000 })}
           />
         </form>
       </DialogContent>
