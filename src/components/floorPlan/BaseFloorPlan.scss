@@ -1,0 +1,88 @@
+.floor-plan-container {
+  width: 70vw;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px;
+  margin: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: var(--mui-palette-background-default, #fafafa);
+  position: relative;
+  border: 1px solid var(--mui-palette-divider, #e0e0e0);
+  border-radius: 4px;
+}
+
+.floor-plan-board {
+  width: 100%;
+  background-color: var(--mui-palette-background-paper, #fff);
+  border: 2px dotted black;
+  position: relative;
+}
+
+.label {
+  position: absolute;
+  padding: 2px 6px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  white-space: nowrap;
+}
+
+.label--top {
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.label--left-rotated {
+  top: 50%;
+  left: 4px;
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: left center;
+}
+
+.room {
+  position: absolute;
+  border: 2px solid var(--mui-palette-primary-main, #1976d2);
+  background-color: rgba(25, 118, 210, 0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.room .label {
+  font-size: 10px;
+  padding: 1px 4px;
+  background-color: rgba(255,255,255,0.9);
+}
+
+.label--room-top {
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.label--room-left {
+  top: 50%;
+  left: 2px;
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: left center;
+}
+
+.room-name {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 2px 6px;
+  background-color: rgba(255,255,255,0.8);
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

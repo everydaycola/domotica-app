@@ -1,71 +1,59 @@
-import {Box} from "@mui/material";
+import { Box } from "@mui/material";
+import type { Room } from "../../model/room";
+import "./BaseFloorPlan.scss";
 
 export interface BaseFloorPlanProps {
     widthMm: number;
     heightMm: number;
+    rooms?: Room[];
 }
 
-export function BaseFloorPlan({ widthMm, heightMm }: BaseFloorPlanProps) {
+export function BaseFloorPlan({ widthMm, heightMm, rooms = [] }: BaseFloorPlanProps) {
     const aspect = widthMm > 0 && heightMm > 0 ? widthMm / heightMm : 1;
 
     return (
-        <Box sx={{
-            width: '70vw',
-            maxHeight: '70vh',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            p: 1,
-            m: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            bgcolor: 'background.default',
-            position: 'relative',
-            border: '1px solid',
-            borderColor: 'divider',
-            borderRadius: 1,
-        }}>
-            <Box sx={{
-                width: '100%',
-                aspectRatio: aspect,
-                bgcolor: 'background.paper',
-                border: '2px dotted black',
-                position: 'relative',
-            }}>
+        <Box className="floor-plan-container">
+            <Box className="floor-plan-board" style={{ aspectRatio: aspect }}>
                 {/* Width label (top center) */}
-                <Box sx={{
-                    position: 'absolute',
-                    top: 4,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    px: 1,
-                    py: 0.25,
-                    bgcolor: 'rgba(255,255,255,0.85)',
-                    borderRadius: 0.5,
-                    fontSize: 12,
-                    fontWeight: 500,
-                    boxShadow: 1,
-                }}>
+                <Box className="label label--top">
                     {`${widthMm} mm`}
                 </Box>
 
                 {/* Height label (left center, rotated) */}
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: 4,
-                    transform: 'translateY(-50%) rotate(-90deg)',
-                    transformOrigin: 'left center',
-                    px: 1,
-                    py: 0.25,
-                    bgcolor: 'rgba(255,255,255,0.85)',
-                    borderRadius: 0.5,
-                    fontSize: 12,
-                    fontWeight: 500,
-                    boxShadow: 1,
-                }}>
+                <Box className="label label--left-rotated">
                     {`${heightMm} mm`}
                 </Box>
+
+                {/* Rooms rendering */}
+                {rooms.map((room) => {
+                    const leftPct = (room.xMm / widthMm) * 100;
+                    const topPct = (room.yMm / heightMm) * 100;
+                    const wPct = (room.widthMm / widthMm) * 100;
+                    const hPct = (room.heightMm / heightMm) * 100;
+                    return (
+                        <Box key={room.id} className="room" style={{
+                            left: `${leftPct}%`,
+                            top: `${topPct}%`,
+                            width: `${wPct}%`,
+                            height: `${hPct}%`,
+                        }}>
+                            {/* Room width label (top center) */}
+                            <Box className="label label--room-top">
+                                {`${room.widthMm} mm`}
+                            </Box>
+
+                            {/* Room height label (left center, rotated) */}
+                            <Box className="label label--room-left">
+                                {`${room.heightMm} mm`}
+                            </Box>
+
+                            {/* Room name centered */}
+                            <Box className="room-name">
+                                {room.name}
+                            </Box>
+                        </Box>
+                    );
+                })}
             </Box>
         </Box>
     )

@@ -4,8 +4,60 @@
       "id": "0",
       "name": "Ground floor",
       "description": "Main lobby and reception",
-      "widthMm": 8000,
-      "heightMm": 12000
+      "widthMm": 7000,
+      "heightMm": 4500
+    }
+  ],
+  "rooms": [
+    {
+      "id": "c120",
+      "name": "Room 1",
+      "description": "the first room",
+      "xMm": 0,
+      "yMm": 0,
+      "widthMm": 3000,
+      "heightMm": 3000,
+      "floorId": "0"
+    },
+    {
+      "id": "cf8c",
+      "name": "Room 2",
+      "description": "A second room",
+      "xMm": 3000,
+      "yMm": 0,
+      "widthMm": 4000,
+      "heightMm": 1500,
+      "floorId": "0"
+    },
+    {
+      "id": "6aa0",
+      "name": "Room 4",
+      "description": "A room on the bottom",
+      "xMm": 0,
+      "yMm": 3000,
+      "widthMm": 5000,
+      "heightMm": 1500,
+      "floorId": "0"
+    },
+    {
+      "id": "6ca2",
+      "name": "Room 3",
+      "description": "Middle room",
+      "xMm": 3000,
+      "yMm": 1500,
+      "widthMm": 2000,
+      "heightMm": 1500,
+      "floorId": "0"
+    },
+    {
+      "id": "d22a",
+      "name": "last room",
+      "description": "Yet another room",
+      "xMm": 5000,
+      "yMm": 1500,
+      "widthMm": 2000,
+      "heightMm": 3000,
+      "floorId": "0"
     }
   ]
 }
