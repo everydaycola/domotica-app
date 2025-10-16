@@ -20,7 +20,7 @@ export interface AddItemDialogProps {
   onSubmit?: (values: AddItemFormValues) => void;
 }
 
-export default function AddItemDialog({ open, onClose, onSubmit }: AddItemDialogProps) {
+export default function AddFloorDialog({ open, onClose, onSubmit }: AddItemDialogProps) {
   const { register, handleSubmit, reset } = useForm<AddItemFormValues>({
       defaultValues: {id: '', name: '', description: '', widthMm: 1000, heightMm: 1000}
   });

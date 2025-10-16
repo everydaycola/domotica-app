@@ -12,7 +12,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import EditFloorDialog from "../components/dialogs/EditFloorDialog.tsx";
-import AddItemDialog from "../components/dialogs/AddItemDialog.tsx";
+import AddFloorDialog from "../components/dialogs/AddFloorDialog.tsx";
 import DeleteConfirmDialog from "../components/dialogs/DeleteConfirmDialog.tsx";
 import RoomDialog from "../components/dialogs/RoomDialog.tsx";
 import { useCreateFloor, useDeleteFloor, useFloor, useUpdateFloor } from "../../hooks/useFloor.ts";
@@ -128,7 +128,7 @@ export function Floor() {
         }}
       />
 
-      <AddItemDialog
+      <AddFloorDialog
         open={openDialog === "Add"}
         onClose={closeDialog}
         onSubmit={({ id, name, description, widthMm, heightMm }) => {
