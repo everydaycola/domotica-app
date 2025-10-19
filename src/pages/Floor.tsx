@@ -1,23 +1,22 @@
-import { useNavigate, useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import CustomAppBar from "../components/appBar/AppBar.tsx";
-import ActionsSpeedDial, { type Action } from "../components/actionsSpeedDial/ActionsSpeedDial.tsx";
-import { GeneralContext } from "../context/GeneralContext.ts";
-import { useContext, useEffect, useState } from "react";
-import { BaseFloorPlan } from "../components/floorPlan/BaseFloorPlan.tsx";
-import { Box, Typography, List, ListItem, ListItemText, IconButton, Button, Divider, Stack } from "@mui/material";
+import ActionsSpeedDial, {type Action} from "../components/actionsSpeedDial/ActionsSpeedDial.tsx";
+import {GeneralContext} from "../context/GeneralContext.ts";
+import {useContext, useEffect, useState} from "react";
+import {BaseFloorPlan} from "../components/floorPlan/BaseFloorPlan.tsx";
+import {Box, Divider, Stack, Typography} from "@mui/material";
+import DomoticaList from "../components/domotica/DomoticaList";
 import AspectRatioIcon from "@mui/icons-material/AspectRatio";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
+import RoomsList from "../components/rooms/RoomsList";
 import EditFloorDialog from "../components/dialogs/EditFloorDialog.tsx";
 import AddFloorDialog from "../components/dialogs/AddFloorDialog.tsx";
 import DeleteConfirmDialog from "../components/dialogs/DeleteConfirmDialog.tsx";
 import RoomDialog from "../components/dialogs/RoomDialog.tsx";
-import { useCreateFloor, useDeleteFloor, useFloor, useUpdateFloor } from "../../hooks/useFloor.ts";
-import { useCreateRoom, useDeleteRoom, useRooms, useUpdateRoom } from "../../hooks/useRooms";
-import type { Room } from "../model/room";
+import type {Room} from "../model/room";
+import {useCreateFloor, useDeleteFloor, useFloor, useUpdateFloor} from "../hooks/useFloor.ts";
+import {useCreateRoom, useDeleteRoom, useRooms, useUpdateRoom} from "../hooks/useRooms.ts";
 
 const actions: Action[] = [
   { icon: <AspectRatioIcon />, name: "Edit" },
@@ -76,42 +75,28 @@ export function Floor() {
           )}
         </Box>
 
-        <BaseFloorPlan widthMm={floor.widthMm} heightMm={floor.heightMm} rooms={rooms} />
+        <BaseFloorPlan widthMm={floor.widthMm} heightMm={floor.heightMm} floorId={floorNumber!} rooms={rooms} selectedRoomId={selectedRoom?.id ?? null} onSelectRoom={(r) => setSelectedRoom(r)} />
         <ActionsSpeedDial actions={actions} onAction={handleAction} />
 
-        {/* Rooms Section */}
-        <Box sx={{ width: '100%', maxWidth: 900, mt: 2 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
-            <Typography variant="h6">Rooms</Typography>
-            <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={() => {
-              setSelectedRoom(null);
-              setOpenRoomAdd(true);
-            }}>Add room</Button>
-          </Stack>
-          <Divider />
-          <List>
-            {rooms && rooms.length > 0 ? rooms.map((room) => (
-              <ListItem key={room.id}
-                secondaryAction={
-                  <>
-                    <IconButton edge="end" aria-label="edit" onClick={() => { setSelectedRoom(room); setOpenRoomEdit(true); }}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton edge="end" aria-label="delete" onClick={() => { setSelectedRoom(room); setOpenRoomDelete(true); }} sx={{ ml: 1 }}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </>
-                }
-              >
-                <ListItemText primary={room.name} secondary={`x:${room.xMm} y:${room.yMm} • ${room.widthMm}x${room.heightMm} mm${room.description ? ' • ' + room.description : ''}`} />
-              </ListItem>
-            )) : (
-              <ListItem>
-                <ListItemText primary="No rooms yet" />
-              </ListItem>
-            )}
-          </List>
-        </Box>
+        {/* Rooms and Domotica Section */}
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ width: '100%', mt: 2, alignItems: 'flex-start' }}>
+          <RoomsList
+            rooms={rooms}
+            selectedRoomId={selectedRoom?.id ?? null}
+            selectedRoomName={selectedRoom?.name ?? null}
+            onSelectRoom={(room) => setSelectedRoom(room)}
+            onAddRoom={() => { setSelectedRoom(null); setOpenRoomAdd(true); }}
+            onEditRoom={(room) => { setSelectedRoom(room); setOpenRoomEdit(true); }}
+            onDeleteRoom={(room) => { setSelectedRoom(room); setOpenRoomDelete(true); }}
+            clearRoomSelection={() => setSelectedRoom(null)}
+          />
+          <Box sx={{ flex: 2, minWidth: 320 }}>
+            <Typography variant="h6" sx={{ mb: 1 }}>Domotica</Typography>
+            <Divider />
+            {/* Domotica List */}
+            <DomoticaList floorId={floorNumber!} selectedRoomId={selectedRoom?.id ?? null} clearRoomSelection={() => setSelectedRoom(null)} />
+          </Box>
+        </Stack>
       </Box>
 
       <EditFloorDialog

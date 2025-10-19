@@ -10,7 +10,7 @@
   ],
   "rooms": [
     {
-      "id": "c120",
+      "id": "1",
       "name": "Room 1",
       "description": "the first room",
       "xMm": 0,
@@ -20,7 +20,7 @@
       "floorId": "0"
     },
     {
-      "id": "cf8c",
+      "id": "2",
       "name": "Room 2",
       "description": "A second room",
       "xMm": 3000,
@@ -30,7 +30,7 @@
       "floorId": "0"
     },
     {
-      "id": "6aa0",
+      "id": "3",
       "name": "Room 4",
       "description": "A room on the bottom",
       "xMm": 0,
@@ -40,7 +40,7 @@
       "floorId": "0"
     },
     {
-      "id": "6ca2",
+      "id": "4",
       "name": "Room 3",
       "description": "Middle room",
       "xMm": 3000,
@@ -50,7 +50,7 @@
       "floorId": "0"
     },
     {
-      "id": "d22a",
+      "id": "5",
       "name": "last room",
       "description": "Yet another room",
       "xMm": 5000,
@@ -58,6 +58,108 @@
       "widthMm": 2000,
       "heightMm": 3000,
       "floorId": "0"
+    }
+  ],
+  "domotica": [
+    {
+      "id": "1",
+      "name": "Ceiling Light",
+      "type": "light",
+      "upc": "1234567890123",
+      "roomId": "1",
+      "x": 3500,
+      "y": 2500,
+      "defaultValue": {
+        "on": false,
+        "brightness": 100
+      },
+      "value": {
+        "on": false,
+        "brightness": 100
+      },
+      "description": "Shelly Plus 1 16A",
+      "floorId": "0"
+    },
+    {
+      "id": "2",
+      "name": "Thermostat Living",
+      "type": "heating",
+      "upc": "2234567890123",
+      "roomId": "1",
+      "x": 6000,
+      "y": 2400,
+      "defaultValue": {
+        "temperature": 16
+      },
+      "value": {
+        "temperature": 23.5
+      },
+      "floorId": "0"
+    },
+    {
+      "id": "3",
+      "name": "Front Door",
+      "type": "door",
+      "upc": "3234567890123",
+      "roomId": "3",
+      "x": 100,
+      "y": 0,
+      "defaultValue": {
+        "open": false
+      },
+      "value": {
+        "open": true
+      },
+      "floorId": "0"
+    },
+    {
+      "id": "4",
+      "name": "Kitchen Audio",
+      "type": "audio",
+      "upc": "4234567890123",
+      "roomId": "2",
+      "x": 2500,
+      "y": 2500,
+      "defaultValue": {
+        "volume": 0
+      },
+      "value": {
+        "volume": 0
+      },
+      "floorId": "0"
+    },
+    {
+      "id": "5001",
+      "floorId": "0",
+      "roomId": "1",
+      "name": "study lamp",
+      "description": "small desk lamp for studying",
+      "type": "light",
+      "upc": "76548765982",
+      "x": 1000,
+      "y": 1000,
+      "defaultValue": {
+        "on": false,
+        "brightness": 100
+      },
+      "value": {
+        "on": true,
+        "brightness": 100
+      }
+    }
+  ],
+  "playlists": [
+    {
+      "id": "1",
+      "name": "classic"
+    },
+    {
+      "id": "2",
+      "name": "focus"
+    },
+    {
+      "id": "3",
+      "name": "party"
     }
   ]
 }

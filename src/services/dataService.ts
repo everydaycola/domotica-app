@@ -1,6 +1,7 @@
 import axios from "axios";
-import type { Floor } from "../src/model/floor";
-import type { Room } from "../src/model/room";
+import type {Room} from "../model/room.ts";
+import type {Floor} from "../model/floor.ts";
+import type {Domotica} from "../model/domotica.ts";
 
 // Floors
 export async function getFloors(id: string) {
@@ -43,4 +44,29 @@ export async function updateRoom(id: number, updates: Partial<Omit<Room, 'id' | 
 export async function deleteRoom(id: number) {
     await axios.delete(`/rooms/${id}`);
     return { id } as { id: number };
+}
+
+// Domotica
+export async function getDomoticaByFloor(floorId: string) {
+    const { data } = await axios.get('/domotica', { params: { floorId } });
+    return data as Domotica[];
+}
+
+export async function getDomoticaByRoom(roomId: number) {
+    const { data } = await axios.get('/domotica', { params: { roomId } });
+    return data as Domotica[];
+}
+
+export async function createDomotica(domotica: Omit<Domotica, 'id'>) {
+    const { data } = await axios.post('/domotica', domotica);
+    return data as Domotica;
+}
+
+export async function updateDomotica(id: string, updates: Partial<Domotica>) {
+    const { data } = await axios.patch(`/domotica/${id}`, updates);
+    return data as Domotica;
+}
+
+export async function deleteDomotica(id: string) {
+    await axios.delete(`/domotica/${id}`);
 }
