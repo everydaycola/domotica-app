@@ -1,7 +1,7 @@
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
 import {Floor} from "./pages/Floor.tsx";
-import GenralContextProvider from "./context/GeneralContextProvider.tsx";
+import GeneralContextProvider from "./context/GeneralContextProvider.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import axios from "axios";
 
@@ -21,7 +21,7 @@ function App() {
         <ThemeProvider theme={theme}>
             <QueryClientProvider client={queryClient}>
                 <CssBaseline/>
-                <GenralContextProvider>
+                <GeneralContextProvider>
                     <BrowserRouter>
                         <Routes>
                             <Route path="/floor/:id" element={<Floor/>}/>
@@ -29,7 +29,7 @@ function App() {
                             <Route path="/" element={<Navigate to="/floor/0"/>}/>
                         </Routes>
                     </BrowserRouter>
-                </GenralContextProvider>
+                </GeneralContextProvider>
             </QueryClientProvider>
         </ThemeProvider>
     )

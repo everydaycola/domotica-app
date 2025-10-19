@@ -6,9 +6,8 @@ interface GeneralContextProviderProps {
     children: ReactNode
 }
 
-export default function GenralContextProvider({children}: GeneralContextProviderProps) {
-    const [floorNumber, setFloorNumberState] = useState<string | null>(null)
-    const setFloorNumber = (floor: string) => setFloorNumberState(floor)
+export default function GeneralContextProvider({children}: GeneralContextProviderProps) {
+    const [floorNumber, setFloorNumber] = useState<string | null>(null)
 
     return (
         <GeneralContext.Provider value={
