@@ -10,7 +10,7 @@ the application has one type of user, the admin. So this user has full control o
 - root: main.tsx
 - routing and other providers: App.tsx
 - single page: Floor.tsx
-- context, currenly only used for floor numberm: GeneralContextProvider.tsx
+- context, currently only used for floor numberm: GeneralContextProvider.tsx
   - context object: GeneralContext.ts
 Floor.tsx contains a few components:
 
@@ -24,6 +24,14 @@ currently the application has one page. At the top there is an app bar with mini
 This component contains a large scrollable floorplan. it is devided into rooms and displays the sizes with labels.
 - css: BaseFloorPlan.scss
 
+### RoomsList.tsx
+
+Below the base floor plan, there is a selectable list of rooms.
+
+### DomoticaList.tsx
+
+Below the floor plan, next to the room list, there is a list of domotica, with a search feature and filtering options. selecting a room also filters this.
+
 ### Dialogs
 
 There are several dialogs defined for forms for various crud actions
@@ -31,6 +39,8 @@ There are several dialogs defined for forms for various crud actions
 - deleting a floor: DeleteConfirmDialog.tsx
 - editing a floor: EditFloorDialog.tsx
 - adding or editing a room: RoomDialog.tsx
+- adding or editing domotica: DomoticaDetailsDialog.tsx
+- changing the value of domotica: EditValueDialog.tsx
 
 # hooks and backend communication
 - objects
