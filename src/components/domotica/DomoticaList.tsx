@@ -56,6 +56,7 @@ function typeIcon(type: DomoticaType) {
 export default function DomoticaList({ floorId, selectedRoomId, clearRoomSelection }: DomoticaListProps) {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<DomoticaType | "all">("all");
+  // todo: remove useMemo
   const selectedTypes = useMemo<DomoticaType[] | undefined>(() => (typeFilter === "all" ? undefined : [typeFilter]), [typeFilter]);
 
   const { domotica, isLoading } = useDomoticaFiltered(floorId, {

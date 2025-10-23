@@ -38,6 +38,7 @@ export function BaseFloorPlan({ widthMm, heightMm, floorId, rooms = [], selected
     const [editingValue, setEditingValue] = useState<Domotica | null>(null);
     const updateValueMutation = useUpdateDomotica(editingValue?.id ?? 0, floorId);
 
+    // todo: remove useMemo
     const domoticaByRoom = useMemo(() => {
         const map = new Map<number, Domotica[]>();
         (domotica ?? []).forEach(d => {
@@ -154,6 +155,7 @@ function EditValueDialog({ open, domotica, onClose, onSave }: {
     onSave: (value: Domotica["value"]) => void;
 }) {
     const [local, setLocal] = useState(domotica?.value ?? ({} as Domotica["value"]));
+    // todo remove useMemo
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useMemo(() => setLocal(domotica?.value ?? ({} as Domotica["value"])), [domotica?.id]);
     if (!domotica) return null;
