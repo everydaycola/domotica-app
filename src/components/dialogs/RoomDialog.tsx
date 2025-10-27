@@ -26,7 +26,7 @@ export interface RoomDialogProps {
   floorHeightMm: number;
 }
 
-export default function RoomDialog({ open, onClose, title = 'Room', initialValues, onSubmit, floorWidthMm, floorHeightMm }: RoomDialogProps) {
+export default function RoomDialog({ open, onClose, title = 'Room', initialValues, onSubmit, floorWidthMm, floorHeightMm }: Readonly<RoomDialogProps>) {
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<RoomFormValues>({
     defaultValues: initialValues,
   });

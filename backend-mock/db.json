@@ -6,6 +6,13 @@
       "description": "Main lobby and reception",
       "widthMm": 7000,
       "heightMm": 4500
+    },
+    {
+      "id": "3",
+      "name": "Ilja Nachtergaele",
+      "description": "Yet another room",
+      "widthMm": 1000,
+      "heightMm": 1000
     }
   ],
   "rooms": [

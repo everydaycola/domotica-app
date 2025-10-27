@@ -21,7 +21,7 @@ export interface EditFloorDialogProps {
   onSubmit: (values: EditFloorFormValues) => void;
 }
 
-export default function EditFloorDialog({ open, onClose, initialValues, onSubmit }: EditFloorDialogProps) {
+export default function EditFloorDialog({ open, onClose, initialValues, onSubmit }: Readonly<EditFloorDialogProps>) {
   const { register, handleSubmit, reset, setValue } = useForm<EditFloorFormValues>({
     defaultValues: initialValues
   });

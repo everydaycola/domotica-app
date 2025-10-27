@@ -4,9 +4,14 @@ import type {Floor} from "../model/floor.ts";
 import type {Domotica} from "../model/domotica.ts";
 
 // Floors
-export async function getFloors(id: string) {
+export async function getFloor(id: string) {
     const { data: floors } = await axios.get(`/floors/${id}`);
     return floors as Floor;
+}
+
+export async function getAllFloors() {
+    const { data } = await axios.get('/floors');
+    return data as Floor[];
 }
 
 export async function createFloor(floor: Pick<Floor, 'id' | 'name' | 'widthMm' | 'heightMm'> & { description?: string }) {
@@ -25,7 +30,7 @@ export async function deleteFloor(id: string) {
 }
 
 // Rooms
-export async function getRooms(floorId: string) {
+export async function getRoom(floorId: string) {
     const { data } = await axios.get('/rooms', { params: { floorId } });
     return data as Room[];
 }
@@ -49,11 +54,6 @@ export async function deleteRoom(id: number) {
 // Domotica
 export async function getDomoticaByFloor(floorId: string) {
     const { data } = await axios.get('/domotica', { params: { floorId } });
-    return data as Domotica[];
-}
-
-export async function getDomoticaByRoom(roomId: number) {
-    const { data } = await axios.get('/domotica', { params: { roomId } });
     return data as Domotica[];
 }
 

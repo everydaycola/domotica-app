@@ -19,7 +19,7 @@ export interface DeleteConfirmDialogProps {
   confirmDisabled?: boolean;
 }
 
-export default function DeleteConfirmDialog({ open, onClose, onConfirm, title = 'Delete item', message = 'Are you sure you want to delete this item?', confirmDisabled = false }: DeleteConfirmDialogProps) {
+export default function DeleteConfirmDialog({ open, onClose, onConfirm, title = 'Delete item', message = 'Are you sure you want to delete this item?', confirmDisabled = false }: Readonly<DeleteConfirmDialogProps>) {
   const {handleSubmit, reset } = useForm<DeleteFormValues>();
 
   const handleClose = () => {

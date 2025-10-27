@@ -29,8 +29,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import type {Domotica, DomoticaType, DomoticaValue} from "../../model/domotica";
 import {useCreateDomotica, useDeleteDomotica, useDomoticaFiltered, useUpdateDomotica} from "../../hooks/useDomotica";
-import {EditValueDialog} from "./EditValueDialog.tsx";
-import {DomoticaDetailsDialog} from "./DomoticaDetailsDialog.tsx";
+import {EditValueDialog} from "../dialogs/EditValueDialog.tsx";
+import {DomoticaDetailsDialog} from "../dialogs/DomoticaDetailsDialog.tsx";
 
 export type DomoticaListProps = {
   floorId: string;
@@ -53,7 +53,7 @@ function typeIcon(type: DomoticaType) {
   }
 }
 
-export default function DomoticaList({ floorId, selectedRoomId, clearRoomSelection }: DomoticaListProps) {
+export default function DomoticaList({ floorId, selectedRoomId, clearRoomSelection }: Readonly<DomoticaListProps>) {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<DomoticaType | "all">("all");
   // todo: remove useMemo

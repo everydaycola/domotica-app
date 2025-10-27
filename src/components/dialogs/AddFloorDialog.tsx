@@ -20,7 +20,7 @@ export interface AddItemDialogProps {
   onSubmit?: (values: AddItemFormValues) => void;
 }
 
-export default function AddFloorDialog({ open, onClose, onSubmit }: AddItemDialogProps) {
+export default function AddFloorDialog({ open, onClose, onSubmit }: Readonly<AddItemDialogProps>) {
   const { register, handleSubmit, reset } = useForm<AddItemFormValues>({
       defaultValues: {id: '', name: '', description: '', widthMm: 1000, heightMm: 1000}
   });
@@ -55,7 +55,7 @@ export default function AddFloorDialog({ open, onClose, onSubmit }: AddItemDialo
             autoFocus
             required
             margin="dense"
-            label="Floor number (id)"
+            label="Floor number"
             type="text"
             fullWidth
             variant="standard"

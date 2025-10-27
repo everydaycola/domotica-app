@@ -7,29 +7,27 @@ import {useContext} from "react";
 import {GeneralContext} from "../../context/GeneralContext.ts";
 
 
-
 export default function CustomAppBar() {
 
-    const {floorNumber} = useContext(GeneralContext)
+  const {floorNumber} = useContext(GeneralContext)
 
-    return (
-        <Box>
-            <AppBar position="static">
-                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="div"
-                        sx={{flexGrow: 1, textAlign: 'center'}}
-                    >
-                        Verdieping {floorNumber}
-                    </Typography>
-                    <div>
-                        <ThemeButton/>
-                    </div>
-                </Toolbar>
-            </AppBar>
-        </Box>
-    );
+  return (
+    <Box>
+      <AppBar position="static">
+        <Toolbar sx={{display: 'flex', justifyContent: 'space-between'}}>
+          <Typography
+            variant="h5"
+            noWrap
+            component="div"
+            sx={{flexGrow: 1, textAlign: 'center'}}
+          >
+            Verdieping {floorNumber}
+          </Typography>
+          <div>
+            <ThemeButton/>
+          </div>
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
 }

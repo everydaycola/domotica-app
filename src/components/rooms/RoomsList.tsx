@@ -36,7 +36,7 @@ export default function RoomsList({
   onDeleteRoom,
   clearRoomSelection,
   selectedRoomName,
-}: RoomsListProps) {
+}: Readonly<RoomsListProps>) {
   return (
     <Box sx={{ flex: 1, minWidth: 280 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>

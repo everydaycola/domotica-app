@@ -4,20 +4,24 @@ import type {Domotica, DomoticaType} from "../model/domotica";
 
 // Fetch all domotica on a floor
 export function useDomoticaByFloor(floorId: string) {
-  const { isLoading, isError, data } = useQuery({
+  const {isLoading, isError, data} = useQuery({
     queryKey: ["domotica", "floor", floorId],
     queryFn: () => getDomoticaByFloor(floorId),
   });
-  return { isLoading, isError, domotica: (data ?? []) };
+  return {isLoading, isError, domotica: (data ?? [])};
 }
 
-// Convenience selector hook doing client-side filtering by room, search and type
+// client-side filtering by room, search and type
 export function useDomoticaFiltered(
   floorId: string,
-  options?: { roomId?: number | null; search?: string; types?: DomoticaType[] }
+  options?: {
+    roomId?: number | null;
+    search?: string;
+    types?: DomoticaType[]
+  }
 ) {
-  const { isLoading, isError, domotica } = useDomoticaByFloor(floorId);
-  const { roomId, search, types } = options ?? {};
+  const {isLoading, isError, domotica} = useDomoticaByFloor(floorId);
+  const {roomId, search, types} = options ?? {};
   const q = (search ?? "").trim().toLowerCase();
 
   const filtered = (domotica ?? []).filter((d) => {
@@ -30,7 +34,7 @@ export function useDomoticaFiltered(
     return true;
   });
 
-  return { isLoading, isError, domotica: filtered };
+  return {isLoading, isError, domotica: filtered};
 }
 
 export function useUpdateDomotica(id: number, floorId: string) {
@@ -38,7 +42,7 @@ export function useUpdateDomotica(id: number, floorId: string) {
   return useMutation({
     mutationFn: (updates: Partial<Domotica>) => updateDomotica(String(id), updates),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["domotica", "floor", String(floorId)] });
+      queryClient.invalidateQueries({queryKey: ["domotica", "floor", String(floorId)]});
     },
   });
 }
@@ -49,7 +53,7 @@ export function useCreateDomotica() {
     mutationFn: (domotica: Omit<Domotica, "id">) => createDomotica(domotica),
     onSuccess: (created) => {
       // best effort: invalidate floor scope
-      queryClient.invalidateQueries({ queryKey: ["domotica", "floor", String(created.floorId)] });
+      queryClient.invalidateQueries({queryKey: ["domotica", "floor", String(created.floorId)]});
     },
   });
 }
@@ -59,7 +63,7 @@ export function useDeleteDomotica(id: number, floorId: string) {
   return useMutation({
     mutationFn: () => deleteDomotica(String(id)),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["domotica", "floor", String(floorId)] });
+      queryClient.invalidateQueries({queryKey: ["domotica", "floor", String(floorId)]});
     },
   });
 }
