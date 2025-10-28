@@ -1,4 +1,4 @@
-import {useMemo, useState} from "react";
+import {useContext, useMemo, useState} from "react";
 import {
   Avatar,
   Box,
@@ -29,9 +29,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import type {Domotica, DomoticaType, DomoticaValue} from "../../model/domotica";
 import {useCreateDomotica, useDeleteDomotica, useDomoticaFiltered, useUpdateDomotica} from "../../hooks/useDomotica";
-import {EditValueDialog} from "../dialogs/EditValueDialog.tsx";
-import {DomoticaDetailsDialog} from "../dialogs/DomoticaDetailsDialog.tsx";
+import {EditValueDialog} from "../dialogs/domotica/EditValueDialog.tsx";
+import {DomoticaDetailsDialog} from "../dialogs/domotica/DomoticaDetailsDialog.tsx";
 import DeleteConfirmDialog from "../dialogs/DeleteConfirmDialog.tsx";
+import {GeneralContext} from "../../context/GeneralContext.ts";
 
 export type DomoticaListProps = {
   floorId: string;
@@ -59,6 +60,7 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
   const [typeFilter, setTypeFilter] = useState<DomoticaType | "all">("all");
   // todo: remove useMemo
   const selectedTypes = useMemo<DomoticaType[] | undefined>(() => (typeFilter === "all" ? undefined : [typeFilter]), [typeFilter]);
+  const { isAdmin } = useContext(GeneralContext);
 
   const {domotica, isLoading} = useDomoticaFiltered(floorId, {
     roomId: selectedRoomId ?? undefined,
@@ -106,22 +108,24 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
           <MenuItem value="audio">Audio</MenuItem>
         </Select>
         <Button size="small" onClick={resetFilters}>Reset</Button>
-        <Button variant="contained" size="small" startIcon={<AddIcon/>} onClick={() => {
-          setCreating(true);
-          setEditingDetails({
-            id: '0',
-            floorId,
-            roomId: selectedRoomId ?? 0,
-            name: "",
-            description: "",
-            type: "light",
-            upc: "",
-            defaultValue: {on: false, brightness: 100} as DomoticaValue,
-            value: {on: false, brightness: 100} as DomoticaValue,
-            x: 0,
-            y: 0,
-          } as Domotica);
-        }}>Add domotica</Button>
+        {isAdmin && (
+          <Button variant="contained" size="small" startIcon={<AddIcon/>} onClick={() => {
+            setCreating(true);
+            setEditingDetails({
+              id: '0',
+              floorId,
+              roomId: selectedRoomId ?? 0,
+              name: "",
+              description: "",
+              type: "light",
+              upc: "",
+              defaultValue: {on: false, brightness: 100} as DomoticaValue,
+              value: {on: false, brightness: 100} as DomoticaValue,
+              x: 0,
+              y: 0,
+            } as Domotica);
+          }}>Add domotica</Button>
+        )}
       </Stack>
 
       <Divider/>
@@ -134,6 +138,7 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
                       component="div"
                       disableGutters
                       secondaryAction={
+                        isAdmin &&
                         <Stack direction="row" spacing={1}>
                           <Tooltip title="Edit details">
                             <IconButton edge="end" onClick={(e) => {
@@ -184,7 +189,7 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
         domotica={editingValue}
         onClose={() => setEditingValue(null)}
         onSave={(value) => {
-          if (!editingValue) return;
+          if (!editingValue || !isAdmin) return;
           updateValueMutation.mutate({value}, {onSuccess: () => setEditingValue(null)});
         }}
       />
@@ -199,6 +204,7 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
           setCreating(false);
         }}
         onSave={async (payload, isCreate) => {
+          if (!isAdmin) return;
           if (isCreate) {
             await createMutation.mutateAsync(payload as Omit<Domotica, "id">);
           } else if (payload && editingDetails?.id) {
@@ -219,7 +225,7 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
           setDeleting(null);
         }}
         onConfirm={() => {
-          if (!deleting || deleting.id === '0') return;
+          if (!deleting || deleting.id === '0' || !isAdmin) return;
           deleteMutation.mutate(undefined, {})
         }}
         />

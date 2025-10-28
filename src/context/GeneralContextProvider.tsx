@@ -8,12 +8,15 @@ interface GeneralContextProviderProps {
 
 export default function GeneralContextProvider({children}: GeneralContextProviderProps) {
     const [floorNumber, setFloorNumber] = useState<string | null>(null)
+    const [isAdmin, setIsAdmin] = useState<boolean>(true)
 
     return (
         <GeneralContext.Provider value={
             {
                 floorNumber: floorNumber,
-                setFloorNumber: setFloorNumber
+                setFloorNumber: setFloorNumber,
+                isAdmin: isAdmin,
+                setIsAdmin: setIsAdmin,
             }
         }>
 

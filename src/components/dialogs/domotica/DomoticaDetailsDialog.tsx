@@ -10,8 +10,8 @@ import {
   Stack,
   TextField
 } from "@mui/material";
-import type {audioValue, Domotica, DomoticaType, doorValue, heatingValue, lightValue} from "../../model/domotica.ts";
-import {useRooms} from "../../hooks/useRooms.ts";
+import type {audioValue, Domotica, DomoticaType, doorValue, heatingValue, lightValue} from "../../../model/domotica.ts";
+import {useRooms} from "../../../hooks/useRooms.ts";
 import {useForm, Controller} from "react-hook-form";
 
 interface DomoticaDetailsDialogProps {

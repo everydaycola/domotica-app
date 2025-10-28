@@ -15,6 +15,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import type {Room} from "../../model/room";
+import {GeneralContext} from "../../context/GeneralContext.ts";
+import {useContext} from "react";
 
 export type RoomsListProps = {
   rooms: Room[] | undefined;
@@ -37,6 +39,8 @@ export default function RoomsList({
   clearRoomSelection,
   selectedRoomName,
 }: Readonly<RoomsListProps>) {
+  const { isAdmin } = useContext(GeneralContext);
+
   return (
     <Box sx={{ flex: 1, minWidth: 280 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
@@ -50,7 +54,9 @@ export default function RoomsList({
           {selectedRoomId !== null && (
             <Button size="small" onClick={clearRoomSelection}>Clear selection</Button>
           )}
-          <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={onAddRoom}>Add room</Button>
+          {isAdmin &&
+            (<Button variant="contained" size="small" startIcon={<AddIcon/>} onClick={onAddRoom}>Add room</Button>)
+          }
         </Stack>
       </Stack>
       <Divider />
@@ -60,7 +66,7 @@ export default function RoomsList({
             key={room.id}
             component="div"
             disableGutters
-            secondaryAction={
+            secondaryAction={isAdmin &&
               <>
                 <IconButton edge="end" aria-label="edit" onClick={(e) => { e.stopPropagation(); onEditRoom(room); }}>
                   <EditIcon />

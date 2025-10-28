@@ -4,10 +4,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {useNavigate, useParams} from "react-router-dom";
 import {useDeleteFloor, useFloorsList, useUpdateFloor} from "../../hooks/useFloor";
-import EditFloorDialog from "../dialogs/EditFloorDialog";
+import EditFloorDialog from "../dialogs/floor/EditFloorDialog.tsx";
 import DeleteConfirmDialog from "../dialogs/DeleteConfirmDialog";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import type {Floor} from "../../model/floor";
+import {GeneralContext} from "../../context/GeneralContext.ts";
 
 export interface BuildingFloorsListProps {
   onAdd?: () => void;
@@ -17,6 +18,7 @@ export default function BuildingFloorsList({onAdd}: Readonly<BuildingFloorsListP
   const navigate = useNavigate();
   const {id: currentId} = useParams();
   const {floors, isLoading} = useFloorsList();
+  const { isAdmin } = useContext(GeneralContext);
 
   const [editTarget, setEditTarget] = useState<Floor | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Floor | null>(null);
@@ -30,13 +32,15 @@ export default function BuildingFloorsList({onAdd}: Readonly<BuildingFloorsListP
     <Box sx={{width: '100%'}}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{mb: 1}}>
         <Typography variant="h6">Floors</Typography>
-        <Stack direction="row" spacing={0.5}>
-          <Tooltip title="Add floor">
-            <IconButton color="primary" size="small" onClick={onAdd}>
-              <AddBoxIcon/>
-            </IconButton>
-          </Tooltip>
-        </Stack>
+        {isAdmin && (
+          <Stack direction="row" spacing={0.5}>
+            <Tooltip title="Add floor">
+              <IconButton color="primary" size="small" onClick={onAdd}>
+                <AddBoxIcon/>
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        )}
       </Stack>
 
       <Box sx={{
@@ -79,22 +83,24 @@ export default function BuildingFloorsList({onAdd}: Readonly<BuildingFloorsListP
                   >
                     {`Floor ${f.id}: ${f.name}`}
                   </Typography>
-                  <Stack direction="row" spacing={0.5}>
-                    <Tooltip title="Edit floor">
-                      <IconButton size="small" onClick={() => setEditTarget(f)}>
-                        <EditIcon/>
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title={f.id === '0' ? 'Cannot delete ground floor' : 'Delete floor'}>
-                      <IconButton
-                        color="error"
-                        size="small"
-                        onClick={() => setDeleteTarget(f)}
-                        disabled={f.id === '0'}>
-                        <DeleteForeverIcon/>
-                      </IconButton>
-                    </Tooltip>
-                  </Stack>
+                  {isAdmin && (
+                    <Stack direction="row" spacing={0.5} onClick={(e) => e.stopPropagation()}>
+                      <Tooltip title="Edit floor">
+                        <IconButton size="small" onClick={() => isAdmin && setEditTarget(f)}>
+                          <EditIcon/>
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title={f.id === '0' ? 'Cannot delete ground floor' : 'Delete floor'}>
+                        <IconButton
+                          color="error"
+                          size="small"
+                          onClick={() => isAdmin && setDeleteTarget(f)}
+                          disabled={f.id === '0'}>
+                          <DeleteForeverIcon/>
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
+                  )}
                 </Box>
               )
             })}
@@ -114,6 +120,7 @@ export default function BuildingFloorsList({onAdd}: Readonly<BuildingFloorsListP
         } : {name: '', description: '', widthMm: 0, heightMm: 0}}
         onSubmit={({name, description, widthMm, heightMm}) => {
           if (!editTarget) return;
+          if (!isAdmin) { setEditTarget(null); return; }
           updateFloorMutation.mutate({name, description: description || undefined, widthMm, heightMm});
           setEditTarget(null);
         }}
@@ -125,6 +132,7 @@ export default function BuildingFloorsList({onAdd}: Readonly<BuildingFloorsListP
         onClose={() => setDeleteTarget(null)}
         onConfirm={() => {
           if (!deleteTarget || deleteTarget.id === '0') return; // just to be sure
+          if (!isAdmin) { setDeleteTarget(null); return; }
           deleteFloorMutation.mutate(undefined, {
               onSuccess: () => {
                 navigate('/floor/0');
@@ -135,7 +143,7 @@ export default function BuildingFloorsList({onAdd}: Readonly<BuildingFloorsListP
         }}
         title={deleteTarget?.id === '0' ? 'Cannot delete ground floor' : 'Delete floor'}
         message={deleteTarget ? (deleteTarget.id === '0' ? 'Ground floor (floor 0) cannot be deleted.' : `Are you sure you want to delete floor ${deleteTarget.id}: ${deleteTarget.name}?`) : ''}
-        confirmDisabled={deleteTarget?.id === '0'}
+        confirmDisabled={deleteTarget?.id === '0' || !isAdmin}
       />
     </Box>
   );

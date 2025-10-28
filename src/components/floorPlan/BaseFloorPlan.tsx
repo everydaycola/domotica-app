@@ -8,7 +8,7 @@ import type {Room} from "../../model/room";
 import type {Domotica, DomoticaType} from "../../model/domotica";
 import {useDomoticaByFloor, useUpdateDomotica} from "../../hooks/useDomotica";
 import "./BaseFloorPlan.scss";
-import {EditValueDialog} from "../dialogs/EditValueDialog.tsx";
+import {EditValueDialog} from "../dialogs/domotica/EditValueDialog.tsx";
 
 export interface BaseFloorPlanProps {
     widthMm: number;

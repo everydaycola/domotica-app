@@ -5,16 +5,16 @@ import Typography from '@mui/material/Typography';
 import {ThemeButton} from '../theme/ThemeButton';
 import {useContext} from "react";
 import {GeneralContext} from "../../context/GeneralContext.ts";
-
+import {FormControlLabel, Switch} from "@mui/material";
 
 export default function CustomAppBar() {
 
-  const {floorNumber} = useContext(GeneralContext)
+  const {floorNumber, isAdmin, setIsAdmin} = useContext(GeneralContext)
 
   return (
     <Box>
       <AppBar position="static">
-        <Toolbar sx={{display: 'flex', justifyContent: 'space-between'}}>
+        <Toolbar sx={{display: 'flex', justifyContent: 'space-between', gap: 2}}>
           <Typography
             variant="h5"
             noWrap
@@ -23,7 +23,11 @@ export default function CustomAppBar() {
           >
             Verdieping {floorNumber}
           </Typography>
-          <div>
+          <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
+            <FormControlLabel
+              control={<Switch color="default" checked={isAdmin} onChange={(e) => setIsAdmin(e.target.checked)} />}
+              label={isAdmin ? 'Admin' : 'User'}
+            />
             <ThemeButton/>
           </div>
         </Toolbar>

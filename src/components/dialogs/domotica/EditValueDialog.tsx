@@ -1,4 +1,4 @@
-import type {audioValue, Domotica, DomoticaValue, doorValue, heatingValue, lightValue} from "../../model/domotica.ts";
+import type {audioValue, Domotica, DomoticaValue, doorValue, heatingValue, lightValue} from "../../../model/domotica.ts";
 import {useMemo, useState} from "react";
 import {
   Button,
