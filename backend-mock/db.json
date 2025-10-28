@@ -6,13 +6,6 @@
       "description": "Main lobby and reception",
       "widthMm": 7000,
       "heightMm": 4500
-    },
-    {
-      "id": "3",
-      "name": "Ilja Nachtergaele",
-      "description": "Yet another room",
-      "widthMm": 1000,
-      "heightMm": 1000
     }
   ],
   "rooms": [
@@ -24,16 +17,6 @@
       "yMm": 0,
       "widthMm": 3000,
       "heightMm": 3000,
-      "floorId": "0"
-    },
-    {
-      "id": "2",
-      "name": "Room 2",
-      "description": "A second room",
-      "xMm": 3000,
-      "yMm": 0,
-      "widthMm": 4000,
-      "heightMm": 1500,
       "floorId": "0"
     },
     {
@@ -69,44 +52,11 @@
   ],
   "domotica": [
     {
-      "id": "2",
-      "name": "Thermostat Living",
-      "type": "heating",
-      "upc": "2234567890123",
-      "roomId": "1",
-      "x": 6000,
-      "y": 2400,
-      "defaultValue": {
-        "temperature": 16
-      },
-      "value": {
-        "temperature": 23.5
-      },
-      "floorId": "0",
-      "description": ""
-    },
-    {
-      "id": "3",
-      "name": "Front Door",
-      "type": "door",
-      "upc": "3234567890123",
-      "roomId": "3",
-      "x": 100,
-      "y": 0,
-      "defaultValue": {
-        "open": false
-      },
-      "value": {
-        "open": true
-      },
-      "floorId": "0"
-    },
-    {
       "id": "4",
       "name": "Kitchen Audio",
       "type": "audio",
       "upc": "4234567890123",
-      "roomId": "2",
+      "roomId": null,
       "x": 2500,
       "y": 2500,
       "defaultValue": {

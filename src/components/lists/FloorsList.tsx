@@ -131,15 +131,17 @@ export default function FloorsList({onAdd}: Readonly<BuildingFloorsListProps>) {
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={() => {
+          console.log(deleteTarget?.id || '')
           if (!deleteTarget || deleteTarget.id === '0') return; // just to be sure
           if (!isAdmin) { setDeleteTarget(null); return; }
           deleteFloorMutation.mutate(undefined, {
               onSuccess: () => {
+                setDeleteTarget(null);
                 navigate('/floor/0');
               }
             }
           )
-          setDeleteTarget(null);
+
         }}
         title={deleteTarget?.id === '0' ? 'Cannot delete ground floor' : 'Delete floor'}
         message={deleteTarget ? (deleteTarget.id === '0' ? 'Ground floor (floor 0) cannot be deleted.' : `Are you sure you want to delete floor ${deleteTarget.id}: ${deleteTarget.name}?`) : ''}

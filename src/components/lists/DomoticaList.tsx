@@ -226,7 +226,11 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
         }}
         onConfirm={() => {
           if (!deleting || deleting.id === '0' || !isAdmin) return;
-          deleteMutation.mutate(undefined, {})
+          deleteMutation.mutate(undefined, {
+            onSuccess: () => {
+              setDeleting(null);
+            }
+          })
         }}
         />
 
