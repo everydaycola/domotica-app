@@ -69,25 +69,6 @@
   ],
   "domotica": [
     {
-      "id": "1",
-      "name": "Ceiling Light",
-      "type": "light",
-      "upc": "1234567890123",
-      "roomId": "1",
-      "x": 3500,
-      "y": 2500,
-      "defaultValue": {
-        "on": false,
-        "brightness": 100
-      },
-      "value": {
-        "on": false,
-        "brightness": 100
-      },
-      "description": "Shelly Plus 1 16A",
-      "floorId": "0"
-    },
-    {
       "id": "2",
       "name": "Thermostat Living",
       "type": "heating",
@@ -101,7 +82,8 @@
       "value": {
         "temperature": 23.5
       },
-      "floorId": "0"
+      "floorId": "0",
+      "description": ""
     },
     {
       "id": "3",

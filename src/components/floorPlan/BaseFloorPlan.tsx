@@ -25,7 +25,7 @@ export function BaseFloorPlan({ widthMm, heightMm, floorId, rooms = [], selected
 
     // quick controls dialog for domotica values
     const [editingValue, setEditingValue] = useState<Domotica | null>(null);
-    const updateValueMutation = useUpdateDomotica(editingValue?.id ?? 0, floorId);
+    const updateValueMutation = useUpdateDomotica(editingValue?.id ?? '0', floorId);
 
     // todo: remove useMemo
     const domoticaByRoom = useMemo(() => {

@@ -114,7 +114,7 @@ export default function BuildingFloorsList({onAdd}: Readonly<BuildingFloorsListP
         } : {name: '', description: '', widthMm: 0, heightMm: 0}}
         onSubmit={({name, description, widthMm, heightMm}) => {
           if (!editTarget) return;
-          updateFloorMutation.mutate({ name, description: description || undefined, widthMm, heightMm });
+          updateFloorMutation.mutate({name, description: description || undefined, widthMm, heightMm});
           setEditTarget(null);
         }}
       />
@@ -125,7 +125,7 @@ export default function BuildingFloorsList({onAdd}: Readonly<BuildingFloorsListP
         onClose={() => setDeleteTarget(null)}
         onConfirm={() => {
           if (!deleteTarget || deleteTarget.id === '0') return; // just to be sure
-          deleteFloorMutation.mutate( undefined, {
+          deleteFloorMutation.mutate(undefined, {
               onSuccess: () => {
                 navigate('/floor/0');
               }

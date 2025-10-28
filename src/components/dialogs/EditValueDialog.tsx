@@ -23,8 +23,8 @@ interface EditValueDialogProps {
 
 export function EditValueDialog({open, domotica, onClose, onSave}: Readonly<EditValueDialogProps>) {
   const [local, setLocal] = useState(domotica?.value ?? ({} as Domotica["value"]));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   // todo remove useMemo
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => setLocal(domotica?.value ?? ({} as Domotica["value"])), [domotica?.id]);
   if (!domotica) return null;
   const handleSave = () => onSave(local);

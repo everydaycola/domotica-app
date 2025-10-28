@@ -37,7 +37,7 @@ export function useDomoticaFiltered(
   return {isLoading, isError, domotica: filtered};
 }
 
-export function useUpdateDomotica(id: number, floorId: string) {
+export function useUpdateDomotica(id: string, floorId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (updates: Partial<Domotica>) => updateDomotica(String(id), updates),
@@ -58,7 +58,7 @@ export function useCreateDomotica() {
   });
 }
 
-export function useDeleteDomotica(id: number, floorId: string) {
+export function useDeleteDomotica(id: string, floorId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => deleteDomotica(String(id)),

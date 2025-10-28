@@ -1,5 +1,5 @@
 export type Domotica = {
-    id: number;
+    id: string;
     floorId: string;
     roomId: number;
     name: string;
