@@ -1,12 +1,12 @@
 import {useNavigate, useParams} from "react-router-dom";
 import CustomAppBar from "../components/appBar/AppBar.tsx";
-import BuildingFloorsList from "../components/building/BuildingFloorsList";
+import FloorsList from "../components/lists/FloorsList.tsx";
 import {GeneralContext} from "../context/GeneralContext.ts";
 import {useContext, useEffect, useState} from "react";
 import {BaseFloorPlan} from "../components/floorPlan/BaseFloorPlan.tsx";
 import {Box, Divider, Stack, Typography} from "@mui/material";
-import DomoticaList from "../components/domotica/DomoticaList";
-import RoomsList from "../components/rooms/RoomsList";
+import DomoticaList from "../components/lists/DomoticaList";
+import RoomsList from "../components/lists/RoomsList";
 import AddFloorDialog from "../components/dialogs/floor/AddFloorDialog.tsx";
 import DeleteConfirmDialog from "../components/dialogs/DeleteConfirmDialog.tsx";
 import RoomDialog from "../components/dialogs/room/RoomDialog.tsx";
@@ -48,7 +48,7 @@ export function Floor() {
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, alignItems: 'flex-start', m: 3, gap: 3, width: '100%' }}>
         {/* Left: Building Floors list with actions */}
         <Box sx={{ width: { xs: '100%', lg: 360 } }}>
-          <BuildingFloorsList
+          <FloorsList
             onAdd={() => setOpenDialog('Add')}
           />
         </Box>

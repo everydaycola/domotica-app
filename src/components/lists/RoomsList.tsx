@@ -14,7 +14,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import type {Room} from "../../model/room";
+import type {Room} from "../../model/room.ts";
 import {GeneralContext} from "../../context/GeneralContext.ts";
 import {useContext} from "react";
 

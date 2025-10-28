@@ -3,18 +3,18 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {useNavigate, useParams} from "react-router-dom";
-import {useDeleteFloor, useFloorsList, useUpdateFloor} from "../../hooks/useFloor";
+import {useDeleteFloor, useFloorsList, useUpdateFloor} from "../../hooks/useFloor.ts";
 import EditFloorDialog from "../dialogs/floor/EditFloorDialog.tsx";
-import DeleteConfirmDialog from "../dialogs/DeleteConfirmDialog";
+import DeleteConfirmDialog from "../dialogs/DeleteConfirmDialog.tsx";
 import {useContext, useState} from "react";
-import type {Floor} from "../../model/floor";
+import type {Floor} from "../../model/floor.ts";
 import {GeneralContext} from "../../context/GeneralContext.ts";
 
 export interface BuildingFloorsListProps {
   onAdd?: () => void;
 }
 
-export default function BuildingFloorsList({onAdd}: Readonly<BuildingFloorsListProps>) {
+export default function FloorsList({onAdd}: Readonly<BuildingFloorsListProps>) {
   const navigate = useNavigate();
   const {id: currentId} = useParams();
   const {floors, isLoading} = useFloorsList();
