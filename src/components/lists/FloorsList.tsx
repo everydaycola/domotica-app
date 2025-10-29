@@ -150,7 +150,6 @@ export default function FloorsList({floorNumber, navigate}: Readonly<BuildingFlo
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={() => {
-          console.log(deleteTarget?.id || '')
           if (!deleteTarget || deleteTarget.id === '0') return; // just to be sure
           if (!isAdmin) { setDeleteTarget(null); return; }
           deleteFloorMutation.mutate(undefined, {

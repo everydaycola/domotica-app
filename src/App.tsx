@@ -10,8 +10,6 @@ import CustomAppBar from "./components/appBar/AppBar.tsx";
 axios.defaults.baseURL = 'http://localhost:3000'
 const queryClient = new QueryClient()
 
-
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
