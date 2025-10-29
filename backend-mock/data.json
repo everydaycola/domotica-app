@@ -1,111 +1,223 @@
 {
   "floors": [
     {
-      "id": "0",
-      "name": "Ground floor",
-      "description": "Main lobby and reception",
+      "id": "1",
+      "name": "First Floor",
+      "description": "Main living area with multiple rooms",
       "widthMm": 7000,
-      "heightMm": 4500
+      "heightMm": 3000
     },
     {
-      "id": "2",
-      "name": "dsadas",
-      "description": "",
-      "widthMm": 1000,
-      "heightMm": 1000
+      "id": "0",
+      "name": "Ground Floor",
+      "description": "Entry level floor with kitchen and living room",
+      "widthMm": 7000,
+      "heightMm": 3000
+    },
+    {
+      "id": "-1",
+      "name": "Basement",
+      "description": "Underground level with storage",
+      "widthMm": 5000,
+      "heightMm": 2500
     }
   ],
   "rooms": [
     {
       "id": "1",
-      "name": "Room 1",
-      "description": "the first room",
+      "floorId": "1",
+      "name": "Master Bedroom",
+      "description": "Primary bedroom with ensuite",
       "xMm": 0,
       "yMm": 0,
-      "widthMm": 3000,
-      "heightMm": 3000,
-      "floorId": "0"
+      "widthMm": 3500,
+      "heightMm": 3000
+    },
+    {
+      "id": "2",
+      "floorId": "1",
+      "name": "Guest Room",
+      "description": "Second bedroom for guests",
+      "xMm": 3500,
+      "yMm": 0,
+      "widthMm": 3500,
+      "heightMm": 3000
     },
     {
       "id": "3",
-      "name": "Room 4",
-      "description": "A room on the bottom",
+      "floorId": "0",
+      "name": "Living Room",
+      "description": "Main living space with entertainment area",
       "xMm": 0,
-      "yMm": 3000,
-      "widthMm": 5000,
-      "heightMm": 1500,
-      "floorId": "0"
+      "yMm": 0,
+      "widthMm": 4000,
+      "heightMm": 3000
     },
     {
       "id": "4",
-      "name": "Room 3",
-      "description": "Middle room",
-      "xMm": 3000,
-      "yMm": 1500,
-      "widthMm": 2000,
-      "heightMm": 1500,
-      "floorId": "0"
+      "floorId": "0",
+      "name": "Kitchen",
+      "description": "Fully equipped modern kitchen",
+      "xMm": 4000,
+      "yMm": 0,
+      "widthMm": 3000,
+      "heightMm": 3000
     },
     {
       "id": "5",
-      "name": "last room",
-      "description": "Yet another room",
-      "xMm": 5000,
-      "yMm": 1500,
-      "widthMm": 2000,
-      "heightMm": 3000,
-      "floorId": "0"
+      "floorId": "-1",
+      "name": "Utility Room",
+      "description": "Storage and utility space",
+      "xMm": 0,
+      "yMm": 0,
+      "widthMm": 5000,
+      "heightMm": 2500
     }
   ],
   "domotica": [
     {
-      "id": "4",
-      "name": "Kitchen Audio",
-      "type": "audio",
-      "upc": "4234567890123",
-      "roomId": null,
-      "x": 2500,
-      "y": 2500,
+      "id": "1001",
+      "floorId": "1",
+      "roomId": "1",
+      "name": "Bedroom Light",
+      "description": "Ceiling light in master bedroom",
+      "type": "light",
+      "upc": "1234567890123",
+      "x": 1750,
+      "y": 1500,
       "defaultValue": {
-        "volume": 0
+        "on": false,
+        "brightness": 80
       },
       "value": {
-        "volume": 0
-      },
-      "floorId": "0"
+        "on": true,
+        "brightness": 60
+      }
     },
     {
-      "id": "5001",
-      "floorId": "0",
+      "id": "1002",
+      "floorId": "1",
       "roomId": "1",
-      "name": "study lamp",
-      "description": "small desk lamp for studying",
+      "name": "Bedroom Heating",
+      "description": "Temperature control for master bedroom",
+      "type": "heating",
+      "upc": "2234567890123",
+      "x": 3000,
+      "y": 2500,
+      "defaultValue": {
+        "temperature": 21
+      },
+      "value": {
+        "temperature": 22
+      }
+    },
+    {
+      "id": "1003",
+      "floorId": "1",
+      "roomId": "2",
+      "name": "Guest Room Light",
+      "description": "Main light in guest room",
       "type": "light",
-      "upc": "76548765982",
-      "x": 1000,
-      "y": 1000,
+      "upc": "3234567890123",
+      "x": 5000,
+      "y": 1500,
+      "defaultValue": {
+        "on": false,
+        "brightness": 80
+      },
+      "value": {
+        "on": false,
+        "brightness": 80
+      }
+    },
+    {
+      "id": "1004",
+      "floorId": "0",
+      "roomId": "3",
+      "name": "Living Room Audio",
+      "description": "Surround sound system",
+      "type": "audio",
+      "upc": "4234567890123",
+      "x": 2000,
+      "y": 1500,
+      "defaultValue": {
+        "volume": 30
+      },
+      "value": {
+        "volume": 45
+      }
+    },
+    {
+      "id": "1005",
+      "floorId": "0",
+      "roomId": "3",
+      "name": "Front Door",
+      "description": "Smart lock for main entrance",
+      "type": "door",
+      "upc": "5234567890123",
+      "x": 500,
+      "y": 1500,
+      "defaultValue": {
+        "open": false
+      },
+      "value": {
+        "open": false
+      }
+    },
+    {
+      "id": "1006",
+      "floorId": "0",
+      "roomId": "4",
+      "name": "Kitchen Light",
+      "description": "Overhead kitchen lighting",
+      "type": "light",
+      "upc": "6234567890123",
+      "x": 5500,
+      "y": 1500,
       "defaultValue": {
         "on": false,
         "brightness": 100
       },
       "value": {
         "on": true,
+        "brightness": 90
+      }
+    },
+    {
+      "id": "1007",
+      "floorId": "-1",
+      "roomId": "5",
+      "name": "Basement Light",
+      "description": "Utility room lighting",
+      "type": "light",
+      "upc": "7234567890123",
+      "x": 2500,
+      "y": 1250,
+      "defaultValue": {
+        "on": false,
+        "brightness": 100
+      },
+      "value": {
+        "on": false,
         "brightness": 100
       }
-    }
-  ],
-  "playlists": [
-    {
-      "id": "1",
-      "name": "classic"
     },
     {
-      "id": "2",
-      "name": "focus"
-    },
-    {
-      "id": "3",
-      "name": "party"
+      "id": "1008",
+      "floorId": "-1",
+      "roomId": "5",
+      "name": "Basement Door",
+      "description": "Door to utility room",
+      "type": "door",
+      "upc": "8234567890123",
+      "x": 0,
+      "y": 1500,
+      "defaultValue": {
+        "open": false
+      },
+      "value": {
+        "open": true
+      }
     }
   ]
 }
