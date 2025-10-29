@@ -1,4 +1,4 @@
-import {useContext, useMemo, useState} from "react";
+import {useContext, useState} from "react";
 import {
   Avatar,
   Box,
@@ -20,62 +20,41 @@ import {
   Typography
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
-import ThermostatIcon from "@mui/icons-material/Thermostat";
-import DoorFrontIcon from "@mui/icons-material/DoorFront";
-import SpeakerIcon from "@mui/icons-material/Speaker";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import type {Domotica, DomoticaType, DomoticaValue} from "../../model/domotica.ts";
+import type {Domotica, DomoticaType} from "../../model/domotica.ts";
 import {useCreateDomotica, useDeleteDomotica, useDomoticaFiltered, useUpdateDomotica} from "../../hooks/useDomotica.ts";
 import {EditValueDialog} from "../dialogs/domotica/EditValueDialog.tsx";
-import {DomoticaDetailsDialog} from "../dialogs/domotica/DomoticaDetailsDialog.tsx";
+import EditDomoticaDialog from "../dialogs/domotica/EditDomoticaDialog.tsx";
 import DeleteConfirmDialog from "../dialogs/DeleteConfirmDialog.tsx";
 import {GeneralContext} from "../../context/GeneralContext.ts";
+import {typeIcon} from "../dialogs/domotica/DomoticaTypeHelpers.tsx";
+import AddDomoticaDialog from "../dialogs/domotica/AddDomoticaDialog.tsx";
 
 export type DomoticaListProps = {
   floorId: string;
   selectedRoomId: number | null;
-  clearRoomSelection?: () => void; // optional callback to clear selection in parent
+  clearRoomSelection: () => void;
 };
 
-function typeIcon(type: DomoticaType) {
-  switch (type) {
-    case "light":
-      return <LightbulbOutlinedIcon/>;
-    case "heating":
-      return <ThermostatIcon/>;
-    case "door":
-      return <DoorFrontIcon/>;
-    case "audio":
-      return <SpeakerIcon/>;
-    default:
-      return <Avatar/>;
-  }
-}
-
 export default function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Readonly<DomoticaListProps>) {
-  const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<DomoticaType | "all">("all");
-  // todo: remove useMemo
-  const selectedTypes = useMemo<DomoticaType[] | undefined>(() => (typeFilter === "all" ? undefined : [typeFilter]), [typeFilter]);
   const { isAdmin } = useContext(GeneralContext);
-
-  const {domotica, isLoading} = useDomoticaFiltered(floorId, {
-    roomId: selectedRoomId ?? undefined,
-    search,
-    types: selectedTypes,
-  });
+  // filtering
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<DomoticaType | null>(null);
+  const {domotica, isLoading} = useDomoticaFiltered(floorId, selectedRoomId, search, typeFilter);
 
   // Value editing modal
   const [editingValue, setEditingValue] = useState<Domotica | null>(null);
   const updateValueMutation = useUpdateDomotica(editingValue?.id ?? '0', floorId);
 
-  // Details editing/creating modal
-  const [editingDetails, setEditingDetails] = useState<Domotica | null>(null);
-  const [creating, setCreating] = useState<boolean>(false);
+  // create
+  const [openCreate, setOpenCreate] = useState(false);
   const createMutation = useCreateDomotica();
+
+  // edit
+  const [editingDetails, setEditingDetails] = useState<Domotica | null>(null);
   const updateDetailsMutation = useUpdateDomotica(editingDetails?.id ?? '0', floorId);
 
   // Deletion confirmation dialog
@@ -84,7 +63,7 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
 
   const resetFilters = () => {
     setSearch("");
-    setTypeFilter("all");
+    setTypeFilter(null);
     clearRoomSelection?.();
   };
 
@@ -99,7 +78,8 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
           InputProps={{startAdornment: (<InputAdornment position="start"><SearchIcon/></InputAdornment>)}}
           sx={{flex: 1}}
         />
-        <Select size="small" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as any)}
+
+        <Select size="small" value={typeFilter ?? "all"} onChange={(e) => setTypeFilter(e.target.value === "all" ? null : e.target.value as DomoticaType)}
                 sx={{minWidth: 160}}>
           <MenuItem value="all">All types</MenuItem>
           <MenuItem value="light">Lights</MenuItem>
@@ -110,20 +90,7 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
         <Button size="small" onClick={resetFilters}>Reset</Button>
         {isAdmin && (
           <Button variant="contained" size="small" startIcon={<AddIcon/>} onClick={() => {
-            setCreating(true);
-            setEditingDetails({
-              id: '0',
-              floorId,
-              roomId: selectedRoomId ?? 0,
-              name: "",
-              description: "",
-              type: "light",
-              upc: "",
-              defaultValue: {on: false, brightness: 100} as DomoticaValue,
-              value: {on: false, brightness: 100} as DomoticaValue,
-              x: 0,
-              y: 0,
-            } as Domotica);
+            setOpenCreate(true);
           }}>Add domotica</Button>
         )}
       </Stack>
@@ -143,7 +110,6 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
                           <Tooltip title="Edit details">
                             <IconButton edge="end" onClick={(e) => {
                               e.stopPropagation();
-                              setCreating(false);
                               setEditingDetails(d);
                             }}>
                               <EditIcon/>
@@ -183,10 +149,9 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
         <Typography variant="body2" sx={{mt: 2}}>No domotica found</Typography>
       )}
 
-      {/* Value dialog (quick controls) */}
       <EditValueDialog
         open={!!editingValue}
-        domotica={editingValue}
+        domoticaTarget={editingValue}
         onClose={() => setEditingValue(null)}
         onSave={(value) => {
           if (!editingValue || !isAdmin) return;
@@ -194,31 +159,32 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
         }}
       />
 
-      {/* Details create/edit dialog */}
-      <DomoticaDetailsDialog
+      <AddDomoticaDialog
+        open={openCreate}
+        floorId={floorId}
+        initialRoomId={selectedRoomId ?? undefined}
+        onClose={() => setOpenCreate(false)}
+        onCreate={async (payload: Omit<Domotica, "id">) => {
+          if (!isAdmin) return;
+          await createMutation.mutateAsync(payload);
+          setOpenCreate(false);
+        }}
+      />
+
+      <EditDomoticaDialog
         open={!!editingDetails}
         domotica={editingDetails}
         floorId={floorId}
-        onClose={() => {
-          setEditingDetails(null);
-          setCreating(false);
-        }}
-        onSave={async (payload, isCreate) => {
-          if (!isAdmin) return;
-          if (isCreate) {
-            await createMutation.mutateAsync(payload as Omit<Domotica, "id">);
-          } else if (payload && editingDetails?.id) {
-            const update = {...payload} as Partial<Domotica>;
-            delete (update as any).id;
-            await updateDetailsMutation.mutateAsync(update as any);
-          }
-          setCreating(false);
+        onClose={() => setEditingDetails(null)}
+        onSave={async (payload) => {
+          if (!isAdmin || !editingDetails?.id) return;
+          const update = { ...payload } as Partial<Domotica>;
+          delete update.id;
+          await updateDetailsMutation.mutateAsync(update);
           setEditingDetails(null);
         }}
-        creating={creating}
       />
 
-      {/* Delete confirmation*/}
       <DeleteConfirmDialog
         open={!!deleting}
         onClose={() => {

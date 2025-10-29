@@ -1,4 +1,4 @@
-import FloorDialogBase, { type FloorFormValues } from './FloorDialogBase.tsx';
+import FloorDialogBase, {type FloorFormValues} from './FloorDialogBase.tsx';
 
 export interface AddItemFormValues {
   id: string;

@@ -1,29 +1,31 @@
-import {Box, Stack, Typography, IconButton, Tooltip, CircularProgress} from "@mui/material";
+import {Box, CircularProgress, IconButton, Stack, Tooltip, Typography} from "@mui/material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import {useNavigate, useParams} from "react-router-dom";
-import {useDeleteFloor, useFloorsList, useUpdateFloor} from "../../hooks/useFloor.ts";
+import {type NavigateFunction} from "react-router-dom";
+import {useCreateFloor, useDeleteFloor, useFloorsList, useUpdateFloor} from "../../hooks/useFloor.ts";
 import EditFloorDialog from "../dialogs/floor/EditFloorDialog.tsx";
 import DeleteConfirmDialog from "../dialogs/DeleteConfirmDialog.tsx";
 import {useContext, useState} from "react";
 import type {Floor} from "../../model/floor.ts";
 import {GeneralContext} from "../../context/GeneralContext.ts";
+import AddFloorDialog from "../dialogs/floor/AddFloorDialog.tsx";
 
 export interface BuildingFloorsListProps {
-  onAdd?: () => void;
+  floorNumber: string;
+  navigate: NavigateFunction
 }
 
-export default function FloorsList({onAdd}: Readonly<BuildingFloorsListProps>) {
-  const navigate = useNavigate();
-  const {id: currentId} = useParams();
+export default function FloorsList({floorNumber, navigate}: Readonly<BuildingFloorsListProps>) {
   const {floors, isLoading} = useFloorsList();
   const { isAdmin } = useContext(GeneralContext);
 
+  const [addFloorModalOpen, setAddFloorModalOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Floor | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Floor | null>(null);
 
-  const updateFloorMutation = useUpdateFloor(editTarget?.id || '');
+  const createFloorMutation = useCreateFloor();
+  const updateFloorMutatiom = useUpdateFloor(editTarget?.id || '');
   const deleteFloorMutation = useDeleteFloor(deleteTarget?.id || '');
 
   const sorted = (floors ?? []).slice().sort((a, b) => Number.parseInt(b.id) - Number.parseInt(a.id));
@@ -35,7 +37,7 @@ export default function FloorsList({onAdd}: Readonly<BuildingFloorsListProps>) {
         {isAdmin && (
           <Stack direction="row" spacing={0.5}>
             <Tooltip title="Add floor">
-              <IconButton color="primary" size="small" onClick={onAdd}>
+              <IconButton color="primary" size="small" onClick={() => setAddFloorModalOpen(true)}>
                 <AddBoxIcon/>
               </IconButton>
             </Tooltip>
@@ -55,10 +57,16 @@ export default function FloorsList({onAdd}: Readonly<BuildingFloorsListProps>) {
           <Stack alignItems="center" sx={{py: 3}}>
             <CircularProgress size={24}/>
           </Stack>
+        ) : sorted.length === 0 ? (
+          <Stack alignItems="center" sx={{py: 2}}>
+            <Typography variant="body2" color="text.secondary">
+              No floors available
+            </Typography>
+          </Stack>
         ) : (
           <Stack>
             {sorted.map((f) => {
-              const isActive = f.id === currentId;
+              const isActive = f.id === floorNumber;
               return (
                 <Box
                   key={f.id}
@@ -108,7 +116,19 @@ export default function FloorsList({onAdd}: Readonly<BuildingFloorsListProps>) {
         )}
       </Box>
 
-      {/* Edit Floor Dialog */}
+      <AddFloorDialog
+        open={addFloorModalOpen}
+        onClose={() => setAddFloorModalOpen(false)}
+        onSubmit={({ id, name, description, widthMm, heightMm }) => {
+          if (!isAdmin) { setAddFloorModalOpen(false); return; }
+          createFloorMutation.mutate({ id, name, description, widthMm, heightMm }, {
+            onSuccess: (newFloor) => {
+              navigate(`/floor/${newFloor.id}`);
+            }
+          });
+        }}
+      />
+
       <EditFloorDialog
         open={!!editTarget}
         onClose={() => setEditTarget(null)}
@@ -121,12 +141,11 @@ export default function FloorsList({onAdd}: Readonly<BuildingFloorsListProps>) {
         onSubmit={({name, description, widthMm, heightMm}) => {
           if (!editTarget) return;
           if (!isAdmin) { setEditTarget(null); return; }
-          updateFloorMutation.mutate({name, description: description || undefined, widthMm, heightMm});
+          updateFloorMutatiom.mutate({name, description: description || undefined, widthMm, heightMm});
           setEditTarget(null);
         }}
       />
 
-      {/* Delete Confirm Dialog */}
       <DeleteConfirmDialog
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}

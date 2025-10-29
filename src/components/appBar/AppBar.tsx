@@ -7,9 +7,13 @@ import {useContext} from "react";
 import {GeneralContext} from "../../context/GeneralContext.ts";
 import {FormControlLabel, Switch} from "@mui/material";
 
-export default function CustomAppBar() {
+export interface AppBarProps {
+  title: string;
+}
 
-  const {floorNumber, isAdmin, setIsAdmin} = useContext(GeneralContext)
+export default function CustomAppBar({title}: Readonly<AppBarProps>) {
+
+  const {isAdmin, setIsAdmin} = useContext(GeneralContext)
 
   return (
     <Box>
@@ -21,7 +25,7 @@ export default function CustomAppBar() {
             component="div"
             sx={{flexGrow: 1, textAlign: 'center'}}
           >
-            Verdieping {floorNumber}
+            {title}
           </Typography>
           <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
             <FormControlLabel

@@ -4,8 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useForm, type SubmitHandler } from 'react-hook-form';
-import * as React from 'react';
+import {type SubmitHandler, useForm} from 'react-hook-form';
 
 export type FloorFormValues = {
   id?: string; // only used in add mode
@@ -43,33 +42,20 @@ export default function FloorDialogBase({ open, onClose, mode, initialValues, on
   };
 
   const submit: SubmitHandler<FloorFormValues> = (data) => {
-    const widthMm = Number(data.widthMm);
-    const heightMm = Number(data.heightMm);
     const name = String(data.name).trim();
     const description = data.description?.trim();
 
-    const validDims = widthMm >= 100 && widthMm <= 100000 && heightMm >= 100 && heightMm <= 100000;
+    const validDims = data.widthMm >= 100 && data.widthMm <= 100000 && data.heightMm >= 100 && data.heightMm <= 100000;
     const validName = name.length > 0 && name.length <= 100;
     const validDesc = !description || description.length <= 500;
 
     const idOk = isAdd ? Boolean(data.id) : true;
 
     if (validDims && validName && validDesc && idOk) {
-      onSubmit({ id: isAdd ? data.id : undefined, name, description, widthMm, heightMm });
+      onSubmit({ id: isAdd ? data.id : undefined, name, description, widthMm: data.widthMm, heightMm: data.heightMm });
     }
     handleClose();
   };
-
-  // Keep form values in sync when dialog opens for a different floor (edit mode), or when reopening (add mode)
-  React.useEffect(() => {
-    if (open) {
-      if (isAdd) {
-        reset({ id: '', name: '', description: '', widthMm: 1000, heightMm: 1000 });
-      } else {
-        reset({ name: initialValues?.name ?? '', description: initialValues?.description ?? '', widthMm: initialValues?.widthMm ?? 0, heightMm: initialValues?.heightMm ?? 0 });
-      }
-    }
-  }, [open, isAdd, initialValues, reset]);
 
   const title = isAdd ? 'Add floor' : 'Edit floor';
   const submitLabel = isAdd ? 'Add' : 'Save';

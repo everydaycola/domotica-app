@@ -1,14 +1,21 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {createFloor, deleteFloor, getFloor, getAllFloors, updateFloor} from "../services/dataService";
 import type {Floor} from "../model/floor.ts";
+import {createFloor, deleteFloor, readAllFloors, readFloor, updateFloor} from "../services/floorService.ts";
 
 export function useFloor(id: string) {
   const {isLoading, isError, data: floor} = useQuery({
     queryKey: ['floor', id],
-    queryFn: () => getFloor(id)
+    queryFn: () => readFloor(id)
   });
-
   return {isLoading, isError, floor};
+}
+
+export function useFloorsList() {
+  const {isLoading, isError, data: floors} = useQuery({
+    queryKey: ['floors'],
+    queryFn: () => readAllFloors()
+  });
+  return {isLoading, isError, floors: floors ?? []};
 }
 
 export function useUpdateFloor(id: string) {
@@ -44,12 +51,4 @@ export function useDeleteFloor(id: string) {
       queryClient.invalidateQueries({queryKey: ['floors']});
     }
   });
-}
-
-export function useFloorsList() {
-  const {isLoading, isError, data: floors} = useQuery({
-    queryKey: ['floors'],
-    queryFn: () => getAllFloors()
-  });
-  return {isLoading, isError, floors: floors ?? []};
 }

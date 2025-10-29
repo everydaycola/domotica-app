@@ -1,12 +1,12 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {createDomotica, deleteDomotica, getDomoticaByFloor, updateDomotica} from "../services/dataService";
 import type {Domotica, DomoticaType} from "../model/domotica";
+import {createDomotica, deleteDomotica, readDomoticaByFloor, updateDomotica} from "../services/domoticaService.ts";
 
 // Fetch all domotica on a floor
 export function useDomoticaByFloor(floorId: string) {
   const {isLoading, isError, data} = useQuery({
     queryKey: ["domotica", "floor", floorId],
-    queryFn: () => getDomoticaByFloor(floorId),
+    queryFn: () => readDomoticaByFloor(floorId),
   });
   return {isLoading, isError, domotica: (data ?? [])};
 }
@@ -14,25 +14,20 @@ export function useDomoticaByFloor(floorId: string) {
 // client-side filtering by room, search and type
 export function useDomoticaFiltered(
   floorId: string,
-  options?: {
-    roomId?: number | null;
-    search?: string;
-    types?: DomoticaType[]
-  }
+  roomId: number | null,
+  search: string,
+  type: DomoticaType | null
 ) {
   const {isLoading, isError, domotica} = useDomoticaByFloor(floorId);
-  const {roomId, search, types} = options ?? {};
   const q = (search ?? "").trim().toLowerCase();
 
-  const filtered = (domotica ?? []).filter((d) => {
-    if (roomId != null && d.roomId !== roomId) return false;
-    if (types && types.length > 0 && !types.includes(d.type)) return false;
-    if (q) {
-      const hay = `${d.name} ${d.description ?? ""}`.toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
-    return true;
-  });
+  const filtered = (domotica ?? [])
+    .filter((d) => (
+      (roomId == null || d.roomId === roomId) &&
+      (!type || type.includes(d.type)) &&
+      `${d.name} ${d.description ?? ""}`.toLowerCase().includes(q)
+    )
+  );
 
   return {isLoading, isError, domotica: filtered};
 }

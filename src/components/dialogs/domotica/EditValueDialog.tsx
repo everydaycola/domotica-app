@@ -1,4 +1,11 @@
-import type {audioValue, Domotica, DomoticaValue, doorValue, heatingValue, lightValue} from "../../../model/domotica.ts";
+import type {
+  audioValue,
+  Domotica,
+  DomoticaValue,
+  doorValue,
+  heatingValue,
+  lightValue
+} from "../../../model/domotica.ts";
 import {useMemo, useState} from "react";
 import {
   Button,
@@ -16,23 +23,22 @@ import {
 
 interface EditValueDialogProps {
   open: boolean;
-  domotica: Domotica | null;
+  domoticaTarget: Domotica | null;
   onClose: () => void;
   onSave: (value: Domotica["value"]) => void;
 }
 
-export function EditValueDialog({open, domotica, onClose, onSave}: Readonly<EditValueDialogProps>) {
-  const [local, setLocal] = useState(domotica?.value ?? ({} as Domotica["value"]));
+export function EditValueDialog({open, domoticaTarget, onClose, onSave}: Readonly<EditValueDialogProps>) {
+  const [local, setLocal] = useState(domoticaTarget?.value ?? ({} as Domotica["value"]));
   // todo remove useMemo
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useMemo(() => setLocal(domotica?.value ?? ({} as Domotica["value"])), [domotica?.id]);
-  if (!domotica) return null;
+  useMemo(() => setLocal(domoticaTarget?.value ?? ({} as Domotica["value"])), [domoticaTarget?.id]);
+  if (!domoticaTarget) return null;
   const handleSave = () => onSave(local);
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>Quick controls — {domotica.name}</DialogTitle>
+      <DialogTitle>Quick controls — {domoticaTarget.name}</DialogTitle>
       <DialogContent>
-        {domotica.type === "light" && (
+        {domoticaTarget.type === "light" && (
           <Stack sx={{mt: 1}}>
             <FormControlLabel control={<Switch checked={(local as lightValue).on ?? false} onChange={(e) => setLocal({
               ...(local as DomoticaValue),
@@ -45,7 +51,7 @@ export function EditValueDialog({open, domotica, onClose, onSave}: Readonly<Edit
                     valueLabelDisplay="auto"/>
           </Stack>
         )}
-        {domotica.type === "heating" && (
+        {domoticaTarget.type === "heating" && (
           <Stack sx={{mt: 1}}>
             <Typography variant="caption">Temperature (°C)</Typography>
             <Slider value={(local as heatingValue).temperature ?? 16}
@@ -55,7 +61,7 @@ export function EditValueDialog({open, domotica, onClose, onSave}: Readonly<Edit
                     valueLabelFormat={(value) => value.toFixed(1)}/>
           </Stack>
         )}
-        {domotica.type === "door" && (
+        {domoticaTarget.type === "door" && (
           <Stack sx={{mt: 1}}>
             <FormControlLabel control={<Switch checked={(local as doorValue).open ?? false} onChange={(e) => setLocal({
               ...(local as doorValue),
@@ -63,7 +69,7 @@ export function EditValueDialog({open, domotica, onClose, onSave}: Readonly<Edit
             })}/>} label={(local as doorValue).open ? "on" : "off"}/>
           </Stack>
         )}
-        {domotica.type === "audio" && (
+        {domoticaTarget.type === "audio" && (
           <Stack sx={{mt: 1}}>
             <Typography variant="caption">Volume</Typography>
             <Slider value={(local as audioValue).volume ?? 0}
