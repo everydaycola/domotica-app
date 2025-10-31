@@ -1,5 +1,5 @@
-import SceneDialogBase from './SceneDialogBase';
-import type { Scene } from '../../../model/scene';
+import {SceneDialogBase} from './SceneDialogBase';
+import type { Scene } from '../../../model';
 
 export interface EditSceneDialogProps {
   open: boolean;
@@ -8,7 +8,7 @@ export interface EditSceneDialogProps {
   onSave?: (payload: Partial<Scene>) => void | Promise<void>;
 }
 
-export default function EditSceneDialog({ open, scene, onClose, onSave }: Readonly<EditSceneDialogProps>) {
+export function EditSceneDialog({ open, scene, onClose, onSave }: Readonly<EditSceneDialogProps>) {
   if (!scene) return null;
   return (
     <SceneDialogBase

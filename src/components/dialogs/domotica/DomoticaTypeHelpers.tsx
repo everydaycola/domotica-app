@@ -3,7 +3,7 @@ import ThermostatIcon from "@mui/icons-material/Thermostat";
 import DoorFrontIcon from "@mui/icons-material/DoorFront";
 import SpeakerIcon from "@mui/icons-material/Speaker";
 import {Avatar} from "@mui/material";
-import type {audioValue, Domotica, DomoticaType, doorValue, heatingValue, lightValue} from "../../../model/domotica.ts";
+import type {audioValue, Domotica, DomoticaType, doorValue, heatingValue, lightValue} from "../../../model";
 
 export function typeIcon(type: DomoticaType) {
   switch (type) {

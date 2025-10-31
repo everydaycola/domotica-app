@@ -1,11 +1,9 @@
 import {Avatar, Box} from "@mui/material";
 import {useState} from "react";
-import type {Room} from "../../model/room";
-import type {Domotica} from "../../model/domotica";
-import {useUpdateDomotica} from "../../hooks/useDomotica";
+import type {Domotica, Room} from "../../model";
+import {useUpdateDomotica} from "../../hooks";
 import "./BaseFloorPlan.scss";
-import {EditValueDialog} from "../dialogs/domotica/EditValueDialog.tsx";
-import {typeIcon, valueLabel} from "../dialogs/domotica/DomoticaTypeHelpers.tsx";
+import {EditValueDialog, typeIcon, valueLabel} from "../dialogs/domotica";
 
 export interface BaseFloorPlanProps {
   widthMm: number;

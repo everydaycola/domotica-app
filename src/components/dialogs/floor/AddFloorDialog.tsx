@@ -1,4 +1,4 @@
-import FloorDialogBase, {type FloorFormValues} from './FloorDialogBase.tsx';
+import {FloorDialogBase, type FloorFormValues} from './FloorDialogBase.tsx';
 
 export interface AddItemFormValues {
   id: string;
@@ -14,7 +14,7 @@ export interface AddItemDialogProps {
   onSubmit?: (values: AddItemFormValues) => void;
 }
 
-export default function AddFloorDialog({ open, onClose, onSubmit }: Readonly<AddItemDialogProps>) {
+export function AddFloorDialog({ open, onClose, onSubmit }: Readonly<AddItemDialogProps>) {
   const handleSubmit = (values: FloorFormValues) => {
     if (!onSubmit) return;
     // values.id is defined in add mode

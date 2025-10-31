@@ -1,5 +1,5 @@
 import axios from "axios";
-import type {Floor} from "../model/floor.ts";
+import type {Floor} from "../model";
 
 export async function readFloor(id: string) {
   const {data: floors} = await axios.get(`/floors/${id}`);

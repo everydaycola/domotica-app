@@ -1,4 +1,4 @@
-import FloorDialogBase, {type FloorFormValues} from './FloorDialogBase.tsx';
+import {FloorDialogBase, type FloorFormValues} from './FloorDialogBase.tsx';
 
 export interface EditFloorFormValues {
   name: string;
@@ -14,7 +14,7 @@ export interface EditFloorDialogProps {
   onSubmit: (values: EditFloorFormValues) => void;
 }
 
-export default function EditFloorDialog({ open, onClose, initialValues, onSubmit }: Readonly<EditFloorDialogProps>) {
+export function EditFloorDialog({ open, onClose, initialValues, onSubmit }: Readonly<EditFloorDialogProps>) {
   const handleSubmit = (values: FloorFormValues) => {
     onSubmit({ name: values.name, description: values.description, widthMm: values.widthMm, heightMm: values.heightMm });
   };

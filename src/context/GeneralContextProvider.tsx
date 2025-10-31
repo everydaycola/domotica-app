@@ -6,7 +6,7 @@ interface GeneralContextProviderProps {
     children: ReactNode
 }
 
-export default function GeneralContextProvider({children}: GeneralContextProviderProps) {
+export function GeneralContextProvider({children}: Readonly<GeneralContextProviderProps>) {
     const [isAdmin, setIsAdmin] = useState<boolean>(true)
 
     return (

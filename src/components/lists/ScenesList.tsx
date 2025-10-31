@@ -22,14 +22,13 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import type {Scene} from '../../model/scene';
+import type {Scene} from '../../model';
 import {GeneralContext} from '../../context/GeneralContext';
-import {useCreateScene, useDeleteScene, useScenes, useTriggerScene, useUpdateScene} from '../../hooks/useScenes';
-import AddSceneDialog from '../dialogs/scenes/AddSceneDialog';
-import EditSceneDialog from '../dialogs/scenes/EditSceneDialog';
-import DeleteConfirmDialog from '../dialogs/DeleteConfirmDialog';
+import {useCreateScene, useDeleteScene, useScenes, useTriggerScene, useUpdateScene} from '../../hooks';
+import {AddSceneDialog, EditSceneDialog} from '../dialogs/scenes';
+import {DeleteConfirmDialog} from '../dialogs/DeleteConfirmDialog';
 
-export default function ScenesList() {
+export function ScenesList() {
   const { isAdmin } = useContext(GeneralContext);
   const { scenes, isLoading } = useScenes();
 

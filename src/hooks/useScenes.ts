@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { Scene } from '../model/scene';
-import { createScene, deleteScene, readScenes, updateScene } from '../services/sceneService';
-import { updateDomotica } from '../services/domoticaService';
+import type { Scene } from '../model';
+import { createScene, deleteScene, readScenes, updateScene, updateDomotica } from '../services';
 
 export function useScenes() {
   const { isLoading, isError, data } = useQuery({

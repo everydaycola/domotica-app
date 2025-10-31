@@ -5,7 +5,7 @@ import type {
   doorValue,
   heatingValue,
   lightValue
-} from "../../../model/domotica.ts";
+} from "../../../model";
 import {useState} from "react";
 import {
   Button,

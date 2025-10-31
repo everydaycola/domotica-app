@@ -20,9 +20,8 @@ import {
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
-import {useAllDomotica} from '../../../hooks/useDomotica';
-import type {Domotica, DomoticaValue, lightValue, heatingValue, doorValue, audioValue} from '../../../model/domotica';
-import type {Scene, SceneControl} from '../../../model/scene';
+import {useAllDomotica} from '../../../hooks';
+import type {Domotica, DomoticaValue, lightValue, heatingValue, doorValue, audioValue, Scene, SceneControl} from '../../../model';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from "@mui/icons-material/Search";
@@ -101,15 +100,16 @@ function ValueEditor({type, value, onChange}: Readonly<{
   }
 }
 
-export default function SceneDialogBase({
-                                          open,
-                                          onClose,
-                                          mode,
-                                          initialValues,
-                                          onSubmit,
-                                          title,
-                                          submitLabel
-                                        }: Readonly<SceneDialogBaseProps>) {
+export function SceneDialogBase(
+  {
+    open,
+    onClose,
+    mode,
+    initialValues,
+    onSubmit,
+    title,
+    submitLabel
+  }: Readonly<SceneDialogBaseProps>) {
   const isAdd = mode === 'add';
   const {domotica} = useAllDomotica();
 

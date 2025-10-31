@@ -55,7 +55,7 @@ function makeSchema(floorWidthMm: number, floorHeightMm: number) {
   });
 }
 
-export default function RoomDialog({ open, onClose, title = 'Room', initialValues, onSubmit, floorWidthMm, floorHeightMm }: Readonly<RoomDialogProps>) {
+export function RoomDialog({ open, onClose, title = 'Room', initialValues, onSubmit, floorWidthMm, floorHeightMm }: Readonly<RoomDialogProps>) {
   const schema = makeSchema(floorWidthMm, floorHeightMm);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<RoomFormValues>({
     mode: 'onBlur',

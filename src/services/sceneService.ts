@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Scene } from '../model/scene.ts';
+import type { Scene } from '../model';
 
 export async function readScenes() {
   const { data } = await axios.get('/scenes');

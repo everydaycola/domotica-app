@@ -14,7 +14,7 @@ export interface DeleteConfirmDialogProps {
   confirmDisabled?: boolean;
 }
 
-export default function DeleteConfirmDialog(
+export function DeleteConfirmDialog(
   {
     open,
     onClose,

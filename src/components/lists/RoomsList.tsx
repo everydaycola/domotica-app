@@ -14,13 +14,12 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import type {Room} from "../../model/room.ts";
+import type {Room, Floor} from "../../model";
 import {GeneralContext} from "../../context/GeneralContext.ts";
 import {useContext, useState} from "react";
-import RoomDialog from "../dialogs/room/RoomDialog.tsx";
-import DeleteConfirmDialog from "../dialogs/DeleteConfirmDialog.tsx";
-import {useCreateRoom, useDeleteRoom, useUpdateRoom} from "../../hooks/useRooms.ts";
-import type {Floor} from "../../model/floor.ts";
+import {RoomDialog} from "../dialogs/room";
+import {DeleteConfirmDialog} from "../dialogs/DeleteConfirmDialog.tsx";
+import {useCreateRoom, useDeleteRoom, useUpdateRoom} from "../../hooks";
 
 export type RoomsListProps = {
   floor: Floor,
@@ -31,7 +30,7 @@ export type RoomsListProps = {
   selectedRoomName?: string | null;
 };
 
-export default function RoomsList({
+export function RoomsList({
   floor,
   rooms,
   selectedRoom,

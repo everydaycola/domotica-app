@@ -42,7 +42,7 @@ export type FloorDialogBaseProps = {
   onSubmit: (values: FloorFormValues) => void; // wrapper may ignore id in edit mode
 };
 
-export default function FloorDialogBase({ open, onClose, mode, initialValues, onSubmit }: Readonly<FloorDialogBaseProps>) {
+export function FloorDialogBase({ open, onClose, mode, initialValues, onSubmit }: Readonly<FloorDialogBaseProps>) {
   const isAdd = mode === 'add';
   const schema = isAdd ? addFloorSchema : editFloorSchema;
 

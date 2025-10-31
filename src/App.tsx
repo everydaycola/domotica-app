@@ -1,16 +1,16 @@
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import {CssBaseline, ThemeProvider} from "@mui/material";
 import {FloorPage} from "./pages/FloorPage.tsx";
-import GeneralContextProvider from "./context/GeneralContextProvider.tsx";
+import {GeneralContextProvider} from "./context/GeneralContextProvider.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import axios from "axios";
 import {theme} from "./components/theme/theme.ts";
-import CustomAppBar from "./components/appBar/AppBar.tsx";
+import {CustomAppBar} from "./components/appBar/AppBar.tsx";
 
 axios.defaults.baseURL = 'http://localhost:3000'
 const queryClient = new QueryClient()
 
-function App() {
+export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -29,5 +29,3 @@ function App() {
     </QueryClientProvider>
   )
 }
-
-export default App

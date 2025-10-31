@@ -1,5 +1,5 @@
-import SceneDialogBase from './SceneDialogBase';
-import type { Scene } from '../../../model/scene';
+import {SceneDialogBase} from './SceneDialogBase';
+import type { Scene } from '../../../model';
 
 export interface AddSceneDialogProps {
   open: boolean;
@@ -7,7 +7,7 @@ export interface AddSceneDialogProps {
   onCreate?: (payload: Omit<Scene, 'id'>) => void | Promise<void>;
 }
 
-export default function AddSceneDialog({ open, onClose, onCreate }: Readonly<AddSceneDialogProps>) {
+export function AddSceneDialog({ open, onClose, onCreate }: Readonly<AddSceneDialogProps>) {
   return (
     <SceneDialogBase
       open={open}

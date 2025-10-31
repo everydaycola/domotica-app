@@ -11,7 +11,7 @@ export interface AppBarProps {
   title: string;
 }
 
-export default function CustomAppBar({title}: Readonly<AppBarProps>) {
+export function CustomAppBar({title}: Readonly<AppBarProps>) {
 
   const {isAdmin, setIsAdmin} = useContext(GeneralContext)
 

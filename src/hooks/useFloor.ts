@@ -1,6 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import type {Floor} from "../model/floor.ts";
-import {createFloor, deleteFloor, readAllFloors, readFloor, updateFloor} from "../services/floorService.ts";
+import type {Floor} from "../model";
+import {createFloor, deleteFloor, readAllFloors, readFloor, updateFloor} from "../services";
 
 export function useFloor(id: string) {
   const {isLoading, isError, data: floor} = useQuery({

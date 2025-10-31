@@ -1,15 +1,10 @@
 import {useNavigate, useParams} from "react-router-dom";
-import FloorsList from "../components/lists/FloorsList.tsx";
 import {useState} from "react";
 import {BaseFloorPlan} from "../components/floorPlan/BaseFloorPlan.tsx";
 import {Box, Divider, Stack, Typography} from "@mui/material";
-import DomoticaList from "../components/lists/DomoticaList";
-import ScenesList from "../components/lists/ScenesList";
-import RoomsList from "../components/lists/RoomsList";
-import type {Room} from "../model/room";
-import {useRooms} from "../hooks/useRooms.ts";
-import {useDomoticaByFloor} from "../hooks/useDomotica.ts";
-import {useFloor} from "../hooks/useFloor.ts";
+import {DomoticaList, ScenesList, RoomsList, FloorsList} from "../components/lists";
+import type {Room} from "../model";
+import {useRooms, useDomoticaByFloor, useFloor} from "../hooks";
 
 
 export function FloorPage() {

@@ -12,8 +12,8 @@ import {
   TextField
 } from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
-import type {DomoticaType} from "../../../model/domotica.ts";
-import {useRooms} from "../../../hooks/useRooms.ts";
+import type {DomoticaType} from "../../../model";
+import {useRooms} from "../../../hooks";
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 
@@ -42,7 +42,7 @@ const schema = z.object({
 });
 export type DomoticaFormValues = z.input<typeof schema>;
 
-export default function DomoticaDialogBase(
+export function DomoticaDialogBase(
   {
     open,
     onClose,

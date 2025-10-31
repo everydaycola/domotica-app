@@ -1,6 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import type {Domotica, DomoticaType} from "../model/domotica";
-import {createDomotica, deleteDomotica, readAllDomotica, readDomoticaByFloor, updateDomotica} from "../services/domoticaService.ts";
+import type {Domotica, DomoticaType} from "../model";
+import {createDomotica, deleteDomotica, readAllDomotica, readDomoticaByFloor, updateDomotica} from "../services";
 
 // Fetch all domotica on a floor
 export function useDomoticaByFloor(floorId: string) {

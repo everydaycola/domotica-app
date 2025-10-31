@@ -1,6 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import type {Room} from "../model/room";
-import {createRoom, deleteRoom, readRoom, updateRoom} from "../services/roomService.ts";
+import type {Room} from "../model";
+import {createRoom, deleteRoom, readRoom, updateRoom} from "../services";
 
 export function useRooms(floorId: string) {
   const {isLoading, isError, data: rooms} = useQuery({

@@ -23,14 +23,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import type {Domotica, DomoticaType} from "../../model/domotica.ts";
-import {useCreateDomotica, useDeleteDomotica, useDomoticaFiltered, useUpdateDomotica} from "../../hooks/useDomotica.ts";
-import {EditValueDialog} from "../dialogs/domotica/EditValueDialog.tsx";
-import EditDomoticaDialog from "../dialogs/domotica/EditDomoticaDialog.tsx";
-import DeleteConfirmDialog from "../dialogs/DeleteConfirmDialog.tsx";
+import type {Domotica, DomoticaType} from "../../model";
+import {useCreateDomotica, useDeleteDomotica, useDomoticaFiltered, useUpdateDomotica} from "../../hooks";
+import {EditValueDialog, typeIcon, EditDomoticaDialog, AddDomoticaDialog} from "../dialogs/domotica";
+import {DeleteConfirmDialog} from "../dialogs/DeleteConfirmDialog.tsx";
 import {GeneralContext} from "../../context/GeneralContext.ts";
-import {typeIcon} from "../dialogs/domotica/DomoticaTypeHelpers.tsx";
-import AddDomoticaDialog from "../dialogs/domotica/AddDomoticaDialog.tsx";
 
 export type DomoticaListProps = {
   floorId: string;
@@ -38,7 +35,7 @@ export type DomoticaListProps = {
   clearRoomSelection: () => void;
 };
 
-export default function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Readonly<DomoticaListProps>) {
+export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Readonly<DomoticaListProps>) {
   const { isAdmin } = useContext(GeneralContext);
   // filtering
   const [search, setSearch] = useState("");

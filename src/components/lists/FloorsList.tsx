@@ -3,20 +3,19 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {type NavigateFunction} from "react-router-dom";
-import {useCreateFloor, useDeleteFloor, useFloorsList, useUpdateFloor} from "../../hooks/useFloor.ts";
-import EditFloorDialog from "../dialogs/floor/EditFloorDialog.tsx";
-import DeleteConfirmDialog from "../dialogs/DeleteConfirmDialog.tsx";
+import {useCreateFloor, useDeleteFloor, useFloorsList, useUpdateFloor} from "../../hooks";
+import {EditFloorDialog, AddFloorDialog} from "../dialogs/floor";
+import {DeleteConfirmDialog} from "../dialogs/DeleteConfirmDialog.tsx";
 import {useContext, useState} from "react";
-import type {Floor} from "../../model/floor.ts";
+import type {Floor} from "../../model";
 import {GeneralContext} from "../../context/GeneralContext.ts";
-import AddFloorDialog from "../dialogs/floor/AddFloorDialog.tsx";
 
 export interface BuildingFloorsListProps {
   floorNumber: string;
   navigate: NavigateFunction
 }
 
-export default function FloorsList({floorNumber, navigate}: Readonly<BuildingFloorsListProps>) {
+export function FloorsList({floorNumber, navigate}: Readonly<BuildingFloorsListProps>) {
   const {floors, isLoading} = useFloorsList();
   const { isAdmin } = useContext(GeneralContext);
 

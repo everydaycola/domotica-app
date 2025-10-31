@@ -1,5 +1,5 @@
-import DomoticaDialogBase, {type DomoticaFormValues } from './DomoticaDialogBase.tsx';
-import type { Domotica } from '../../../model/domotica.ts';
+import {DomoticaDialogBase, type DomoticaFormValues } from './DomoticaDialogBase.tsx';
+import type { Domotica } from '../../../model';
 
 export interface EditDomoticaDialogProps {
   open: boolean;
@@ -9,7 +9,7 @@ export interface EditDomoticaDialogProps {
   onSave?: (payload: Partial<Domotica>) => void | Promise<void>;
 }
 
-export default function EditDomoticaDialog({ open, domotica, floorId, onClose, onSave }: Readonly<EditDomoticaDialogProps>) {
+export function EditDomoticaDialog({ open, domotica, floorId, onClose, onSave }: Readonly<EditDomoticaDialogProps>) {
   if (!domotica) return null;
 
   const handleSubmit = async (values: DomoticaFormValues) => {

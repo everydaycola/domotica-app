@@ -1,4 +1,4 @@
-import type {Domotica} from "../model/domotica.ts";
+import type {Domotica} from "../model";
 import axios from "axios";
 
 export async function readDomoticaByFloor(floorId: string) {
