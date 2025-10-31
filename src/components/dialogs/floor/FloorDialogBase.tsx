@@ -28,8 +28,8 @@ function makeSchema(isAdd: boolean) {
 const addFloorSchema = makeSchema(true);
 const editFloorSchema = makeSchema(false);
 
-export type TAddFloorSchema = z.infer<typeof addFloorSchema>;
-export type TEditFloorSchema = z.infer<typeof editFloorSchema>;
+export type TAddFloorSchema = z.input<typeof addFloorSchema>;
+export type TEditFloorSchema = z.input<typeof editFloorSchema>;
 
 // Public type used by wrappers; union covers both modes
 export type FloorFormValues = TAddFloorSchema | TEditFloorSchema;

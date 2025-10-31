@@ -4,7 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import {useForm} from 'react-hook-form';
+import {type SubmitHandler, useForm} from 'react-hook-form';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 
@@ -29,23 +29,25 @@ const baseRoomSchema = z.object({
   description: z.string().trim().max(500, 'Max 500 characters').optional().or(z.literal('')),
   xMm: coerceInt(0),
   yMm: coerceInt(0),
-  widthMm: coerceInt(0),
-  heightMm: coerceInt(0),
+  widthMm: coerceInt(1),
+  heightMm: coerceInt(1),
 });
-export type RoomFormValues = z.infer<typeof baseRoomSchema>;
+export type RoomFormValues = z.input<typeof baseRoomSchema>;
+
+// export interface SignUpFormValues extends z.infer<typeof baseRoomSchema> {}
 
 function makeSchema(floorWidthMm: number, floorHeightMm: number) {
   return baseRoomSchema.superRefine((data, ctx) => {
     if (data.xMm + data.widthMm > floorWidthMm) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: `X + width must be ≤ ${floorWidthMm}`,
         path: ['widthMm']
       });
     }
     if (data.yMm + data.heightMm > floorHeightMm) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: `Y + height must be ≤ ${floorHeightMm}`,
         path: ['heightMm']
       });
@@ -66,8 +68,7 @@ export default function RoomDialog({ open, onClose, title = 'Room', initialValue
     reset(initialValues);
   };
 
-  const submit = (data: RoomFormValues) => {
-    // data already validated by Zod
+  const submit: SubmitHandler<RoomFormValues> = (data) => {
     onSubmit({
       ...data,
       description: data.description?.trim() || undefined,
@@ -79,9 +80,8 @@ export default function RoomDialog({ open, onClose, title = 'Room', initialValue
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <form id="room-form" onSubmit={handleSubmit(submit)}>
+        <form id="room-form" onSubmit={handleSubmit(submit)} noValidate>
           <TextField
-            autoFocus
             required
             margin="dense"
             label="Name"
