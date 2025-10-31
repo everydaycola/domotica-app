@@ -144,7 +144,7 @@
         "volume": 30
       },
       "value": {
-        "volume": 45
+        "volume": 35
       }
     },
     {
@@ -218,6 +218,62 @@
       "value": {
         "open": true
       }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "2001",
+      "name": "Movie Night",
+      "description": "Dim lights, lower volume, and lock the door",
+      "image": "https://i.pinimg.com/736x/fa/b4/64/fab464d6a8dcdd68ece87956660ff78f.jpg",
+      "controls": [
+        {
+          "domoticaId": "1004",
+          "value": {
+            "volume": 20
+          }
+        },
+        {
+          "domoticaId": "1006",
+          "value": {
+            "on": false,
+            "brightness": 10
+          }
+        },
+        {
+          "domoticaId": "1005",
+          "value": {
+            "open": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "2002",
+      "name": "Welcome Home",
+      "description": "Turn on kitchen lights, set audio to a comfy level, and unlock the door",
+      "image": "https://img.freepik.com/premium-vector/welcome-home_708915-2963.jpg",
+      "controls": [
+        {
+          "domoticaId": "1006",
+          "value": {
+            "on": true,
+            "brightness": 100
+          }
+        },
+        {
+          "domoticaId": "1004",
+          "value": {
+            "volume": 35
+          }
+        },
+        {
+          "domoticaId": "1005",
+          "value": {
+            "open": true
+          }
+        }
+      ]
     }
   ]
 }

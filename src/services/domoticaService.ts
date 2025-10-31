@@ -6,6 +6,11 @@ export async function readDomoticaByFloor(floorId: string) {
   return data as Domotica[];
 }
 
+export async function readAllDomotica() {
+  const {data} = await axios.get('/domotica');
+  return data as Domotica[];
+}
+
 export async function createDomotica(domotica: Omit<Domotica, 'id'>) {
   const {data} = await axios.post('/domotica', domotica);
   return data as Domotica;

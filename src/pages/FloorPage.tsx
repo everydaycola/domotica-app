@@ -4,6 +4,7 @@ import {useState} from "react";
 import {BaseFloorPlan} from "../components/floorPlan/BaseFloorPlan.tsx";
 import {Box, Divider, Stack, Typography} from "@mui/material";
 import DomoticaList from "../components/lists/DomoticaList";
+import ScenesList from "../components/lists/ScenesList";
 import RoomsList from "../components/lists/RoomsList";
 import type {Room} from "../model/room";
 import {useRooms} from "../hooks/useRooms.ts";
@@ -75,6 +76,11 @@ export function FloorPage() {
             <Typography variant="h6" sx={{ mb: 1 }}>Domotica</Typography>
             <Divider />
             <DomoticaList floorId={floorNumber} selectedRoomId={selectedRoom?.id ?? null} clearRoomSelection={() => setSelectedRoom(null)} />
+          </Box>
+          <Box sx={{ flex: 2, minWidth: 320 }}>
+            <Typography variant="h6" sx={{ mb: 1 }}>Scenes</Typography>
+            <Divider />
+            <ScenesList/>
           </Box>
         </Stack>
       </Box>

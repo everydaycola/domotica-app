@@ -1,6 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import type {Domotica, DomoticaType} from "../model/domotica";
-import {createDomotica, deleteDomotica, readDomoticaByFloor, updateDomotica} from "../services/domoticaService.ts";
+import {createDomotica, deleteDomotica, readAllDomotica, readDomoticaByFloor, updateDomotica} from "../services/domoticaService.ts";
 
 // Fetch all domotica on a floor
 export function useDomoticaByFloor(floorId: string) {
@@ -9,6 +9,15 @@ export function useDomoticaByFloor(floorId: string) {
     queryFn: () => readDomoticaByFloor(floorId),
   });
   return {isLoading, isError, domotica: (data ?? [])};
+}
+
+// Fetch all domotica across all floors (for global selections like scenes)
+export function useAllDomotica() {
+  const { isLoading, isError, data } = useQuery({
+    queryKey: ["domotica", "all"],
+    queryFn: () => readAllDomotica(),
+  });
+  return { isLoading, isError, domotica: (data ?? []) };
 }
 
 // client-side filtering by room, search and type
