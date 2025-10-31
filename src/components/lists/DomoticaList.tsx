@@ -75,7 +75,7 @@ export default function DomoticaList({floorId, selectedRoomId, clearRoomSelectio
           placeholder="Search name or description"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          InputProps={{startAdornment: (<InputAdornment position="start"><SearchIcon/></InputAdornment>)}}
+          slotProps={{input: {startAdornment: (<InputAdornment position="start"><SearchIcon/></InputAdornment>),},}}
           sx={{flex: 1}}
         />
 

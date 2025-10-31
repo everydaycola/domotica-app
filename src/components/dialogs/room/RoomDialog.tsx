@@ -4,17 +4,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import {type SubmitHandler, useForm} from 'react-hook-form';
-import * as React from 'react';
-
-export interface RoomFormValues {
-  name: string;
-  description?: string;
-  xMm: number;
-  yMm: number;
-  widthMm: number;
-  heightMm: number;
-}
+import {useForm} from 'react-hook-form';
+import {z} from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
 
 export interface RoomDialogProps {
   open: boolean;
@@ -26,9 +18,47 @@ export interface RoomDialogProps {
   floorHeightMm: number;
 }
 
+const coerceInt = (min?: number) =>
+  z.coerce.number()
+    .int('Must be an integer')
+    .refine(v => (min === undefined ? true : v >= min), { message: `Must be ≥ ${min}` });
+
+// Base schema for type inference (no dependency on runtime values)
+const baseRoomSchema = z.object({
+  name: z.string().trim().min(1, 'Name is required').max(100, 'Max 100 characters'),
+  description: z.string().trim().max(500, 'Max 500 characters').optional().or(z.literal('')),
+  xMm: coerceInt(0),
+  yMm: coerceInt(0),
+  widthMm: coerceInt(0),
+  heightMm: coerceInt(0),
+});
+export type RoomFormValues = z.infer<typeof baseRoomSchema>;
+
+function makeSchema(floorWidthMm: number, floorHeightMm: number) {
+  return baseRoomSchema.superRefine((data, ctx) => {
+    if (data.xMm + data.widthMm > floorWidthMm) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `X + width must be ≤ ${floorWidthMm}`,
+        path: ['widthMm']
+      });
+    }
+    if (data.yMm + data.heightMm > floorHeightMm) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Y + height must be ≤ ${floorHeightMm}`,
+        path: ['heightMm']
+      });
+    }
+  });
+}
+
 export default function RoomDialog({ open, onClose, title = 'Room', initialValues, onSubmit, floorWidthMm, floorHeightMm }: Readonly<RoomDialogProps>) {
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<RoomFormValues>({
+  const schema = makeSchema(floorWidthMm, floorHeightMm);
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<RoomFormValues>({
+    mode: 'onBlur',
     defaultValues: initialValues,
+    resolver: zodResolver(schema),
   });
 
   const handleClose = () => {
@@ -36,35 +66,14 @@ export default function RoomDialog({ open, onClose, title = 'Room', initialValue
     reset(initialValues);
   };
 
-  const submit: SubmitHandler<RoomFormValues> = (data) => {
-    const name = String(data.name).trim();
-    const description = data.description?.trim();
-    const xMm = Number(data.xMm);
-    const yMm = Number(data.yMm);
-    const widthMm = Number(data.widthMm);
-    const heightMm = Number(data.heightMm);
-
-    const nonNegative = xMm >= 0 && yMm >= 0 && widthMm >= 0 && heightMm >= 0;
-    const withinBounds = xMm + widthMm <= floorWidthMm && yMm + heightMm <= floorHeightMm;
-    const validName = name.length > 0 && name.length <= 100;
-    const validDesc = !description || description.length <= 500;
-
-    if (nonNegative && withinBounds && validName && validDesc) {
-      onSubmit({ name, description, xMm, yMm, widthMm, heightMm });
-    }
+  const submit = (data: RoomFormValues) => {
+    // data already validated by Zod
+    onSubmit({
+      ...data,
+      description: data.description?.trim() || undefined,
+    });
     handleClose();
   };
-
-  React.useEffect(() => {
-    if (open) {
-      setValue('name', initialValues.name);
-      setValue('description', initialValues.description || '');
-      setValue('xMm', initialValues.xMm);
-      setValue('yMm', initialValues.yMm);
-      setValue('widthMm', initialValues.widthMm);
-      setValue('heightMm', initialValues.heightMm);
-    }
-  }, [open, initialValues, setValue]);
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
@@ -79,10 +88,9 @@ export default function RoomDialog({ open, onClose, title = 'Room', initialValue
             type="text"
             fullWidth
             variant="standard"
-            inputProps={{ maxLength: 100 }}
             error={!!errors.name}
-            helperText={errors.name ? 'Name is required (max 100 chars)' : ''}
-            {...register('name', { required: true, minLength: 1, maxLength: 100 })}
+            helperText={errors.name?.message}
+            {...register('name')}
           />
           <TextField
             margin="dense"
@@ -90,8 +98,9 @@ export default function RoomDialog({ open, onClose, title = 'Room', initialValue
             type="text"
             fullWidth
             variant="standard"
-            inputProps={{ maxLength: 500 }}
-            {...register('description', { maxLength: 500 })}
+            error={!!errors.description}
+            helperText={errors.description?.message}
+            {...register('description')}
           />
           <TextField
             required
@@ -100,10 +109,9 @@ export default function RoomDialog({ open, onClose, title = 'Room', initialValue
             type="number"
             fullWidth
             variant="standard"
-            inputProps={{ step: '1', min: 0 }}
             error={!!errors.xMm}
-            helperText={errors.xMm ? `X must be >= 0 and X + width <= ${floorWidthMm}` : ''}
-            {...register('xMm', { required: true, valueAsNumber: true, min: 0 })}
+            helperText={errors.xMm?.message}
+            {...register('xMm')}
           />
           <TextField
             required
@@ -112,10 +120,9 @@ export default function RoomDialog({ open, onClose, title = 'Room', initialValue
             type="number"
             fullWidth
             variant="standard"
-            inputProps={{ step: '1', min: 0 }}
             error={!!errors.yMm}
-            helperText={errors.yMm ? `Y must be >= 0 and Y + height <= ${floorHeightMm}` : ''}
-            {...register('yMm', { required: true, valueAsNumber: true, min: 0 })}
+            helperText={errors.yMm?.message}
+            {...register('yMm')}
           />
           <TextField
             required
@@ -124,10 +131,9 @@ export default function RoomDialog({ open, onClose, title = 'Room', initialValue
             type="number"
             fullWidth
             variant="standard"
-            inputProps={{ step: '1', min: 0 }}
             error={!!errors.widthMm}
-            helperText={errors.widthMm ? `Width must be >= 0 and X + width <= ${floorWidthMm}` : ''}
-            {...register('widthMm', { required: true, valueAsNumber: true, min: 0 })}
+            helperText={errors.widthMm?.message}
+            {...register('widthMm')}
           />
           <TextField
             required
@@ -136,10 +142,9 @@ export default function RoomDialog({ open, onClose, title = 'Room', initialValue
             type="number"
             fullWidth
             variant="standard"
-            inputProps={{ step: '1', min: 0 }}
             error={!!errors.heightMm}
-            helperText={errors.heightMm ? `Height must be >= 0 and Y + height <= ${floorHeightMm}` : ''}
-            {...register('heightMm', { required: true, valueAsNumber: true, min: 0 })}
+            helperText={errors.heightMm?.message}
+            {...register('heightMm')}
           />
         </form>
       </DialogContent>

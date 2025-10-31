@@ -4,56 +4,74 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import {type SubmitHandler, useForm} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
+import {z} from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
 
-export type FloorFormValues = {
-  id?: string; // only used in add mode
-  name: string;
-  description?: string;
-  widthMm: number;
-  heightMm: number;
-};
+// Build schemas first, then infer types from them
+const dim = z.coerce.number()
+  .int('Must be an integer')
+  .min(100, 'Min 100 mm')
+  .max(100000, 'Max 100000 mm');
+
+function makeSchema(isAdd: boolean) {
+  return z.object({
+    id: isAdd ? z.string().trim().min(1, 'Floor number is required') : z.string().optional(),
+    name: z.string().trim().min(1, 'Name is required').max(100, 'Max 100 characters'),
+    description: z.string().trim().max(500, 'Max 500 characters').optional().or(z.literal('')),
+    widthMm: dim,
+    heightMm: dim,
+  });
+}
+
+// Concrete schemas for type inference
+const addFloorSchema = makeSchema(true);
+const editFloorSchema = makeSchema(false);
+
+export type TAddFloorSchema = z.infer<typeof addFloorSchema>;
+export type TEditFloorSchema = z.infer<typeof editFloorSchema>;
+
+// Public type used by wrappers; union covers both modes
+export type FloorFormValues = TAddFloorSchema | TEditFloorSchema;
 
 export type FloorDialogBaseProps = {
   open: boolean;
   onClose: () => void;
   mode: 'add' | 'edit';
-  initialValues?: Omit<FloorFormValues, 'id'>; // used in edit mode
+  initialValues?: Omit<TEditFloorSchema, 'id'>; // used in edit mode
   onSubmit: (values: FloorFormValues) => void; // wrapper may ignore id in edit mode
 };
 
 export default function FloorDialogBase({ open, onClose, mode, initialValues, onSubmit }: Readonly<FloorDialogBaseProps>) {
   const isAdd = mode === 'add';
+  const schema = isAdd ? addFloorSchema : editFloorSchema;
 
-  const { register, handleSubmit, reset } = useForm<FloorFormValues>({
-    defaultValues: isAdd
+  const { register, handleSubmit, reset, formState: {errors} } = useForm<FloorFormValues>({
+    mode: 'onBlur',
+    defaultValues: (isAdd
       ? { id: '', name: '', description: '', widthMm: 1000, heightMm: 1000 }
-      : { name: initialValues?.name ?? '', description: initialValues?.description ?? '', widthMm: initialValues?.widthMm ?? 0, heightMm: initialValues?.heightMm ?? 0 },
+      : { name: initialValues?.name ?? '', description: initialValues?.description ?? '', widthMm: initialValues?.widthMm ?? 0, heightMm: initialValues?.heightMm ?? 0 }) as any,
+    resolver: zodResolver(schema),
   });
 
   const handleClose = () => {
     onClose();
     // reset to mode-specific defaults to avoid stale values when reopening
     if (isAdd) {
-      reset({ id: '', name: '', description: '', widthMm: 1000, heightMm: 1000 });
+      reset({ id: '', name: '', description: '', widthMm: 1000, heightMm: 1000 } as any);
     } else {
-      reset({ name: initialValues?.name ?? '', description: initialValues?.description ?? '', widthMm: initialValues?.widthMm ?? 0, heightMm: initialValues?.heightMm ?? 0 });
+      reset({ name: initialValues?.name ?? '', description: initialValues?.description ?? '', widthMm: initialValues?.widthMm ?? 0, heightMm: initialValues?.heightMm ?? 0 } as any);
     }
   };
 
-  const submit: SubmitHandler<FloorFormValues> = (data) => {
-    const name = String(data.name).trim();
-    const description = data.description?.trim();
-
-    const validDims = data.widthMm >= 100 && data.widthMm <= 100000 && data.heightMm >= 100 && data.heightMm <= 100000;
-    const validName = name.length > 0 && name.length <= 100;
-    const validDesc = !description || description.length <= 500;
-
-    const idOk = isAdd ? Boolean(data.id) : true;
-
-    if (validDims && validName && validDesc && idOk) {
-      onSubmit({ id: isAdd ? data.id : undefined, name, description, widthMm: data.widthMm, heightMm: data.heightMm });
-    }
+  const submit = (data: FloorFormValues) => {
+    onSubmit({
+      id: isAdd ? (data as TAddFloorSchema).id : undefined,
+      name: data.name.trim(),
+      description: data.description?.trim() || undefined,
+      widthMm: data.widthMm,
+      heightMm: data.heightMm,
+    });
     handleClose();
   };
 
@@ -75,7 +93,9 @@ export default function FloorDialogBase({ open, onClose, mode, initialValues, on
               type="text"
               fullWidth
               variant="standard"
-              {...register('id', { required: isAdd })}
+              error={!!errors.id}
+              helperText={errors.id?.message}
+              {...register('id')}
             />
           )}
           <TextField
@@ -86,8 +106,9 @@ export default function FloorDialogBase({ open, onClose, mode, initialValues, on
             type="text"
             fullWidth
             variant="standard"
-            inputProps={{ maxLength: 100 }}
-            {...register('name', { required: true, minLength: 1, maxLength: 100 })}
+            error={!!errors.name}
+            helperText={errors.name?.message}
+            {...register('name')}
           />
           <TextField
             margin="dense"
@@ -95,8 +116,9 @@ export default function FloorDialogBase({ open, onClose, mode, initialValues, on
             type="text"
             fullWidth
             variant="standard"
-            inputProps={{ maxLength: 500 }}
-            {...register('description', { maxLength: 500 })}
+            error={!!errors.description}
+            helperText={errors.description?.message}
+            {...register('description')}
           />
           <TextField
             required
@@ -105,8 +127,9 @@ export default function FloorDialogBase({ open, onClose, mode, initialValues, on
             type="number"
             fullWidth
             variant="standard"
-            inputProps={{ step: '1', min: 100, max: 100000 }}
-            {...register('widthMm', { required: true, valueAsNumber: true, min: 100, max: 100000 })}
+            error={!!errors.widthMm}
+            helperText={errors.widthMm?.message}
+            {...register('widthMm')}
           />
           <TextField
             required
@@ -115,8 +138,9 @@ export default function FloorDialogBase({ open, onClose, mode, initialValues, on
             type="number"
             fullWidth
             variant="standard"
-            inputProps={{ step: '1', min: 100, max: 100000 }}
-            {...register('heightMm', { required: true, valueAsNumber: true, min: 100, max: 100000 })}
+            error={!!errors.heightMm}
+            helperText={errors.heightMm?.message}
+            {...register('heightMm')}
           />
         </form>
       </DialogContent>

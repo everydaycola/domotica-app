@@ -38,8 +38,11 @@ There are several dialogs defined for forms for various crud actions
 - adding a floor: AddFloorDialog.tsx
 - editing a floor: EditFloorDialog.tsx
 - adding or deleting a floor (other two dialogs refer to this one): FloorDialogBase.tsx
-- deleting something: DeleteConfirmDialog.tsx
+- deleting something (general usage): DeleteConfirmDialog.tsx
 - adding or editing a room: RoomDialog.tsx
+- adding domotica: AddDomoticaDialog.tsx
+- editing domotica: EditDomoticaDialog.tsx
+- adding or deleting domotica (other two dialogs refer to this one): DomoticaDialogBase.tsx
 - adding or editing domotica: DomoticaDetailsDialog.tsx
 - changing the value of domotica: EditValueDialog.tsx
 
@@ -52,6 +55,7 @@ There are several dialogs defined for forms for various crud actions
   - floor: floor.ts
   - room: room.ts
   - domotica like lights, heating, doors, or audio: domotica.ts
+    - contains domoticaValues type for value and defaultValue (useful for casting)
 - custom hooks
   - crud for floor: useFloor.ts
   - crud for room: useRoom.ts

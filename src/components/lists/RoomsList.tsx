@@ -106,7 +106,7 @@ export default function RoomsList({
               >
                 <ListItemText
                   primary={room.name}
-                  secondary={`(${room.xMm}, ${room.yMm}) | ${room.widthMm / 1000}x${room.heightMm / 1000}m${room.description ? ' | ' + room.description : ''}`}
+                  secondary={`(${room.xMm}, ${room.yMm}) | ${room.widthMm}x${room.heightMm} mm${room.description ? ' | ' + room.description : ''}`}
                 />
               </ListItemButton>
             </ListItem>

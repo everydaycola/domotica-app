@@ -4,6 +4,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  FormHelperText,
   MenuItem,
   Select,
   Stack,
@@ -12,17 +14,8 @@ import {
 import {Controller, useForm} from "react-hook-form";
 import type {DomoticaType} from "../../../model/domotica.ts";
 import {useRooms} from "../../../hooks/useRooms.ts";
-
-export interface DomoticaFormValues {
-  floorId: string
-  roomId: number
-  name: string
-  description?: string
-  type: DomoticaType
-  upc: string
-  x: number
-  y: number
-}
+import {z} from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
 
 export interface DomoticaDialogBaseProps {
   open: boolean
@@ -34,6 +27,20 @@ export interface DomoticaDialogBaseProps {
   title?: string // allow override when desired
   submitLabel?: string // allow override when desired
 }
+
+const schema = z.object({
+  floorId: z.string().min(1),
+  roomId: z.coerce.number()
+    .int('Room is required')
+    .min(1, 'Room is required'),
+  name: z.string().trim().min(1, 'Name is required').max(100, 'Max 100 characters'),
+  description: z.string().trim().max(500, 'Max 500 characters').optional().or(z.literal('')),
+  type: z.enum(['light','heating','door','audio']),
+  upc: z.string().trim().min(1, 'UPC is required'),
+  x: z.coerce.number().int('Must be an integer').min(0, 'Must be ≥ 0'),
+  y: z.coerce.number().int('Must be an integer').min(0, 'Must be ≥ 0'),
+});
+export type DomoticaFormValues = z.infer<typeof schema>;
 
 export default function DomoticaDialogBase(
   {
@@ -49,17 +56,21 @@ export default function DomoticaDialogBase(
   const isAdd = mode === 'add';
   const {rooms} = useRooms(floorId);
 
-  const {control, handleSubmit, reset} = useForm<DomoticaFormValues>({
+  const {control, handleSubmit, reset, register, formState: {errors}} = useForm<DomoticaFormValues>({
+    mode: "onBlur",
     defaultValues: {
       floorId: initialValues?.floorId ?? floorId,
       roomId: initialValues?.roomId ?? (rooms?.[0]?.id ?? 0),
       name: initialValues?.name ?? "",
       description: initialValues?.description ?? "",
-      type: initialValues?.type ?? "light",
+      type: (initialValues?.type ?? "light") as DomoticaType,
       upc: initialValues?.upc ?? "",
       x: initialValues?.x ?? 0,
       y: initialValues?.y ?? 0,
     },
+    resolver: zodResolver(schema, undefined, { mode: 'sync' }),
+    shouldFocusError: true,
+    reValidateMode: 'onBlur',
   });
 
   const resolvedTitle = title ?? (isAdd ? 'Add domotica' : 'Edit domotica');
@@ -75,90 +86,98 @@ export default function DomoticaDialogBase(
       roomId: rooms?.[0]?.id ?? 0,
       name: '',
       description: '',
-      type: 'light',
+      type: 'light' as DomoticaType,
       upc: '',
       x: 0,
       y: 0,
     });
   };
 
+  const submit = (data: DomoticaFormValues) => {
+    onSubmit({
+      ...data,
+      description: data.description?.trim() || undefined,
+    });
+    handleClose();
+  };
+
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>{resolvedTitle}</DialogTitle>
       <DialogContent>
-        <Stack spacing={2} sx={{mt: 1}} component="form" id={formId} onSubmit={handleSubmit(onSubmit)}>
-          <Controller
-            name="name"
-            control={control}
-            render={({field}) => (
-              <TextField label="Name" fullWidth {...field} />
-            )}
+        <Stack spacing={2} sx={{mt: 1}} component="form" id={formId} onSubmit={handleSubmit(submit)}>
+          <TextField
+            label="Name"
+            fullWidth
+            required
+            error={!!errors.name}
+            helperText={errors.name?.message}
+            {...register('name')}
           />
-          <Controller
-            name="description"
-            control={control}
-            render={({field}) => (
-              <TextField label="Description" fullWidth {...field} />
-            )}
+          <TextField
+            label="Description"
+            fullWidth
+            error={!!errors.description}
+            helperText={errors.description?.message}
+            {...register('description')}
           />
           <Stack direction={{xs: "column", sm: "row"}} spacing={2}>
             <Controller
               name="type"
               control={control}
               render={({field}) => (
-                <Select fullWidth size="small" {...field}>
-                  <MenuItem value="light">Light</MenuItem>
-                  <MenuItem value="heating">Heating</MenuItem>
-                  <MenuItem value="door">Door</MenuItem>
-                  <MenuItem value="audio">Audio</MenuItem>
-                </Select>
+                <FormControl fullWidth size="small" error={!!errors.type}>
+                  <Select {...field} displayEmpty>
+                    <MenuItem value="light">Light</MenuItem>
+                    <MenuItem value="heating">Heating</MenuItem>
+                    <MenuItem value="door">Door</MenuItem>
+                    <MenuItem value="audio">Audio</MenuItem>
+                  </Select>
+                  <FormHelperText>{errors.type?.message}</FormHelperText>
+                </FormControl>
               )}
             />
             <Controller
               name="roomId"
               control={control}
               render={({field}) => (
-                <Select fullWidth size="small" {...field}>
-                  {rooms?.map((r) => (
-                    <MenuItem key={r.id} value={r.id}>
-                      {r.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <FormControl fullWidth size="small" error={!!errors.roomId}>
+                  <Select {...field} displayEmpty onChange={(e) => field.onChange(Number(e.target.value))}>
+                    {rooms?.map((r) => (
+                      <MenuItem key={r.id} value={r.id}>
+                        {r.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>{errors.roomId?.message}</FormHelperText>
+                </FormControl>
               )}
             />
           </Stack>
-          <Controller
-            name="upc"
-            control={control}
-            render={({field}) => <TextField label="UPC" fullWidth {...field} />}
+          <TextField
+            label="UPC"
+            fullWidth
+            required
+            error={!!errors.upc}
+            helperText={errors.upc?.message}
+            {...register('upc')}
           />
           <Stack direction={{xs: "column", sm: "row"}} spacing={2}>
-            <Controller
-              name="x"
-              control={control}
-              render={({field}) => (
-                <TextField
-                  label="X (mm)"
-                  type="number"
-                  fullWidth
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
-              )}
+            <TextField
+              label="X (mm)"
+              type="number"
+              fullWidth
+              error={!!errors.x}
+              helperText={errors.x?.message}
+              {...register('x')}
             />
-            <Controller
-              name="y"
-              control={control}
-              render={({field}) => (
-                <TextField
-                  label="Y (mm)"
-                  type="number"
-                  fullWidth
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
-              )}
+            <TextField
+              label="Y (mm)"
+              type="number"
+              fullWidth
+              error={!!errors.y}
+              helperText={errors.y?.message}
+              {...register('y')}
             />
           </Stack>
         </Stack>
