@@ -21,10 +21,20 @@ import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
 import {useAllDomotica} from '../../../hooks';
-import type {Domotica, DomoticaValue, lightValue, heatingValue, doorValue, audioValue, Scene, SceneControl} from '../../../model';
+import type {
+  Domotica,
+  DomoticaValue,
+  lightValue,
+  heatingValue,
+  doorValue,
+  audioValue,
+  Scene,
+  SceneControl
+} from '../../../model';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from "@mui/icons-material/Search";
+import {getDefaultValueForType} from "../domotica";
 
 export interface SceneDialogBaseProps {
   open: boolean;
@@ -43,62 +53,6 @@ const schema = z.object({
 });
 
 export type SceneFormValues = z.input<typeof schema>;
-
-function ValueEditor({type, value, onChange}: Readonly<{
-  type: Domotica['type'];
-  value: DomoticaValue;
-  onChange: (v: DomoticaValue) => void
-}>) {
-  switch (type) {
-    case 'light': {
-      const v = value as lightValue;
-      return (
-        <Stack direction={{xs: 'column', sm: 'row'}} spacing={2} alignItems="center" sx={{flex: 1}}>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="caption">On</Typography>
-            <Switch checked={v.on ?? false} onChange={(e) => onChange({...v, on: e.target.checked})}/>
-          </Stack>
-          <Stack sx={{flex: 1}}>
-            <Typography variant="caption">Brightness</Typography>
-            <Slider min={0} max={100} step={1} value={v.brightness ?? 100}
-                    onChange={(_, val) => onChange({...v, brightness: val})} valueLabelDisplay="auto"/>
-          </Stack>
-        </Stack>
-      );
-    }
-    case 'heating': {
-      const v = value as heatingValue;
-      return (
-        <Stack sx={{flex: 1}}>
-          <Typography variant="caption">Temperature (°C)</Typography>
-          <Slider min={5} max={30} step={0.5} value={v.temperature ?? 16}
-                  onChange={(_, val) => onChange({...v, temperature: val})} valueLabelDisplay="auto"
-                  valueLabelFormat={(value) => (value).toFixed(1)}/>
-        </Stack>
-      );
-    }
-    case 'door': {
-      const v = value as doorValue;
-      return (
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Typography variant="caption">Open</Typography>
-          <Switch checked={v.open ?? false} onChange={(e) => onChange({...v, open: e.target.checked})}/>
-        </Stack>
-      );
-    }
-    case 'audio':
-    default: {
-      const v = value as audioValue;
-      return (
-        <Stack sx={{flex: 1}}>
-          <Typography variant="caption">Volume</Typography>
-          <Slider min={0} max={100} step={1} value={v.volume ?? 0}
-                  onChange={(_, val) => onChange({...v, volume: val})} valueLabelDisplay="auto"/>
-        </Stack>
-      );
-    }
-  }
-}
 
 export function SceneDialogBase(
   {
@@ -123,35 +77,13 @@ export function SceneDialogBase(
     mode: 'onBlur',
   });
 
-  const defaultControlValue = (d: Domotica): DomoticaValue => {
-    switch (d.type) {
-      case 'light':
-        return {on: false, brightness: 100} as lightValue;
-      case 'heating':
-        return {temperature: 16} as heatingValue;
-      case 'door':
-        return {open: false} as doorValue;
-      case 'audio':
-      default:
-        return {volume: 0} as audioValue;
-    }
-  }
-
   const [controls, setControls] = useState<SceneControl[]>(initialValues?.controls ?? []);
 
-  if (open) {
-    reset({
-      name: initialValues?.name ?? '',
-      description: initialValues?.description ?? '',
-      image: initialValues?.image ?? '',
-    });
-    setControls(initialValues?.controls ?? []);
-  }
 
   const addControl = () => {
     const first = domotica?.[0];
     if (!first) return;
-    setControls((prev) => [...prev, {domoticaId: first.id, value: defaultControlValue(first)}]);
+    setControls((prev) => [...prev, {domoticaId: first.id, value: getDefaultValueForType(first.type)}]);
   };
 
   const updateControl = (idx: number, patch: Partial<SceneControl>) => {
@@ -223,7 +155,7 @@ export function SceneDialogBase(
                       value={String(c.domoticaId)}
                       onChange={(e) => {
                         const next = domotica?.find(d => String(d.id) === String(e.target.value));
-                        if (next) updateControl(idx, {domoticaId: String(next.id), value: defaultControlValue(next)});
+                        if (next) updateControl(idx, {domoticaId: String(next.id), value: getDefaultValueForType(next.type)});
                       }}
                       displayEmpty
                     >
@@ -256,4 +188,59 @@ export function SceneDialogBase(
       </DialogActions>
     </Dialog>
   );
+}
+
+function ValueEditor({type, value, onChange}: Readonly<{
+  type: Domotica['type'];
+  value: DomoticaValue;
+  onChange: (v: DomoticaValue) => void
+}>) {
+  switch (type) {
+    case 'light': {
+      const v = value as lightValue;
+      return (
+        <Stack direction={{xs: 'column', sm: 'row'}} spacing={2} alignItems="center" sx={{flex: 1}}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography variant="caption">On</Typography>
+            <Switch checked={v.on ?? false} onChange={(e) => onChange({...v, on: e.target.checked})}/>
+          </Stack>
+          <Stack sx={{flex: 1}}>
+            <Typography variant="caption">Brightness</Typography>
+            <Slider min={0} max={100} step={1} value={v.brightness ?? 100}
+                    onChange={(_, val) => onChange({...v, brightness: val})} valueLabelDisplay="auto"/>
+          </Stack>
+        </Stack>
+      );
+    }
+    case 'heating': {
+      const v = value as heatingValue;
+      return (
+        <Stack sx={{flex: 1}}>
+          <Typography variant="caption">Temperature (°C)</Typography>
+          <Slider min={5} max={30} step={0.5} value={v.temperature ?? 16}
+                  onChange={(_, val) => onChange({...v, temperature: val})} valueLabelDisplay="auto"
+                  valueLabelFormat={(value) => (value).toFixed(1)}/>
+        </Stack>
+      );
+    }
+    case 'door': {
+      const v = value as doorValue;
+      return (
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography variant="caption">Open</Typography>
+          <Switch checked={v.open ?? false} onChange={(e) => onChange({...v, open: e.target.checked})}/>
+        </Stack>
+      );
+    }
+    case 'audio': {
+      const v = value as audioValue;
+      return (
+        <Stack sx={{flex: 1}}>
+          <Typography variant="caption">Volume</Typography>
+          <Slider min={0} max={100} step={1} value={v.volume ?? 0}
+                  onChange={(_, val) => onChange({...v, volume: val})} valueLabelDisplay="auto"/>
+        </Stack>
+      );
+    }
+  }
 }
