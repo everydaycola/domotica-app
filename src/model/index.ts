@@ -2,3 +2,4 @@ export type {Domotica, DomoticaValue, doorValue, lightValue, heatingValue, audio
 export type {Room} from "./room.ts"
 export type {Floor} from "./floor.ts"
 export type {Scene, SceneControl} from "./scene.ts"
+export type {Playlist} from "./playlist.ts"

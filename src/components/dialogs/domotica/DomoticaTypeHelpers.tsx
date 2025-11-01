@@ -30,7 +30,7 @@ export function getDefaultValueForType(type: DomoticaType) {
       return { open: false } as doorValue;
     case "audio":
     default:
-      return { volume: 0 } as audioValue;
+      return { volume: 0, playlistId: null } as audioValue;
   }
 };
 

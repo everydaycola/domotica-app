@@ -2,12 +2,12 @@ import type {Domotica} from "../model";
 import axios from "axios";
 
 export async function readDomoticaByFloor(floorId: string) {
-  const {data} = await axios.get('/domotica', {params: {floorId}});
+  const {data} = await axios.get('/domotica', {params: {floorId, _embed: 'playlists'}});
   return data as Domotica[];
 }
 
 export async function readAllDomotica() {
-  const {data} = await axios.get('/domotica');
+  const {data} = await axios.get('/domotica', {params: {_embed: 'playlists'}});
   return data as Domotica[];
 }
 

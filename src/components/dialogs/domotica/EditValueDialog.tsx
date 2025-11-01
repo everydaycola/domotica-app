@@ -17,7 +17,11 @@ import {
   Slider,
   Stack,
   Switch,
-  Typography
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from "@mui/material";
 
 
@@ -68,12 +72,28 @@ export function EditValueDialog({open, domoticaTarget, onClose, onSave}: Readonl
           </Stack>
         )}
         {domoticaTarget.type === "audio" && (
-          <Stack sx={{mt: 1}}>
-            <Typography variant="caption">Volume</Typography>
-            <Slider value={(local as audioValue).volume ?? 0}
-                    onChange={(_, val) => setLocal({...(local as audioValue), volume: val})}
-                    step={1} min={0} max={100}
-                    valueLabelDisplay="auto"/>
+          <Stack sx={{mt: 1}} gap={2}>
+            <div>
+              <Typography variant="caption">Volume</Typography>
+              <Slider value={(local as audioValue).volume ?? 0}
+                      onChange={(_, val) => setLocal({ ...(local as audioValue), volume: val as number })}
+                      step={1} min={0} max={100}
+                      valueLabelDisplay="auto"/>
+            </div>
+            <FormControl fullWidth>
+              <InputLabel id="playlist-select-label">Playlist</InputLabel>
+              <Select
+                labelId="playlist-select-label"
+                label="Playlist"
+                value={(local as audioValue).playlistId ?? ""}
+                onChange={(e) => setLocal({ ...(local as audioValue), playlistId: (e.target.value || null) as string | null })}
+              >
+                <MenuItem value=""><em>None</em></MenuItem>
+                {(domoticaTarget.playlists ?? []).map((p) => (
+                  <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Stack>
         )}
       </DialogContent>
