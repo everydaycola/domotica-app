@@ -14,6 +14,9 @@ export type Domotica = {
     y: number;
     // Optional embedded playlists when fetched with _embed=playlists
     playlists?: Playlist[];
+    // New optional fields for sorting and UX
+    favorite?: boolean;
+    lastChange?: string | null; // ISO datetime of last value change
 }
 
 export type DomoticaType = 'light' | 'heating' | 'door' | 'audio'

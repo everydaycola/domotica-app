@@ -49,11 +49,15 @@ export function useTriggerScene() {
       for (const control of scene.controls) {
         await updateDomotica(String(control.domoticaId), { value: control.value });
       }
-      return scene;
+      // Update scene last trigger timestamp
+      const nowIso = new Date().toISOString();
+      await updateScene(String(scene.id), { lastTrigger: nowIso });
+      return { ...scene, lastTrigger: nowIso } as Scene;
     },
     onSuccess: () => {
-      // refresh domotica state globally for all floors
+      // refresh domotica state globally for all floors and scenes list
       queryClient.invalidateQueries({ queryKey: ['domotica'] });
+      queryClient.invalidateQueries({ queryKey: ['scenes'] });
     },
   });
 }

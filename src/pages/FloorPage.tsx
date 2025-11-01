@@ -32,8 +32,11 @@ export function FloorPage() {
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, alignItems: 'flex-start', m: 3, gap: 3, width: '100%' }}>
         <Box sx={{ width: { xs: '100%', lg: 360 } }}>
           <FloorsList
-            floorNumber={floorNumber}
-            navigate={navigate}
+            activeFloor={floorNumber}
+            onFloorChange={(floorNumber: string) => {
+              setSelectedRoom(null)
+              navigate(`/floor/${floorNumber}`)
+            }}
           />
         </Box>
 

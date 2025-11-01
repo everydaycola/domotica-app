@@ -2,7 +2,6 @@ import {Box, CircularProgress, IconButton, Stack, Tooltip, Typography} from "@mu
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import {type NavigateFunction} from "react-router-dom";
 import {useCreateFloor, useDeleteFloor, useFloorsList, useUpdateFloor} from "../../hooks";
 import {EditFloorDialog, AddFloorDialog} from "../dialogs/floor";
 import {DeleteConfirmDialog} from "../dialogs/DeleteConfirmDialog.tsx";
@@ -11,11 +10,11 @@ import type {Floor} from "../../model";
 import {GeneralContext} from "../../context/GeneralContext.ts";
 
 export interface BuildingFloorsListProps {
-  floorNumber: string;
-  navigate: NavigateFunction
+  activeFloor: string;
+  onFloorChange: (floorNumber: string) => void;
 }
 
-export function FloorsList({floorNumber, navigate}: Readonly<BuildingFloorsListProps>) {
+export function FloorsList({activeFloor, onFloorChange}: Readonly<BuildingFloorsListProps>) {
   const {floors, isLoading} = useFloorsList();
   const { isAdmin } = useContext(GeneralContext);
 
@@ -24,7 +23,7 @@ export function FloorsList({floorNumber, navigate}: Readonly<BuildingFloorsListP
   const [deleteTarget, setDeleteTarget] = useState<Floor | null>(null);
 
   const createFloorMutation = useCreateFloor();
-  const updateFloorMutatiom = useUpdateFloor(editTarget?.id || '');
+  const updateFloorMutation = useUpdateFloor(editTarget?.id || '');
   const deleteFloorMutation = useDeleteFloor(deleteTarget?.id || '');
 
   const sorted = (floors ?? []).slice().sort((a, b) => Number.parseInt(b.id) - Number.parseInt(a.id));
@@ -65,7 +64,7 @@ export function FloorsList({floorNumber, navigate}: Readonly<BuildingFloorsListP
         ) : (
           <Stack>
             {sorted.map((f) => {
-              const isActive = f.id === floorNumber;
+              const isActive = f.id === activeFloor;
               return (
                 <Box
                   key={f.id}
@@ -82,7 +81,9 @@ export function FloorsList({floorNumber, navigate}: Readonly<BuildingFloorsListP
                     py: 0.75,
                     mb: 0.5,
                   }}
-                  onClick={() => navigate(`/floor/${f.id}`)}
+                  onClick={() => {
+                    onFloorChange(f.id)
+                  }}
                 >
                   <Typography
                     variant="body2"
@@ -121,9 +122,7 @@ export function FloorsList({floorNumber, navigate}: Readonly<BuildingFloorsListP
         onSubmit={({ id, name, description, widthMm, heightMm }) => {
           if (!isAdmin) { setAddFloorModalOpen(false); return; }
           createFloorMutation.mutate({ id, name, description, widthMm, heightMm }, {
-            onSuccess: (newFloor) => {
-              navigate(`/floor/${newFloor.id}`);
-            }
+            onSuccess: (newFloor) => {onFloorChange(newFloor.id);}
           });
         }}
       />
@@ -140,7 +139,7 @@ export function FloorsList({floorNumber, navigate}: Readonly<BuildingFloorsListP
         onSubmit={({name, description, widthMm, heightMm}) => {
           if (!editTarget) return;
           if (!isAdmin) { setEditTarget(null); return; }
-          updateFloorMutatiom.mutate({name, description: description || undefined, widthMm, heightMm});
+          updateFloorMutation.mutate({name, description: description || undefined, widthMm, heightMm});
           setEditTarget(null);
         }}
       />
@@ -154,7 +153,7 @@ export function FloorsList({floorNumber, navigate}: Readonly<BuildingFloorsListP
           deleteFloorMutation.mutate(undefined, {
               onSuccess: () => {
                 setDeleteTarget(null);
-                navigate('/floor/0');
+                onFloorChange('0');
               }
             }
           )

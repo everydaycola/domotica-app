@@ -92,7 +92,9 @@
       "value": {
         "on": true,
         "brightness": 60
-      }
+      },
+      "favorite": true,
+      "lastChange": "2025-11-01T21:30:00Z"
     },
     {
       "id": "1002",
@@ -109,7 +111,9 @@
       },
       "value": {
         "temperature": 22
-      }
+      },
+      "favorite": false,
+      "lastChange": "2025-10-30T09:00:00Z"
     },
     {
       "id": "1003",
@@ -128,7 +132,9 @@
       "value": {
         "on": false,
         "brightness": 80
-      }
+      },
+      "favorite": true,
+      "lastChange": "2025-11-01T20:15:00Z"
     },
     {
       "id": "1004",
@@ -145,8 +151,10 @@
         "playlistId": "1"
       },
       "value": {
-        "playlistId": "3"
-      }
+        "volume": 35
+      },
+      "favorite": false,
+      "lastChange": "2025-10-29T18:45:00Z"
     },
     {
       "id": "1005",
@@ -162,8 +170,10 @@
         "open": false
       },
       "value": {
-        "open": false
-      }
+        "open": true
+      },
+      "favorite": false,
+      "lastChange": "2025-11-01T23:35:23.033Z"
     },
     {
       "id": "1006",
@@ -181,8 +191,10 @@
       },
       "value": {
         "on": true,
-        "brightness": 90
-      }
+        "brightness": 100
+      },
+      "favorite": true,
+      "lastChange": "2025-11-01T23:55:00Z"
     },
     {
       "id": "1007",
@@ -201,7 +213,9 @@
       "value": {
         "on": false,
         "brightness": 100
-      }
+      },
+      "favorite": false,
+      "lastChange": null
     },
     {
       "id": "1008",
@@ -218,6 +232,27 @@
       },
       "value": {
         "open": true
+      },
+      "favorite": true,
+      "lastChange": "2025-11-01T05:00:00Z"
+    },
+    {
+      "id": "8e74",
+      "floorId": "1",
+      "roomId": 2,
+      "name": "testing",
+      "description": "what",
+      "type": "light",
+      "upc": "1234567890123",
+      "x": 1000,
+      "y": 1000,
+      "defaultValue": {
+        "on": false,
+        "brightness": 100
+      },
+      "value": {
+        "on": false,
+        "brightness": 100
       }
     }
   ],
@@ -264,7 +299,9 @@
             "open": false
           }
         }
-      ]
+      ],
+      "favorite": true,
+      "lastTrigger": "2025-11-01T23:35:35.451Z"
     },
     {
       "id": "2002",
@@ -291,7 +328,9 @@
             "open": true
           }
         }
-      ]
+      ],
+      "favorite": false,
+      "lastTrigger": "2025-11-01T23:35:36.279Z"
     }
   ]
 }

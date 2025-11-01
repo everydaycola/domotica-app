@@ -22,6 +22,8 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 import type {Scene} from '../../model';
 import {GeneralContext} from '../../context/GeneralContext';
 import {useCreateScene, useDeleteScene, useScenes, useTriggerScene, useUpdateScene} from '../../hooks';
@@ -42,7 +44,17 @@ export function ScenesList() {
             .trim()
             .toLowerCase()
         )
-    );
+    )
+    .slice()
+    .sort((a, b) => {
+      // favorites first
+      const favDiff = Number(!!b.favorite) - Number(!!a.favorite);
+      if (favDiff !== 0) return favDiff;
+      const ta = a.lastTrigger ? Date.parse(a.lastTrigger) : 0;
+      const tb = b.lastTrigger ? Date.parse(b.lastTrigger) : 0;
+      if (tb !== ta) return tb - ta; // newest first
+      return a.name.localeCompare(b.name);
+    });
 
   // add
   const [openAdd, setOpenAdd] = useState(false);
@@ -89,18 +101,23 @@ export function ScenesList() {
                 <CardHeader
                   title={s.name}
                   subheader={s.description}
-                  action={isAdmin && (
+                  action={(
                     <Stack direction="row" spacing={1} alignItems="center" sx={{ mr: 1 }}>
-                      <Tooltip title="Edit">
-                        <IconButton size="small" onClick={() => setEditing(s)}>
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete">
-                        <IconButton size="small" color="error" onClick={() => setDeleting(s)}>
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                      <FavoriteSceneButton sceneId={s.id} favorite={!!s.favorite} disabled={!isAdmin} />
+                      {isAdmin && (
+                        <>
+                          <Tooltip title="Edit">
+                            <IconButton size="small" onClick={() => setEditing(s)}>
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete">
+                            <IconButton size="small" color="error" onClick={() => setDeleting(s)}>
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </>
+                      )}
                     </Stack>
                   )}
                 />
@@ -140,7 +157,8 @@ export function ScenesList() {
         onClose={() => setOpenAdd(false)}
         onCreate={async (payload) => {
           if (!isAdmin) return;
-          await createMutation.mutateAsync(payload);
+          const nowIso = new Date().toISOString();
+          await createMutation.mutateAsync({ ...payload, favorite: false, lastTrigger: nowIso });
           setOpenAdd(false);
         }}
       />
@@ -154,7 +172,8 @@ export function ScenesList() {
           if (!isAdmin || !editing?.id) return;
           const update = { ...payload } as Partial<Scene>;
           delete (update).id;
-          await updateMutation.mutateAsync(update);
+          const nowIso = new Date().toISOString();
+          await updateMutation.mutateAsync({ ...update, lastTrigger: nowIso });
           setEditing(null);
         }}
       />
@@ -171,5 +190,31 @@ export function ScenesList() {
         message={deleting ? `Are you sure you want to delete scene "${deleting.name}"?` : ''}
       />
     </Box>
+  );
+}
+
+function FavoriteSceneButton({ sceneId, favorite, disabled }: Readonly<{
+  sceneId: string;
+  favorite: boolean | undefined;
+  disabled: boolean
+}>) {
+  const update = useUpdateScene(sceneId);
+  return (
+    <Tooltip title={favorite ? 'Unfavorite' : 'Mark favorite'}>
+      <span>
+        <IconButton
+          size="small"
+          color={favorite ? 'warning' : 'default'}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (disabled) return;
+            update.mutate({ favorite: !favorite });
+          }}
+          disabled={disabled || update.isPending}
+        >
+          {favorite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+        </IconButton>
+      </span>
+    </Tooltip>
   );
 }

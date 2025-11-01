@@ -23,6 +23,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import type {Domotica, DomoticaType} from "../../model";
 import {useCreateDomotica, useDeleteDomotica, useDomoticaFiltered, useUpdateDomotica} from "../../hooks";
 import {EditValueDialog, typeIcon, EditDomoticaDialog, AddDomoticaDialog} from "../dialogs/domotica";
@@ -34,6 +36,29 @@ export type DomoticaListProps = {
   selectedRoomId: number | null;
   clearRoomSelection: () => void;
 };
+
+function FavoriteDomoticaButton({ id, floorId, favorite, disabled }: { id: string; floorId: string; favorite: boolean | undefined; disabled: boolean }) {
+  const update = useUpdateDomotica(id, floorId);
+  return (
+    <Tooltip title={favorite ? 'Unfavorite' : 'Mark favorite'}>
+      <span>
+        <IconButton
+          edge="end"
+          size="small"
+          color={favorite ? 'warning' : 'default'}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (disabled) return;
+            update.mutate({ favorite: !favorite });
+          }}
+          disabled={disabled || update.isPending}
+        >
+          {favorite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+        </IconButton>
+      </span>
+    </Tooltip>
+  );
+}
 
 export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Readonly<DomoticaListProps>) {
   const { isAdmin } = useContext(GeneralContext);
@@ -102,24 +127,28 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
                       component="div"
                       disableGutters
                       secondaryAction={
-                        isAdmin &&
                         <Stack direction="row" spacing={1}>
-                          <Tooltip title="Edit details">
-                            <IconButton edge="end" onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingDetails(d);
-                            }}>
-                              <EditIcon/>
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Delete">
-                            <IconButton edge="end" color="error" onClick={(e) => {
-                              e.stopPropagation();
-                              setDeleting(d);
-                            }}>
-                              <DeleteIcon/>
-                            </IconButton>
-                          </Tooltip>
+                          <FavoriteDomoticaButton id={d.id} floorId={floorId} favorite={!!d.favorite} disabled={!isAdmin} />
+                          {isAdmin && (
+                            <>
+                              <Tooltip title="Edit details">
+                                <IconButton edge="end" onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingDetails(d);
+                                }}>
+                                  <EditIcon/>
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Delete">
+                                <IconButton edge="end" color="error" onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeleting(d);
+                                }}>
+                                  <DeleteIcon/>
+                                </IconButton>
+                              </Tooltip>
+                            </>
+                          )}
                         </Stack>
                       }
             >
@@ -152,7 +181,7 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
         onClose={() => setEditingValue(null)}
         onSave={(value) => {
           if (!editingValue || !isAdmin) return;
-          updateValueMutation.mutate({value}, {onSuccess: () => setEditingValue(null)});
+          updateValueMutation.mutate({ value, lastChange: new Date().toISOString() }, { onSuccess: () => setEditingValue(null) });
         }}
       />
 
@@ -163,7 +192,8 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
         onClose={() => setOpenCreate(false)}
         onCreate={async (payload: Omit<Domotica, "id">) => {
           if (!isAdmin) return;
-          await createMutation.mutateAsync(payload);
+          const nowIso = new Date().toISOString();
+          await createMutation.mutateAsync({ ...payload, favorite: false, lastChange: nowIso });
           setOpenCreate(false);
         }}
       />
@@ -177,7 +207,8 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
           if (!isAdmin || !editingDetails?.id) return;
           const update = { ...payload } as Partial<Domotica>;
           delete update.id;
-          await updateDetailsMutation.mutateAsync(update);
+          const nowIso = new Date().toISOString();
+          await updateDetailsMutation.mutateAsync({ ...update, lastChange: nowIso });
           setEditingDetails(null);
         }}
       />
