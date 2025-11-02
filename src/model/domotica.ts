@@ -12,11 +12,9 @@ export type Domotica = {
     value: DomoticaValue;
     x: number;
     y: number;
-    // Optional embedded playlists when fetched with _embed=playlists
     playlists?: Playlist[];
-    // New optional fields for sorting and UX
     favorite?: boolean;
-    lastChange?: string | null; // ISO datetime of last value change
+    lastChange?: string | null;
 }
 
 export type DomoticaType = 'light' | 'heating' | 'door' | 'audio'
@@ -25,11 +23,11 @@ export type DomoticaValue = lightValue | heatingValue | doorValue | audioValue
 
 export type lightValue = {
     on: boolean;
-    brightness: number; // 0-100
+    brightness: number;
 }
 
 export type heatingValue = {
-    temperature: number; // in °C
+    temperature: number;
 }
 
 export type doorValue = {
@@ -37,6 +35,6 @@ export type doorValue = {
 }
 
 export type audioValue = {
-    volume: number; // 0-100
-    playlistId: string | null; // FK to playlists.id
+    volume: number;
+    playlistId: string | null;
 }

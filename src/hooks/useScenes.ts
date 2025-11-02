@@ -36,11 +36,9 @@ export function useUpdateScene(sceneId: string) {
         if (!isAdmin && !existing.isCustom) {
           throw new Error('Default scenes can only be modified by admins.');
         }
-        // Preserve the isCustom flag regardless of who edits
         const patch: Partial<Scene> = { ...updates, isCustom: existing.isCustom };
         return updateScene(String(sceneId), patch);
       }
-      // Fallback: if we don't know, still prevent non-admins from possibly editing a default
       if (!isAdmin) {
         throw new Error('Insufficient permissions to modify this scene.');
       }
@@ -72,22 +70,18 @@ export function useDeleteScene(sceneId: string) {
   });
 }
 
-// Triggering a scene: apply all controls by updating domotica values
 export function useTriggerScene() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (scene: Scene) => {
-      // sequential updates to keep it simple and json-server friendly
       for (const control of scene.controls) {
         await updateDomotica(String(control.domoticaId), { value: control.value });
       }
-      // Update scene last trigger timestamp
       const nowIso = new Date().toISOString();
       await updateScene(String(scene.id), { lastTrigger: nowIso });
       return { ...scene, lastTrigger: nowIso } as Scene;
     },
     onSuccess: () => {
-      // refresh domotica state globally for all floors and scenes list
       queryClient.invalidateQueries({ queryKey: ['domotica'] });
       queryClient.invalidateQueries({ queryKey: ['scenes'] });
     },

@@ -2,7 +2,6 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import type {Domotica, DomoticaType} from "../model";
 import {createDomotica, deleteDomotica, readAllDomotica, readDomoticaByFloor, updateDomotica} from "../services";
 
-// Fetch all domotica on a floor
 export function useDomoticaByFloor(floorId: string) {
   const {isLoading, isError, data} = useQuery({
     queryKey: ["domotica", "floor", floorId],
@@ -11,7 +10,6 @@ export function useDomoticaByFloor(floorId: string) {
   return {isLoading, isError, domotica: (data ?? [])};
 }
 
-// Fetch all domotica across all floors (for global selections like scenes)
 export function useAllDomotica() {
   const { isLoading, isError, data } = useQuery({
     queryKey: ["domotica", "all"],
@@ -20,7 +18,6 @@ export function useAllDomotica() {
   return { isLoading, isError, domotica: (data ?? []) };
 }
 
-// client-side filtering by room, search and type
 export function useDomoticaFiltered(
   floorId: string,
   roomId: number | null,
@@ -67,7 +64,6 @@ export function useCreateDomotica() {
   return useMutation({
     mutationFn: (domotica: Omit<Domotica, "id">) => createDomotica(domotica),
     onSuccess: (created) => {
-      // best effort: invalidate floor scope
       queryClient.invalidateQueries({queryKey: ["domotica", "floor", String(created.floorId)]});
     },
   });

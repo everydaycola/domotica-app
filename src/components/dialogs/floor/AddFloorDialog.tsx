@@ -17,7 +17,6 @@ export interface AddItemDialogProps {
 export function AddFloorDialog({ open, onClose, onSubmit }: Readonly<AddItemDialogProps>) {
   const handleSubmit = (values: FloorFormValues) => {
     if (!onSubmit) return;
-    // values.id is defined in add mode
     onSubmit({ id: values.id || '', name: values.name, description: values.description, widthMm: values.widthMm, heightMm: values.heightMm });
   };
 

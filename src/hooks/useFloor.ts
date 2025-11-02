@@ -46,7 +46,6 @@ export function useDeleteFloor(id: string) {
   return useMutation({
     mutationFn: () => deleteFloor(id),
     onSuccess: () => {
-      // Invalidate the cache for the deleted floor
       queryClient.removeQueries({queryKey: ['floor', String(id)]});
       queryClient.invalidateQueries({queryKey: ['floors']});
     }

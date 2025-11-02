@@ -49,28 +49,23 @@ export function ScenesList() {
     )
     .slice()
     .sort((a, b) => {
-      // favorites first
       const favDiff = Number(!!b.favorite) - Number(!!a.favorite);
       if (favDiff !== 0) return favDiff;
       const ta = a.lastTrigger ? Date.parse(a.lastTrigger) : 0;
       const tb = b.lastTrigger ? Date.parse(b.lastTrigger) : 0;
-      if (tb !== ta) return tb - ta; // newest first
+      if (tb !== ta) return tb - ta;
       return a.name.localeCompare(b.name);
     });
 
-  // add
   const [openAdd, setOpenAdd] = useState(false);
   const createMutation = useCreateScene();
 
-  // edit
   const [editing, setEditing] = useState<Scene | null>(null);
   const updateMutation = useUpdateScene(editing?.id ?? '0');
 
-  // delete
   const [deleting, setDeleting] = useState<Scene | null>(null);
   const deleteMutation = useDeleteScene(deleting?.id ?? '0');
 
-  // trigger
   const triggerMutation = useTriggerScene();
 
   return (

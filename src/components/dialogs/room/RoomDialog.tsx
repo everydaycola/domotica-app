@@ -23,7 +23,6 @@ const coerceInt = (min?: number) =>
     .int('Must be an integer')
     .refine(v => (min === undefined ? true : v >= min), { message: `Must be ≥ ${min}` });
 
-// Base schema for type inference (no dependency on runtime values)
 const baseRoomSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100, 'Max 100 characters'),
   description: z.string().trim().max(500, 'Max 500 characters').optional().or(z.literal('')),
@@ -33,8 +32,6 @@ const baseRoomSchema = z.object({
   heightMm: coerceInt(1),
 });
 export type RoomFormValues = z.input<typeof baseRoomSchema>;
-
-// export interface SignUpFormValues extends z.infer<typeof baseRoomSchema> {}
 
 function makeSchema(floorWidthMm: number, floorHeightMm: number) {
   return baseRoomSchema.superRefine((data, ctx) => {

@@ -24,8 +24,6 @@ export interface DomoticaDialogBaseProps {
   floorId: string
   initialValues?: DomoticaFormValues // used in edit mode
   onSubmit: (values: DomoticaFormValues) => void
-  title?: string // allow override when desired
-  submitLabel?: string // allow override when desired
 }
 
 const schema = z.object({
@@ -49,9 +47,7 @@ export function DomoticaDialogBase(
     mode,
     floorId,
     initialValues,
-    onSubmit,
-    title,
-    submitLabel
+    onSubmit
   }: Readonly<DomoticaDialogBaseProps>) {
   const isAdd = mode === 'add';
   const {rooms} = useRooms(floorId);
@@ -73,14 +69,13 @@ export function DomoticaDialogBase(
     reValidateMode: 'onBlur',
   });
 
-  const resolvedTitle = title ?? (isAdd ? 'Add domotica' : 'Edit domotica');
-  const resolvedSubmit = submitLabel ?? (isAdd ? 'Create' : 'Save');
+  const resolvedTitle = isAdd ? 'Add domotica' : 'Edit domotica';
+  const resolvedSubmit = isAdd ? 'Create' : 'Save';
 
   const formId = isAdd ? 'add-domotica-form' : 'edit-domotica-form';
 
   const handleClose = () => {
     onClose();
-    // reset after close so reopening starts fresh
     reset({
       floorId,
       roomId: rooms?.[0]?.id ?? 0,

@@ -9,10 +9,8 @@ import {useRooms, useDomoticaByFloor, useFloor} from "../hooks";
 
 export function FloorPage() {
   const navigate = useNavigate();
-  // get floor number from url
   const floorNumber = useParams().id!
 
-  // get floor, rooms and domotica data from api
   const { floor, isLoading: floorIsLoading, isError: floorIsError } = useFloor(floorNumber);
   const { rooms, isLoading: roomsIsLoading, isError: roomsIsError } = useRooms(floorNumber);
   const { domotica, isLoading: domoticaIsLoading, isError: domoticaIsError } = useDomoticaByFloor(floorNumber);
@@ -60,7 +58,6 @@ export function FloorPage() {
         </Box>
       </Box>
 
-      {/* Rooms and Domotica Section below the plan (Domotica left, Rooms right) */}
       <Box sx={{ px: 3 }}>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ width: '100%', mt: 2, alignItems: 'flex-start' }}>
           <RoomsList

@@ -45,8 +45,6 @@ export function EditDomoticaDialog({ open, domotica, floorId, onClose, onSave }:
         y: domotica.y,
       }}
       onSubmit={handleSubmit}
-      title="Edit domotica"
-      submitLabel="Save"
     />
   );
 }

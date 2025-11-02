@@ -8,7 +8,6 @@ import {useForm} from 'react-hook-form';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 
-// Build schemas first, then infer types from them
 const dim = z.coerce.number()
   .int('Must be an integer')
   .min(100, 'Min 100 mm')
@@ -24,22 +23,20 @@ function makeSchema(isAdd: boolean) {
   });
 }
 
-// Concrete schemas for type inference
 const addFloorSchema = makeSchema(true);
 const editFloorSchema = makeSchema(false);
 
 export type TAddFloorSchema = z.input<typeof addFloorSchema>;
 export type TEditFloorSchema = z.input<typeof editFloorSchema>;
 
-// Public type used by wrappers; union covers both modes
 export type FloorFormValues = TAddFloorSchema | TEditFloorSchema;
 
 export type FloorDialogBaseProps = {
   open: boolean;
   onClose: () => void;
   mode: 'add' | 'edit';
-  initialValues?: Omit<TEditFloorSchema, 'id'>; // used in edit mode
-  onSubmit: (values: FloorFormValues) => void; // wrapper may ignore id in edit mode
+  initialValues?: Omit<TEditFloorSchema, 'id'>;
+  onSubmit: (values: FloorFormValues) => void;
 };
 
 export function FloorDialogBase({ open, onClose, mode, initialValues, onSubmit }: Readonly<FloorDialogBaseProps>) {
@@ -56,7 +53,6 @@ export function FloorDialogBase({ open, onClose, mode, initialValues, onSubmit }
 
   const handleClose = () => {
     onClose();
-    // reset to mode-specific defaults to avoid stale values when reopening
     if (isAdd) {
       reset({ id: '', name: '', description: '', widthMm: 1000, heightMm: 1000 } as any);
     } else {
@@ -66,7 +62,7 @@ export function FloorDialogBase({ open, onClose, mode, initialValues, onSubmit }
 
   const submit = (data: FloorFormValues) => {
     onSubmit({
-      id: isAdd ? (data as TAddFloorSchema).id : undefined,
+      id: isAdd ? data.id : undefined,
       name: data.name.trim(),
       description: data.description?.trim() || undefined,
       widthMm: data.widthMm,

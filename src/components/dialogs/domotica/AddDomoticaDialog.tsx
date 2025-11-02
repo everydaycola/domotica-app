@@ -46,8 +46,6 @@ export function AddDomoticaDialog({ open, floorId, initialRoomId, onClose, onCre
         y: 0,
       }}
       onSubmit={handleSubmit}
-      title="Add domotica"
-      submitLabel="Create"
     />
   );
 }
