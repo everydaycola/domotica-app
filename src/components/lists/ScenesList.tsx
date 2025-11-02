@@ -24,6 +24,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import LockIcon from '@mui/icons-material/Lock';
+import PersonIcon from '@mui/icons-material/Person';
 import type {Scene} from '../../model';
 import {GeneralContext} from '../../context/GeneralContext';
 import {useCreateScene, useDeleteScene, useScenes, useTriggerScene, useUpdateScene} from '../../hooks';
@@ -82,11 +84,9 @@ export function ScenesList() {
           slotProps={{ input: { startAdornment: (<InputAdornment position="start"><SearchIcon /></InputAdornment>) } }}
           sx={{ flex: 1 }}
         />
-        {isAdmin && (
-          <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={() => setOpenAdd(true)}>
-            Add scene
-          </Button>
-        )}
+        <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={() => setOpenAdd(true)}>
+          Add scene
+        </Button>
       </Stack>
 
       <Divider />
@@ -103,21 +103,30 @@ export function ScenesList() {
                   subheader={s.description}
                   action={(
                     <Stack direction="row" spacing={1} alignItems="center" sx={{ mr: 1 }}>
+                      <Tooltip title={s.isCustom ? 'Custom scene: You can edit/delete this.' : 'Default scene: Only admins can edit/delete.'}>
+                        <span>
+                          {s.isCustom ? (
+                            <PersonIcon fontSize="small" color="primary" />
+                          ) : (
+                            <LockIcon fontSize="small" color="action" />
+                          )}
+                        </span>
+                      </Tooltip>
                       <FavoriteSceneButton sceneId={s.id} favorite={!!s.favorite} disabled={!isAdmin} />
-                      {isAdmin && (
-                        <>
-                          <Tooltip title="Edit">
-                            <IconButton size="small" onClick={() => setEditing(s)}>
-                              <EditIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Delete">
-                            <IconButton size="small" color="error" onClick={() => setDeleting(s)}>
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </>
-                      )}
+                      <Tooltip title={(!isAdmin && !s.isCustom) ? 'Default scene: Only admins can edit.' : 'Edit'}>
+                        <span>
+                          <IconButton size="small" onClick={() => setEditing(s)} disabled={!isAdmin && !s.isCustom}>
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </span>
+                      </Tooltip>
+                      <Tooltip title={(!isAdmin && !s.isCustom) ? 'Default scene: Only admins can delete.' : 'Delete'}>
+                        <span>
+                          <IconButton size="small" color="error" onClick={() => setDeleting(s)} disabled={!isAdmin && !s.isCustom}>
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </span>
+                      </Tooltip>
                     </Stack>
                   )}
                 />
@@ -156,7 +165,6 @@ export function ScenesList() {
         open={openAdd}
         onClose={() => setOpenAdd(false)}
         onCreate={async (payload) => {
-          if (!isAdmin) return;
           const nowIso = new Date().toISOString();
           await createMutation.mutateAsync({ ...payload, favorite: false, lastTrigger: nowIso });
           setOpenAdd(false);
@@ -169,7 +177,7 @@ export function ScenesList() {
         scene={editing}
         onClose={() => setEditing(null)}
         onSave={async (payload) => {
-          if (!isAdmin || !editing?.id) return;
+          if (!editing?.id) return;
           const update = { ...payload } as Partial<Scene>;
           delete (update).id;
           const nowIso = new Date().toISOString();
@@ -183,7 +191,7 @@ export function ScenesList() {
         open={!!deleting}
         onClose={() => setDeleting(null)}
         onConfirm={() => {
-          if (!isAdmin || !deleting?.id) return;
+          if (!deleting?.id) return;
           deleteMutation.mutate(undefined, { onSuccess: () => setDeleting(null) });
         }}
         title={'Delete scene'}

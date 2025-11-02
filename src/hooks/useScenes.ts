@@ -1,6 +1,8 @@
+import { useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Scene } from '../model';
 import { createScene, deleteScene, readScenes, updateScene, updateDomotica } from '../services';
+import { GeneralContext } from '../context/GeneralContext';
 
 export function useScenes() {
   const { isLoading, isError, data } = useQuery({
@@ -12,8 +14,12 @@ export function useScenes() {
 
 export function useCreateScene() {
   const queryClient = useQueryClient();
+  const { isAdmin } = useContext(GeneralContext);
   return useMutation({
-    mutationFn: (scene: Omit<Scene, 'id'>) => createScene(scene),
+    mutationFn: (scene: Omit<Scene, 'id' | 'isCustom'>) => {
+      const withFlag: Omit<Scene, 'id'> = { ...scene, isCustom: !isAdmin } as Omit<Scene, 'id'>;
+      return createScene(withFlag);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['scenes'] });
     },
@@ -22,8 +28,24 @@ export function useCreateScene() {
 
 export function useUpdateScene(sceneId: string) {
   const queryClient = useQueryClient();
+  const { isAdmin } = useContext(GeneralContext);
   return useMutation({
-    mutationFn: (updates: Partial<Scene>) => updateScene(String(sceneId), updates),
+    mutationFn: async (updates: Partial<Scene>) => {
+      const existing = (queryClient.getQueryData(['scenes']) as Scene[] | undefined)?.find(s => String(s.id) === String(sceneId));
+      if (existing) {
+        if (!isAdmin && !existing.isCustom) {
+          throw new Error('Default scenes can only be modified by admins.');
+        }
+        // Preserve the isCustom flag regardless of who edits
+        const patch: Partial<Scene> = { ...updates, isCustom: existing.isCustom };
+        return updateScene(String(sceneId), patch);
+      }
+      // Fallback: if we don't know, still prevent non-admins from possibly editing a default
+      if (!isAdmin) {
+        throw new Error('Insufficient permissions to modify this scene.');
+      }
+      return updateScene(String(sceneId), updates);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['scenes'] });
     },
@@ -32,8 +54,18 @@ export function useUpdateScene(sceneId: string) {
 
 export function useDeleteScene(sceneId: string) {
   const queryClient = useQueryClient();
+  const { isAdmin } = useContext(GeneralContext);
   return useMutation({
-    mutationFn: () => deleteScene(String(sceneId)),
+    mutationFn: async () => {
+      const existing = (queryClient.getQueryData(['scenes']) as Scene[] | undefined)?.find(s => String(s.id) === String(sceneId));
+      if (existing && !isAdmin && !existing.isCustom) {
+        throw new Error('Default scenes can only be deleted by admins.');
+      }
+      if (!existing && !isAdmin) {
+        throw new Error('Insufficient permissions to delete this scene.');
+      }
+      return deleteScene(String(sceneId));
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['scenes'] });
     },

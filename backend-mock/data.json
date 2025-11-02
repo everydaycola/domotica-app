@@ -300,6 +300,7 @@
           }
         }
       ],
+      "isCustom": false,
       "favorite": true,
       "lastTrigger": "2025-11-01T23:35:35.451Z"
     },
@@ -329,6 +330,7 @@
           }
         }
       ],
+      "isCustom": true,
       "favorite": false,
       "lastTrigger": "2025-11-01T23:35:36.279Z"
     }

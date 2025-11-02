@@ -40,8 +40,8 @@ export interface SceneDialogBaseProps {
   open: boolean;
   onClose: () => void;
   mode: 'add' | 'edit';
-  initialValues?: Omit<Scene, 'id' | 'floorId'>;
-  onSubmit: (payload: Omit<Scene, 'id'>) => void | Promise<void>;
+  initialValues?: Omit<Scene, 'id' | 'floorId' | 'isCustom'>;
+  onSubmit: (payload: Omit<Scene, 'id' | 'isCustom'>) => void | Promise<void>;
   title?: string;
   submitLabel?: string;
 }
@@ -95,12 +95,12 @@ export function SceneDialogBase(
   };
 
   const submit = async (values: SceneFormValues) => {
-    const payload: Omit<Scene, 'id'> = {
+    const payload: Omit<Scene, 'id' | 'isCustom'> = {
       name: values.name,
       description: values.description?.trim() || undefined,
       image: values.image?.trim() || undefined,
       controls,
-    };
+    } as Omit<Scene, 'id' | 'isCustom'>;
     await onSubmit(payload);
     handleClose();
   };

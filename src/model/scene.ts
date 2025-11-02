@@ -11,6 +11,8 @@ export type Scene = {
   description?: string;
   image?: string; // URL
   controls: SceneControl[];
+  // Flag to indicate whether the scene is user-created (custom) or a default one
+  isCustom: boolean;
   // New optional fields for sorting and UX
   favorite?: boolean;
   lastTrigger?: string | null; // ISO datetime of last trigger

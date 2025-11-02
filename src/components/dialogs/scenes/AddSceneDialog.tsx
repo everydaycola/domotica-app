@@ -4,7 +4,7 @@ import type { Scene } from '../../../model';
 export interface AddSceneDialogProps {
   open: boolean;
   onClose: () => void;
-  onCreate?: (payload: Omit<Scene, 'id'>) => void | Promise<void>;
+  onCreate?: (payload: Omit<Scene, 'id' | 'isCustom'>) => void | Promise<void>;
 }
 
 export function AddSceneDialog({ open, onClose, onCreate }: Readonly<AddSceneDialogProps>) {
