@@ -169,10 +169,10 @@
       "y": 1500,
       "value": {
         "on": false,
-        "brightness": 100
+        "brightness": 10
       },
       "favorite": true,
-      "lastChange": "2025-11-03T22:43:52.277Z"
+      "lastChange": "2025-11-03T22:44:32.103Z"
     },
     {
       "id": "1007",
@@ -269,14 +269,8 @@
       ],
       "isCustom": false,
       "favorite": true,
-      "lastTrigger": "2025-11-03T22:43:58.164Z",
-      "schedule": {
-        "minute": "*",
-        "hour": "*",
-        "dayOfMonth": "*",
-        "month": "*",
-        "dayOfWeek": "*"
-      }
+      "lastTrigger": "2025-11-03T22:48:11.235Z",
+      "schedule": null
     },
     {
       "id": "2002",
