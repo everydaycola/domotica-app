@@ -6,7 +6,7 @@ import type {
   heatingValue,
   lightValue
 } from "../../../model";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {
   Button,
   Dialog,
@@ -29,11 +29,16 @@ interface EditValueDialogProps {
   open: boolean;
   domoticaTarget: Domotica | null;
   onClose: () => void;
-  onSave: (value: Domotica["value"]) => void;
+  onSave: (value: DomoticaValue) => void;
 }
 
 export function EditValueDialog({open, domoticaTarget, onClose, onSave}: Readonly<EditValueDialogProps>) {
   const [local, setLocal] = useState(domoticaTarget?.value ?? ({} as Domotica["value"]));
+
+  useEffect(() => {
+    setLocal(domoticaTarget?.value ?? ({} as Domotica["value"]));
+  }, [domoticaTarget, open]);
+
   if (!domoticaTarget) return null;
   const handleSave = () => onSave(local);
   return (

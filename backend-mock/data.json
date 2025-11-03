@@ -85,10 +85,6 @@
       "upc": "1234567890123",
       "x": 1750,
       "y": 1500,
-      "defaultValue": {
-        "on": false,
-        "brightness": 80
-      },
       "value": {
         "on": true,
         "brightness": 60
@@ -106,9 +102,6 @@
       "upc": "2234567890123",
       "x": 3000,
       "y": 2500,
-      "defaultValue": {
-        "temperature": 21
-      },
       "value": {
         "temperature": 22
       },
@@ -125,10 +118,6 @@
       "upc": "3234567890123",
       "x": 5000,
       "y": 1500,
-      "defaultValue": {
-        "on": false,
-        "brightness": 80
-      },
       "value": {
         "on": false,
         "brightness": 80
@@ -146,15 +135,11 @@
       "upc": "4234567890123",
       "x": 2000,
       "y": 1500,
-      "defaultValue": {
-        "volume": 30,
-        "playlistId": "1"
-      },
       "value": {
         "volume": 20
       },
       "favorite": false,
-      "lastChange": "2025-10-29T18:45:00Z"
+      "lastChange": "2025-11-03T22:06:39.368Z"
     },
     {
       "id": "1005",
@@ -166,14 +151,11 @@
       "upc": "5234567890123",
       "x": 500,
       "y": 1500,
-      "defaultValue": {
-        "open": false
-      },
       "value": {
         "open": false
       },
       "favorite": false,
-      "lastChange": "2025-11-01T23:35:23.033Z"
+      "lastChange": "2025-11-03T21:36:38.317Z"
     },
     {
       "id": "1006",
@@ -185,16 +167,12 @@
       "upc": "6234567890123",
       "x": 5500,
       "y": 1500,
-      "defaultValue": {
+      "value": {
         "on": false,
         "brightness": 100
       },
-      "value": {
-        "on": false,
-        "brightness": 10
-      },
       "favorite": true,
-      "lastChange": "2025-11-01T23:55:00Z"
+      "lastChange": "2025-11-03T22:43:52.277Z"
     },
     {
       "id": "1007",
@@ -206,10 +184,6 @@
       "upc": "7234567890123",
       "x": 2500,
       "y": 1250,
-      "defaultValue": {
-        "on": false,
-        "brightness": 100
-      },
       "value": {
         "on": false,
         "brightness": 100
@@ -227,9 +201,6 @@
       "upc": "8234567890123",
       "x": 0,
       "y": 1500,
-      "defaultValue": {
-        "open": false
-      },
       "value": {
         "open": true
       },
@@ -246,10 +217,6 @@
       "upc": "1234567890123",
       "x": 1000,
       "y": 1000,
-      "defaultValue": {
-        "on": false,
-        "brightness": 100
-      },
       "value": {
         "on": false,
         "brightness": 100
@@ -302,7 +269,14 @@
       ],
       "isCustom": false,
       "favorite": true,
-      "lastTrigger": "2025-11-03T20:53:12.212Z"
+      "lastTrigger": "2025-11-03T22:43:58.164Z",
+      "schedule": {
+        "minute": "*",
+        "hour": "*",
+        "dayOfMonth": "*",
+        "month": "*",
+        "dayOfWeek": "*"
+      }
     },
     {
       "id": "2002",

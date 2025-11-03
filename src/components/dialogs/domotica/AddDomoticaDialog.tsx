@@ -24,7 +24,6 @@ export function AddDomoticaDialog({ open, floorId, rooms, initialRoomId, onClose
       upc: values.upc,
       x: values.x as number,
       y: values.y as number,
-      defaultValue: v,
       value: v,
     };
     await onCreate(payload);

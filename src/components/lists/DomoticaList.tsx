@@ -39,7 +39,13 @@ export type DomoticaListProps = {
   clearRoomSelection: () => void;
 };
 
-export function DomoticaList({floorId, rooms, domotica, selectedRoomId, clearRoomSelection}: Readonly<DomoticaListProps>) {
+export function DomoticaList({
+                               floorId,
+                               rooms,
+                               domotica,
+                               selectedRoomId,
+                               clearRoomSelection
+                             }: Readonly<DomoticaListProps>) {
   const {isAdmin} = useContext(GeneralContext);
   // filtering
   const [search, setSearch] = useState("");
@@ -100,34 +106,35 @@ export function DomoticaList({floorId, rooms, domotica, selectedRoomId, clearRoo
       <Divider/>
       <List>
         {domoticaFiltered.map((d) => (
-          <ListItem key={d.id}
-                    component="div"
-                    disableGutters
-                    secondaryAction={
-                      <Stack direction="row" spacing={1}>
-                        <FavoriteDomoticaButton id={d.id} floorId={floorId} favorite={!!d.favorite}/>
-                        {isAdmin && (
-                          <>
-                            <Tooltip title="Edit details">
-                              <IconButton edge="end" onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingDetails(d);
-                              }}>
-                                <EditIcon/>
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Delete">
-                              <IconButton edge="end" color="error" onClick={(e) => {
-                                e.stopPropagation();
-                                setDeleting(d);
-                              }}>
-                                <DeleteIcon/>
-                              </IconButton>
-                            </Tooltip>
-                          </>
-                        )}
-                      </Stack>
-                    }
+          <ListItem
+            key={d.id}
+            component="div"
+            disableGutters
+            secondaryAction={
+              <Stack direction="row" spacing={1}>
+                <FavoriteDomoticaButton id={d.id} floorId={floorId} favorite={!!d.favorite}/>
+                {isAdmin && (
+                  <>
+                    <Tooltip title="Edit details">
+                      <IconButton edge="end" onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingDetails(d);
+                      }}>
+                        <EditIcon/>
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton edge="end" color="error" onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleting(d);
+                      }}>
+                        <DeleteIcon/>
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                )}
+              </Stack>
+            }
           >
             <ListItemButton onClick={() => setEditingValue(d)}>
               <ListItemAvatar>

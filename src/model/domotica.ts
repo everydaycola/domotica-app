@@ -8,7 +8,6 @@ export type Domotica = {
     description?: string;
     type: DomoticaType;
     upc: string;
-    defaultValue: DomoticaValue;
     value: DomoticaValue;
     x: number;
     y: number;

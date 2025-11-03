@@ -26,19 +26,15 @@ export type RoomsListProps = {
   rooms: Room[] | undefined;
   selectedRoom: Room | null;
   setSelectedRoom: (room: Room | null) => void;
-  clearRoomSelection: () => void;
-  selectedRoomName?: string | null;
 };
 
 export function RoomsList({
-  floor,
-  rooms,
-  selectedRoom,
-  setSelectedRoom,
-  clearRoomSelection,
-  selectedRoomName,
-}: Readonly<RoomsListProps>) {
-  const { isAdmin } = useContext(GeneralContext);
+                            floor,
+                            rooms,
+                            selectedRoom,
+                            setSelectedRoom,
+                          }: Readonly<RoomsListProps>) {
+  const {isAdmin} = useContext(GeneralContext);
 
   const [openRoomAdd, setOpenRoomAdd] = useState(false);
   const [openRoomEdit, setOpenRoomEdit] = useState(false);
@@ -63,24 +59,17 @@ export function RoomsList({
             slotProps={{input: {startAdornment: (<InputAdornment position="start"><SearchIcon/></InputAdornment>)}}}
             sx={{flex: 1}}
           />
-          <Stack direction="row" spacing={1} alignItems="center">
-            {selectedRoomName && (
-              <Chip color="primary" size="small" label={`Selected: ${selectedRoomName}`} />
-            )}
-          </Stack>
-          <Stack direction="row" spacing={1}>
-            {selectedRoom?.id !== null && (
-              <Button size="small" onClick={clearRoomSelection}>Clear selection</Button>
-            )}
-            {isAdmin &&
-              (<Button variant="contained" size="small" startIcon={<AddIcon/>} onClick={() => {
-                setSelectedRoom(null);
-                setOpenRoomAdd(true);
-              }}>Add room</Button>)
-            }
-          </Stack>
+          {selectedRoom && (
+            <Button size="small" onClick={() => setSelectedRoom(null)}>Clear selection</Button>
+          )}
+          {isAdmin &&
+            (<Button variant="contained" size="small" startIcon={<AddIcon/>} onClick={() => {
+              setSelectedRoom(null);
+              setOpenRoomAdd(true);
+            }}>Add room</Button>)
+          }
         </Stack>
-        <Divider />
+        <Divider/>
         <List>
           {filtered && filtered.length > 0 ? filtered.map((room) => (
             <ListItem
@@ -88,20 +77,22 @@ export function RoomsList({
               component="div"
               disableGutters
               secondaryAction={isAdmin &&
-                <>
-                  <IconButton edge="end" aria-label="edit" onClick={(e) => { e.stopPropagation();
-                    setSelectedRoom(room);
-                    setOpenRoomEdit(true);
-                  }} sx={{ ml: 1 }}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton edge="end" aria-label="delete" color="error" onClick={(e) => { e.stopPropagation();
-                    setSelectedRoom(room);
-                    setOpenRoomDelete(true);
-                  }} sx={{ ml: 1 }}>
-                    <DeleteIcon />
-                  </IconButton>
-                </>
+                  <>
+                      <IconButton edge="end" aria-label="edit" onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedRoom(room);
+                        setOpenRoomEdit(true);
+                      }} sx={{ml: 1}}>
+                          <EditIcon/>
+                      </IconButton>
+                      <IconButton edge="end" aria-label="delete" color="error" onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedRoom(room);
+                        setOpenRoomDelete(true);
+                      }} sx={{ml: 1}}>
+                          <DeleteIcon/>
+                      </IconButton>
+                  </>
               }
             >
               <ListItemButton
@@ -109,8 +100,12 @@ export function RoomsList({
                 onClick={() => setSelectedRoom(room)}
                 sx={{
                   borderRadius: 1,
-                  '&.Mui-selected': { bgcolor: 'action.selected', borderLeft: '4px solid', borderLeftColor: 'primary.main' },
-                  '&.Mui-selected:hover': { bgcolor: 'action.selected' },
+                  '&.Mui-selected': {
+                    bgcolor: 'action.selected',
+                    borderLeft: '4px solid',
+                    borderLeftColor: 'primary.main'
+                  },
+                  '&.Mui-selected:hover': {bgcolor: 'action.selected'},
                 }}
               >
                 <ListItemText
@@ -121,7 +116,7 @@ export function RoomsList({
             </ListItem>
           )) : (
             <ListItem component="div">
-              <ListItemText primary="No rooms yet" />
+              <ListItemText primary="No rooms yet"/>
             </ListItem>
           )}
         </List>
@@ -132,11 +127,11 @@ export function RoomsList({
         open={openRoomAdd}
         onClose={() => setOpenRoomAdd(false)}
         title="Add room"
-        initialValues={{ name: '', description: '', xMm: 0, yMm: 0, widthMm: 1000, heightMm: 1000 }}
+        initialValues={{name: '', description: '', xMm: 0, yMm: 0, widthMm: 1000, heightMm: 1000}}
         floorWidthMm={floor.widthMm}
         floorHeightMm={floor.heightMm}
-        onSubmit={({ name, description, xMm, yMm, widthMm, heightMm }) => {
-          createRoomMutation.mutate({ name, description, xMm, yMm, widthMm, heightMm });
+        onSubmit={({name, description, xMm, yMm, widthMm, heightMm}) => {
+          createRoomMutation.mutate({name, description, xMm, yMm, widthMm, heightMm});
         }}
       />
 
@@ -155,9 +150,9 @@ export function RoomsList({
         }}
         floorWidthMm={floor.widthMm}
         floorHeightMm={floor.heightMm}
-        onSubmit={({ name, description, xMm, yMm, widthMm, heightMm }) => {
+        onSubmit={({name, description, xMm, yMm, widthMm, heightMm}) => {
           if (!selectedRoom) return;
-          updateRoomMutation.mutate({ name, description, xMm, yMm, widthMm, heightMm });
+          updateRoomMutation.mutate({name, description, xMm, yMm, widthMm, heightMm});
         }}
       />
 
@@ -167,7 +162,7 @@ export function RoomsList({
         onClose={() => setOpenRoomDelete(false)}
         onConfirm={() => {
           if (!selectedRoom) return;
-          deleteRoomMutation.mutate(undefined, { onSuccess: () => setSelectedRoom(null) });
+          deleteRoomMutation.mutate(undefined, {onSuccess: () => setSelectedRoom(null)});
         }}
         title={'Delete room'}
         message={selectedRoom ? `Are you sure you want to delete room "${selectedRoom.name}"?` : ''}

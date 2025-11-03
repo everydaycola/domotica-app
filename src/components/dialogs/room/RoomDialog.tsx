@@ -5,6 +5,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import {type SubmitHandler, useForm} from 'react-hook-form';
+import { useEffect } from 'react';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 
@@ -64,6 +65,10 @@ export function RoomDialog({ open, onClose, title = 'Room', initialValues, onSub
     onClose();
     reset(initialValues);
   };
+
+  useEffect(() => {
+    reset(initialValues);
+  }, [open, initialValues, reset]);
 
   const submit: SubmitHandler<RoomFormValues> = (data) => {
     onSubmit({

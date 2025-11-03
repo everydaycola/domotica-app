@@ -6,6 +6,8 @@ export const theme = createTheme({
     light: true,
     dark: true,
   },
-  // gives a ts error, no idea why
   colorSchemeSelector: 'class',
+  typography: {
+    fontFamily: 'Roboto, Arial, sans-serif',
+  },
 });

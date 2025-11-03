@@ -5,6 +5,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import {useForm} from 'react-hook-form';
+import { useEffect } from 'react';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 
@@ -70,6 +71,14 @@ export function FloorDialogBase({ open, onClose, mode, initialValues, onSubmit }
     });
     handleClose();
   };
+
+  useEffect(() => {
+    if (isAdd) {
+      reset({ id: '', name: '', description: '', widthMm: 1000, heightMm: 1000 } as FloorFormValues);
+    } else {
+      reset({ name: initialValues?.name ?? '', description: initialValues?.description ?? '', widthMm: initialValues?.widthMm ?? 0, heightMm: initialValues?.heightMm ?? 0 } as FloorFormValues);
+    }
+  }, [open, isAdd, initialValues, reset]);
 
   const title = isAdd ? 'Add floor' : 'Edit floor';
   const submitLabel = isAdd ? 'Add' : 'Save';

@@ -99,7 +99,6 @@ export function FloorPage() {
                 rooms={rooms}
                 selectedRoom={selectedRoom}
                 setSelectedRoom={(room) => setSelectedRoom(room)}
-                clearRoomSelection={() => setSelectedRoom(null)}
               />
             )}
           </Box>

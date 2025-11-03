@@ -12,6 +12,7 @@ import {
   TextField
 } from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
+import { useEffect } from "react";
 import type {DomoticaType, Room} from "../../../model";
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -68,6 +69,19 @@ export function DomoticaDialogBase(
     shouldFocusError: true,
     reValidateMode: 'onBlur',
   });
+
+  useEffect(() => {
+    reset({
+      floorId: initialValues?.floorId ?? floorId,
+      roomId: initialValues?.roomId ?? (rooms?.[0]?.id ?? 0),
+      name: initialValues?.name ?? "",
+      description: initialValues?.description ?? "",
+      type: (initialValues?.type ?? "light") as DomoticaType,
+      upc: initialValues?.upc ?? "",
+      x: initialValues?.x ?? 0,
+      y: initialValues?.y ?? 0,
+    });
+  }, [open, initialValues, floorId, rooms, reset]);
 
   const resolvedTitle = isAdd ? 'Add domotica' : 'Edit domotica';
   const resolvedSubmit = isAdd ? 'Create' : 'Save';

@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Button,
   Dialog,
@@ -123,6 +123,24 @@ export function SceneDialogBase(
     setControls([]);
     setScheduleEnabled(false);
   };
+
+  useEffect(() => {
+    // Seed/reset form + local state when dialog opens or when initial values change
+    reset({
+      name: initialValues?.name ?? '',
+      description: initialValues?.description ?? '',
+      image: initialValues?.image ?? '',
+    });
+    setControls(initialValues?.controls ?? []);
+    setScheduleEnabled(!!initialValues?.schedule);
+    setSchedule(initialValues?.schedule ?? {
+      minute: '*',
+      hour: '*',
+      dayOfMonth: '*',
+      month: '*',
+      dayOfWeek: '*',
+    });
+  }, [open, initialValues, reset]);
 
   const resolvedTitle = title ?? (isAdd ? 'Add scene' : 'Edit scene');
   const resolvedSubmit = submitLabel ?? (isAdd ? 'Create' : 'Save');
