@@ -17,20 +17,20 @@ export function FloorPage() {
   const navigate = useNavigate();
   const floorNumber = useParams().id!
 
-  const { floor, isLoading: floorIsLoading } = useFloor(floorNumber);
+  const { floor, isLoading: floorIsLoading, isError: floorIsError } = useFloor(floorNumber);
   const { rooms, isLoading: roomsIsLoading, isError: roomsIsError } = useRooms(floorNumber);
-  const { domotica, isLoading: domoticaIsLoading } = useDomoticaByFloor(floorNumber);
-  const { isLoading: scenesIsLoading } = useScenes();
+  const { domotica, isLoading: domoticaIsLoading, isError: domoticaIsError } = useDomoticaByFloor(floorNumber);
+  const { scenes, isLoading: scenesIsLoading, isError: scenesIsError } = useScenes();
 
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 
-  // If second hook (rooms) errors, show a friendly error page but keep app bar and routing
-  if (roomsIsError) {
+  // If any error, show a friendly error page but keep app bar and routing
+  if (floorIsError || roomsIsError || domoticaIsError || scenesIsError) {
     return (
       <ErrorPage
-        title="Unable to load rooms"
-        message="We couldn't load the rooms for this floor. Please try again, or go back to the home page."
-        onRetry={() => window.location.reload()}
+        title="Something went wrong"
+        message="Please try again later. If the problem persists, please contact the administrator."
+        onRetry={() => globalThis.location.reload()}
       />
     );
   }
@@ -39,7 +39,7 @@ export function FloorPage() {
   if (!floor && floorNumber !== '0' && !floorIsLoading) navigate(`/floor/0`);
 
   return (
-    <Box sx={{px: 2}}>
+    <Box sx={{p: 3}}>
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, alignItems: 'flex-start', gap: 3, width: '100%' }}>
         <Box sx={{ width: { xs: '100%', lg: 360 } }}>
           <FloorsList
@@ -86,35 +86,39 @@ export function FloorPage() {
 
       <Divider/>
 
-      <Box sx={{ px: 3 }}>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ width: '100%', mt: 2, alignItems: 'flex-start' }}>
-          {(floorIsLoading || roomsIsLoading || !floor) ? (
-            <RoomsListSkeleton />
-          ) : (
-            <RoomsList
-              floor={floor}
-              rooms={rooms}
-              selectedRoom={selectedRoom}
-              setSelectedRoom={(room) => setSelectedRoom(room)}
-              clearRoomSelection={() => setSelectedRoom(null)}
-            />
-          )}
+      <Box>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ width: '100%', alignItems: 'flex-start' }}>
           <Box sx={{ flex: 2, minWidth: 320 }}>
-            <Typography variant="h6" sx={{ mb: 1 }}>Domotica</Typography>
-            <Divider />
-            {domoticaIsLoading ? (
-              <DomoticaListSkeleton />
+            <Typography variant="h6">Rooms</Typography>
+            <Divider sx={{ mb: 2 }} />
+            {(floorIsLoading || roomsIsLoading || !floor) ? (
+              <RoomsListSkeleton />
             ) : (
-              <DomoticaList floorId={floorNumber} selectedRoomId={selectedRoom?.id ?? null} clearRoomSelection={() => setSelectedRoom(null)} />
+              <RoomsList
+                floor={floor}
+                rooms={rooms}
+                selectedRoom={selectedRoom}
+                setSelectedRoom={(room) => setSelectedRoom(room)}
+                clearRoomSelection={() => setSelectedRoom(null)}
+              />
             )}
           </Box>
           <Box sx={{ flex: 2, minWidth: 320 }}>
-            <Typography variant="h6" sx={{ mb: 1 }}>Scenes</Typography>
-            <Divider />
+            <Typography variant="h6">Domotica</Typography>
+            <Divider sx={{ mb: 2 }} />
+            {domoticaIsLoading ? (
+              <DomoticaListSkeleton />
+            ) : (
+              <DomoticaList floorId={floorNumber} domotica={domotica} selectedRoomId={selectedRoom?.id ?? null} clearRoomSelection={() => setSelectedRoom(null)} />
+            )}
+          </Box>
+          <Box sx={{ flex: 2, minWidth: 320 }}>
+            <Typography variant="h6">Scenes</Typography>
+            <Divider sx={{ mb: 2 }} />
             {scenesIsLoading ? (
               <ScenesListSkeleton />
             ) : (
-              <ScenesList />
+              <ScenesList scenes={scenes}/>
             )}
           </Box>
         </Stack>

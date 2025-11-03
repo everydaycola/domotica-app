@@ -3,13 +3,12 @@ import {
   Button,
   Chip,
   Divider,
-  IconButton,
+  IconButton, InputAdornment,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
-  Stack,
-  Typography
+  Stack, TextField
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -20,6 +19,8 @@ import {useContext, useState} from "react";
 import {RoomDialog} from "../dialogs/room";
 import {DeleteConfirmDialog} from "../dialogs/DeleteConfirmDialog.tsx";
 import {useCreateRoom, useDeleteRoom, useUpdateRoom} from "../../hooks";
+import SearchIcon from "@mui/icons-material/Search";
+import {useRoomFiltered} from "../../hooks/useFilter.ts";
 
 export type RoomsListProps = {
   floor: Floor,
@@ -48,12 +49,22 @@ export function RoomsList({
   const updateRoomMutation = useUpdateRoom(selectedRoom ? selectedRoom.id : 0, floor.id);
   const deleteRoomMutation = useDeleteRoom(selectedRoom ? selectedRoom.id : 0, floor.id);
 
+  const [search, setSearch] = useState('');
+  const filtered = useRoomFiltered(rooms, search);
+
   return (
     <>
-      <Box sx={{ flex: 1, minWidth: 280 }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
+      <Box sx={{width: "100%", maxWidth: 900}}>
+        <Stack direction={{xs: "column", sm: "row"}} spacing={1} sx={{mb: 1}}>
+          <TextField
+            size="small"
+            placeholder="Search name or description"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            slotProps={{input: {startAdornment: (<InputAdornment position="start"><SearchIcon/></InputAdornment>)}}}
+            sx={{flex: 1}}
+          />
           <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="h6">Rooms</Typography>
             {selectedRoomName && (
               <Chip color="primary" size="small" label={`Selected: ${selectedRoomName}`} />
             )}
@@ -72,7 +83,7 @@ export function RoomsList({
         </Stack>
         <Divider />
         <List>
-          {rooms && rooms.length > 0 ? rooms.map((room) => (
+          {filtered && filtered.length > 0 ? filtered.map((room) => (
             <ListItem
               key={room.id}
               component="div"
@@ -85,7 +96,7 @@ export function RoomsList({
                   }} sx={{ ml: 1 }}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton edge="end" aria-label="delete" onClick={(e) => { e.stopPropagation();
+                  <IconButton edge="end" aria-label="delete" color="error" onClick={(e) => { e.stopPropagation();
                     setSelectedRoom(room);
                     setOpenRoomDelete(true);
                   }} sx={{ ml: 1 }}>

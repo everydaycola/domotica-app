@@ -12,8 +12,7 @@ import {
   TextField
 } from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
-import type {DomoticaType} from "../../../model";
-import {useRooms} from "../../../hooks";
+import type {DomoticaType, Room} from "../../../model";
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 
@@ -21,7 +20,8 @@ export interface DomoticaDialogBaseProps {
   open: boolean
   onClose: () => void
   mode: 'add' | 'edit'
-  floorId: string
+  floorId: string,
+  rooms: Room[],
   initialValues?: DomoticaFormValues // used in edit mode
   onSubmit: (values: DomoticaFormValues) => void
 }
@@ -38,7 +38,7 @@ const schema = z.object({
   x: z.coerce.number().int('Must be an integer').min(0, 'Must be ≥ 0'),
   y: z.coerce.number().int('Must be an integer').min(0, 'Must be ≥ 0'),
 });
-export type DomoticaFormValues = z.output<typeof schema>;
+export type DomoticaFormValues = z.input<typeof schema>;
 
 export function DomoticaDialogBase(
   {
@@ -46,14 +46,13 @@ export function DomoticaDialogBase(
     onClose,
     mode,
     floorId,
+    rooms,
     initialValues,
-    onSubmit
+    onSubmit,
   }: Readonly<DomoticaDialogBaseProps>) {
   const isAdd = mode === 'add';
-  const {rooms} = useRooms(floorId);
 
   const {control, handleSubmit, reset, register, formState: {errors}} = useForm<DomoticaFormValues>({
-    mode: "onBlur",
     defaultValues: {
       floorId: initialValues?.floorId ?? floorId,
       roomId: initialValues?.roomId ?? (rooms?.[0]?.id ?? 0),
@@ -64,6 +63,7 @@ export function DomoticaDialogBase(
       x: initialValues?.x ?? 0,
       y: initialValues?.y ?? 0,
     },
+    mode: "onBlur",
     resolver: zodResolver(schema, undefined, { mode: 'sync' }),
     shouldFocusError: true,
     reValidateMode: 'onBlur',

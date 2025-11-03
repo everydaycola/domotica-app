@@ -17,13 +17,13 @@ export function EditDomoticaDialog({ open, domotica, floorId, onClose, onSave }:
     const update: Partial<Domotica> = {
       id: domotica.id,
       floorId: values.floorId,
-      roomId: values.roomId,
+      roomId: values.roomId as number,
       name: values.name,
       description: values.description,
       type: values.type,
       upc: values.upc,
-      x: values.x,
-      y: values.y,
+      x: values.x as number,
+      y: values.y as number,
     };
     await onSave(update);
   };

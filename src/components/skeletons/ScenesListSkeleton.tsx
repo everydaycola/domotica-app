@@ -1,15 +1,20 @@
-import {Box, Divider, Skeleton, Stack, Typography} from "@mui/material";
+
+import {Box, Skeleton, Grid} from "@mui/material";
 
 export function ScenesListSkeleton() {
   return (
-    <Box sx={{ flex: 2, minWidth: 320 }}>
-      <Typography variant="h6" sx={{ mb: 1 }}>Scenes</Typography>
-      <Divider />
-      <Stack sx={{ mt: 2 }} spacing={1}>
-        {Array.from({ length: 4 }).map((_, idx) => (
-          <Skeleton key={idx} variant="rounded" height={64} />
+    <Box sx={{minWidth: 320}}>
+      <Grid container spacing={2}>
+        {(new Array(6)).fill(0).map((_, index) => (
+          <Grid key={index} size={{xs: 12, sm: 6, md: 4}}>
+            <Skeleton variant="rectangular" height={200}/>
+            <Box sx={{pt: 1}}>
+              <Skeleton width="60%"/>
+              <Skeleton width="40%"/>
+            </Box>
+          </Grid>
         ))}
-      </Stack>
+      </Grid>
     </Box>
   );
 }

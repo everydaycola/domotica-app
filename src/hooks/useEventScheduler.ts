@@ -105,8 +105,9 @@ export const useEventScheduler = (
       if (lastTriggeredMinuteRef.current === now.getMinutes()) {
         return;
       }
+      console.log('Checking schedule:', schedule, ' at ', now.toLocaleTimeString());
 
-      // Check if current time matches the schedule
+      // Check if the current time matches the schedule
       if (shouldTrigger(now, schedule)) {
         console.log('Triggering event for schedule:', schedule);
         onTriggerRef.current();

@@ -1,5 +1,6 @@
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {CssBaseline, ThemeProvider} from "@mui/material";
+import {CssBaseline} from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 import {FloorPage} from "./pages/FloorPage.tsx";
 import {GeneralContextProvider} from "./context/GeneralContextProvider.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
@@ -14,7 +15,7 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme} defaultMode="system">
           <GeneralContextProvider>
             <CssBaseline/>
             <CustomAppBar title={`Commando`} />

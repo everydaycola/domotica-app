@@ -7,7 +7,7 @@ export function useFloor(id: string) {
     queryKey: ['floor', id],
     queryFn: () => readFloor(id)
   });
-  return {isLoading, isError, floor};
+  return {isLoading, isError, floor: floor};
 }
 
 export function useFloorsList() {

@@ -33,16 +33,17 @@ import {GeneralContext} from "../../context/GeneralContext.ts";
 
 export type DomoticaListProps = {
   floorId: string;
+  domotica: Domotica[] | undefined;
   selectedRoomId: number | null;
   clearRoomSelection: () => void;
 };
 
-export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Readonly<DomoticaListProps>) {
-  const { isAdmin } = useContext(GeneralContext);
+export function DomoticaList({floorId, domotica, selectedRoomId, clearRoomSelection}: Readonly<DomoticaListProps>) {
+  const {isAdmin} = useContext(GeneralContext);
   // filtering
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<DomoticaType | null>(null);
-  const {domotica, isLoading} = useDomoticaFiltered(floorId, selectedRoomId, search, typeFilter);
+  const domoticaFiltered = useDomoticaFiltered((domotica ?? []), selectedRoomId, search, typeFilter);
 
   // Value editing modal
   const [editingValue, setEditingValue] = useState<Domotica | null>(null);
@@ -78,7 +79,8 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
           sx={{flex: 1}}
         />
 
-        <Select size="small" value={typeFilter ?? "all"} onChange={(e) => setTypeFilter(e.target.value === "all" ? null : e.target.value as DomoticaType)}
+        <Select size="small" value={typeFilter ?? "all"}
+                onChange={(e) => setTypeFilter(e.target.value === "all" ? null : e.target.value as DomoticaType)}
                 sx={{minWidth: 160}}>
           <MenuItem value="all">All types</MenuItem>
           <MenuItem value="light">Lights</MenuItem>
@@ -95,62 +97,56 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
       </Stack>
 
       <Divider/>
-      {isLoading ? (
-        <Typography variant="body2" sx={{mt: 2}}>Loading domotica…</Typography>
-      ) : domotica && domotica.length > 0 ? (
-        <List>
-          {domotica.map((d) => (
-            <ListItem key={d.id}
-                      component="div"
-                      disableGutters
-                      secondaryAction={
-                        <Stack direction="row" spacing={1}>
-                          <FavoriteDomoticaButton id={d.id} floorId={floorId} favorite={!!d.favorite}/>
-                          {isAdmin && (
-                            <>
-                              <Tooltip title="Edit details">
-                                <IconButton edge="end" onClick={(e) => {
-                                  e.stopPropagation();
-                                  setEditingDetails(d);
-                                }}>
-                                  <EditIcon/>
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip title="Delete">
-                                <IconButton edge="end" color="error" onClick={(e) => {
-                                  e.stopPropagation();
-                                  setDeleting(d);
-                                }}>
-                                  <DeleteIcon/>
-                                </IconButton>
-                              </Tooltip>
-                            </>
-                          )}
-                        </Stack>
-                      }
-            >
-              <ListItemButton onClick={() => setEditingValue(d)}>
-                <ListItemAvatar>
-                  <Avatar>
-                    {typeIcon(d.type)}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Stack direction="row" gap={1} alignItems="center">
-                      <Typography sx={{cursor: "pointer"}}>{d.name}</Typography>
-                      <Chip size="small" label={d.type}/>
-                    </Stack>
-                  }
-                  secondary={d.description}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      ) : (
-        <Typography variant="body2" sx={{mt: 2}}>No domotica found</Typography>
-      )}
+      <List>
+        {domoticaFiltered.map((d) => (
+          <ListItem key={d.id}
+                    component="div"
+                    disableGutters
+                    secondaryAction={
+                      <Stack direction="row" spacing={1}>
+                        <FavoriteDomoticaButton id={d.id} floorId={floorId} favorite={!!d.favorite}/>
+                        {isAdmin && (
+                          <>
+                            <Tooltip title="Edit details">
+                              <IconButton edge="end" onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingDetails(d);
+                              }}>
+                                <EditIcon/>
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete">
+                              <IconButton edge="end" color="error" onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleting(d);
+                              }}>
+                                <DeleteIcon/>
+                              </IconButton>
+                            </Tooltip>
+                          </>
+                        )}
+                      </Stack>
+                    }
+          >
+            <ListItemButton onClick={() => setEditingValue(d)}>
+              <ListItemAvatar>
+                <Avatar>
+                  {typeIcon(d.type)}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={
+                  <Stack direction="row" gap={1} alignItems="center">
+                    <Typography sx={{cursor: "pointer"}}>{d.name}</Typography>
+                    <Chip size="small" label={d.type}/>
+                  </Stack>
+                }
+                secondary={d.description}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
 
       <EditValueDialog
         open={!!editingValue}
@@ -158,7 +154,10 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
         onClose={() => setEditingValue(null)}
         onSave={(value) => {
           if (!editingValue || !isAdmin) return;
-          updateValueMutation.mutate({ value, lastChange: new Date().toISOString() }, { onSuccess: () => setEditingValue(null) });
+          updateValueMutation.mutate({
+            value,
+            lastChange: new Date().toISOString()
+          }, {onSuccess: () => setEditingValue(null)});
         }}
       />
 
@@ -170,7 +169,7 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
         onCreate={async (payload: Omit<Domotica, "id">) => {
           if (!isAdmin) return;
           const nowIso = new Date().toISOString();
-          await createMutation.mutateAsync({ ...payload, favorite: false, lastChange: nowIso });
+          await createMutation.mutateAsync({...payload, favorite: false, lastChange: nowIso});
           setOpenCreate(false);
         }}
       />
@@ -182,10 +181,10 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
         onClose={() => setEditingDetails(null)}
         onSave={async (payload) => {
           if (!isAdmin || !editingDetails?.id) return;
-          const update = { ...payload } as Partial<Domotica>;
+          const update = {...payload} as Partial<Domotica>;
           delete update.id;
           const nowIso = new Date().toISOString();
-          await updateDetailsMutation.mutateAsync({ ...update, lastChange: nowIso });
+          await updateDetailsMutation.mutateAsync({...update, lastChange: nowIso});
           setEditingDetails(null);
         }}
       />
@@ -203,13 +202,13 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
             }
           })
         }}
-        />
+      />
 
     </Box>
   );
 }
 
-function FavoriteDomoticaButton({ id, floorId, favorite }: Readonly<{
+function FavoriteDomoticaButton({id, floorId, favorite}: Readonly<{
   id: string;
   floorId: string;
   favorite: boolean | undefined;
@@ -224,11 +223,11 @@ function FavoriteDomoticaButton({ id, floorId, favorite }: Readonly<{
           color={favorite ? 'warning' : 'default'}
           onClick={(e) => {
             e.stopPropagation();
-            update.mutate({ favorite: !favorite });
+            update.mutate({favorite: !favorite});
           }}
           disabled={update.isPending}
         >
-          {favorite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+          {favorite ? <StarIcon fontSize="small"/> : <StarBorderIcon fontSize="small"/>}
         </IconButton>
       </span>
     </Tooltip>

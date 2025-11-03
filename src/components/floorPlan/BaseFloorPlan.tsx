@@ -74,6 +74,7 @@ export function BaseFloorPlan(
                 {room.name}
               </Box>
 
+              
               {roomDomotica.map(d => {
                 let dxPct = (d.x / room.widthMm) * 100;
                 let dyPct = (d.y / room.heightMm) * 100;

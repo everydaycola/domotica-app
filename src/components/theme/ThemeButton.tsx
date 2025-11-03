@@ -1,5 +1,6 @@
-import {Box, IconButton, useColorScheme} from "@mui/material";
-import {DarkMode, LightMode, SettingsBrightness} from "@mui/icons-material";
+import { Box, IconButton } from "@mui/material";
+import { useColorScheme } from "@mui/material/styles";
+import { DarkMode, LightMode, SettingsBrightness } from "@mui/icons-material";
 
 export function ThemeButton() {
   const {mode, setMode} = useColorScheme();

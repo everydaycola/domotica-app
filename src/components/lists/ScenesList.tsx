@@ -6,7 +6,6 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardHeader,
   CardMedia,
   Divider,
   Grid,
@@ -29,34 +28,29 @@ import PersonIcon from '@mui/icons-material/Person';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import type {Scene} from '../../model';
 import {GeneralContext} from '../../context/GeneralContext';
-import {useCreateScene, useDeleteScene, useScenes, useTriggerScene, useUpdateScene, cronToString, useEventScheduler} from '../../hooks';
+import {
+  useCreateScene,
+  useDeleteScene,
+  useTriggerScene,
+  useUpdateScene,
+  cronToString,
+  useEventScheduler
+} from '../../hooks';
 import {AddSceneDialog, EditSceneDialog} from '../dialogs/scenes';
 import {DeleteConfirmDialog} from '../dialogs/DeleteConfirmDialog';
+import {getFilteredAndSortedScenes} from "../../hooks/useFilter.ts";
 
-export function ScenesList() {
-  const { isAdmin } = useContext(GeneralContext);
-  const { scenes, isLoading } = useScenes();
+export type ScenesListProps = {
+  scenes: Scene[]
+};
 
+
+
+
+export function ScenesList({scenes}: Readonly<ScenesListProps>) {
+  const {isAdmin} = useContext(GeneralContext);
   const [search, setSearch] = useState('');
-  const filtered = (scenes ?? [])
-    .filter(s =>
-      `${s.name} ${s.description ?? ''}`
-        .toLowerCase()
-        .includes(
-          (search ?? '')
-            .trim()
-            .toLowerCase()
-        )
-    )
-    .slice()
-    .sort((a, b) => {
-      const favDiff = Number(!!b.favorite) - Number(!!a.favorite);
-      if (favDiff !== 0) return favDiff;
-      const ta = a.lastTrigger ? Date.parse(a.lastTrigger) : 0;
-      const tb = b.lastTrigger ? Date.parse(b.lastTrigger) : 0;
-      if (tb !== ta) return tb - ta;
-      return a.name.localeCompare(b.name);
-    });
+  const filtered = getFilteredAndSortedScenes(scenes, search);
 
   const [openAdd, setOpenAdd] = useState(false);
   const createMutation = useCreateScene();
@@ -70,99 +64,106 @@ export function ScenesList() {
   const triggerMutation = useTriggerScene();
 
   return (
-    <Box sx={{ width: '100%', maxWidth: 900 }}>
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 1 }}>
+    <Box sx={{width: '100%', maxWidth: 900}}>
+      <Stack direction={{xs: 'column', sm: 'row'}} spacing={1} sx={{mb: 1}}>
         <TextField
           size="small"
           placeholder="Search name or description"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          slotProps={{ input: { startAdornment: (<InputAdornment position="start"><SearchIcon /></InputAdornment>) } }}
-          sx={{ flex: 1 }}
+          slotProps={{input: {startAdornment: (<InputAdornment position="start"><SearchIcon/></InputAdornment>)}}}
+          sx={{flex: 1}}
         />
-        <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={() => setOpenAdd(true)}>
+        <Button variant="contained" size="small" startIcon={<AddIcon/>} onClick={() => setOpenAdd(true)}>
           Add scene
         </Button>
       </Stack>
 
-      <Divider />
+      <Divider/>
 
-      {isLoading ? (
-        <Typography variant="body2" sx={{ mt: 2 }}>Loading scenes…</Typography>
-      ) : filtered && filtered.length > 0 ? (
-        <Grid container spacing={2} sx={{ mt: 1 }}>
-          {filtered.map((s) => (
-            <Grid key={s.id} size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card variant="outlined">
-                <CardHeader
-                  title={s.name}
-                  subheader={s.description}
-                  action={(
-                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mr: 1 }}>
-                      <Tooltip title={s.isCustom ? 'Custom scene: You can edit/delete this.' : 'Default scene: Only admins can edit/delete.'}>
+      <Grid container spacing={2} sx={{mt: 1}}>
+        {filtered.map((s) => (
+          <Grid key={s.id} size={{xs: 12, sm: 6, md: 4}}>
+            <Card variant="outlined">
+
+              <Box sx={{p: 2}}>
+                <Typography variant="h6" component="div">
+                  {s.name}
+                </Typography>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <FavoriteSceneButton sceneId={s.id} favorite={!!s.favorite}/>
+                  <Tooltip
+                    title={s.isCustom ? 'Custom scene: You can edit/delete this.' : 'Default scene: Only admins can edit/delete.'}>
                         <span>
                           {s.isCustom ? (
-                            <PersonIcon fontSize="small" color="primary" />
+                            <PersonIcon fontSize="small" color="primary"/>
                           ) : (
-                            <LockIcon fontSize="small" color="action" />
+                            <LockIcon fontSize="small" color="action"/>
                           )}
                         </span>
-                      </Tooltip>
-                      <FavoriteSceneButton sceneId={s.id} favorite={!!s.favorite} />
-                      <Tooltip title={(!isAdmin && !s.isCustom) ? 'Default scene: Only admins can edit.' : 'Edit'}>
+                  </Tooltip>
+                  <Tooltip title={(!isAdmin && !s.isCustom) ? 'Default scene: Only admins can edit.' : 'Edit'}>
                         <span>
                           <IconButton size="small" onClick={() => setEditing(s)} disabled={!isAdmin && !s.isCustom}>
-                            <EditIcon fontSize="small" />
+                            <EditIcon fontSize="small"/>
                           </IconButton>
                         </span>
-                      </Tooltip>
-                      <Tooltip title={(!isAdmin && !s.isCustom) ? 'Default scene: Only admins can delete.' : 'Delete'}>
+                  </Tooltip>
+                  <Tooltip title={(!isAdmin && !s.isCustom) ? 'Default scene: Only admins can delete.' : 'Delete'}>
                         <span>
-                          <IconButton size="small" color="error" onClick={() => setDeleting(s)} disabled={!isAdmin && !s.isCustom}>
-                            <DeleteIcon fontSize="small" />
+                          <IconButton size="small" color="error" onClick={() => setDeleting(s)}
+                                      disabled={!isAdmin && !s.isCustom}>
+                            <DeleteIcon fontSize="small"/>
                           </IconButton>
                         </span>
-                      </Tooltip>
-                    </Stack>
-                  )}
-                />
-                {s.image ? (
-                  <CardMedia component="img" height="140" image={s.image} alt={s.name} sx={{ objectFit: 'cover' }} />
-                ) : (
-                  <Box sx={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'action.hover' }}>
-                    <Avatar sx={{ width: 64, height: 64 }}>{s.name?.charAt(0).toUpperCase()}</Avatar>
-                  </Box>
+                  </Tooltip>
+                </Stack>
+                {s.description && (
+                  <Typography variant="body2" color="text.secondary" sx={{mt: 1}}>
+                    {s.description}
+                  </Typography>
                 )}
-                <CardContent>
-                  <Stack spacing={0.5}>
-                    <Typography variant="body2" color="text.secondary">
-                      {s.controls?.length ?? 0} control{s.controls?.length === 1 ? '' : 's'}
+              </Box>
+              {s.image ? (
+                <CardMedia component="img" height="140" image={s.image} alt={s.name} sx={{objectFit: 'cover'}}/>
+              ) : (
+                <Box sx={{
+                  height: 140,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: 'action.hover'
+                }}>
+                  <Avatar sx={{width: 64, height: 64}}>{s.name?.charAt(0).toUpperCase()}</Avatar>
+                </Box>
+              )}
+              <CardContent>
+                <Stack spacing={0.5}>
+                  <Typography variant="body2" color="text.secondary">
+                    {s.controls?.length ?? 0} control{s.controls?.length === 1 ? '' : 's'}
+                  </Typography>
+                  <Stack direction="row" spacing={0.5} alignItems="center">
+                    <AccessTimeIcon fontSize="small" color={s.schedule ? 'action' : 'disabled'}/>
+                    <Typography variant="caption" color="text.secondary">
+                      {cronToString(s.schedule ?? null)}
                     </Typography>
-                    <Stack direction="row" spacing={0.5} alignItems="center">
-                      <AccessTimeIcon fontSize="small" color={s.schedule ? 'action' : 'disabled'} />
-                      <Typography variant="caption" color="text.secondary">
-                        {cronToString(s.schedule ?? null)}
-                      </Typography>
-                    </Stack>
                   </Stack>
-                </CardContent>
-                <CardActions>
-                  <Button
-                    size="small"
-                    startIcon={<PlayArrowIcon />}
-                    onClick={() => triggerMutation.mutate(s)}
-                    disabled={triggerMutation.isPending}
-                  >
-                    Trigger
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <Typography variant="body2" sx={{ mt: 2 }}>No scenes found</Typography>
-      )}
+                </Stack>
+              </CardContent>
+              <CardActions>
+                <Button
+                  size="small"
+                  startIcon={<PlayArrowIcon/>}
+                  onClick={() => triggerMutation.mutate(s)}
+                  disabled={triggerMutation.isPending}
+                >
+                  Trigger
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
 
       {/* Add */}
       <AddSceneDialog
@@ -170,7 +171,7 @@ export function ScenesList() {
         onClose={() => setOpenAdd(false)}
         onCreate={async (payload) => {
           const nowIso = new Date().toISOString();
-          await createMutation.mutateAsync({ ...payload, favorite: false, lastTrigger: nowIso });
+          await createMutation.mutateAsync({...payload, favorite: false, lastTrigger: nowIso});
           setOpenAdd(false);
         }}
       />
@@ -182,10 +183,10 @@ export function ScenesList() {
         onClose={() => setEditing(null)}
         onSave={async (payload) => {
           if (!editing?.id) return;
-          const update = { ...payload } as Partial<Scene>;
+          const update = {...payload} as Partial<Scene>;
           delete (update).id;
           const nowIso = new Date().toISOString();
-          await updateMutation.mutateAsync({ ...update, lastTrigger: nowIso });
+          await updateMutation.mutateAsync({...update, lastTrigger: nowIso});
           setEditing(null);
         }}
       />
@@ -196,7 +197,7 @@ export function ScenesList() {
         onClose={() => setDeleting(null)}
         onConfirm={() => {
           if (!deleting?.id) return;
-          deleteMutation.mutate(undefined, { onSuccess: () => setDeleting(null) });
+          deleteMutation.mutate(undefined, {onSuccess: () => setDeleting(null)});
         }}
         title={'Delete scene'}
         message={deleting ? `Are you sure you want to delete scene "${deleting.name}"?` : ''}
@@ -204,13 +205,13 @@ export function ScenesList() {
 
       {/* Invisible auto schedulers */}
       {(scenes ?? []).map((s) => (
-        <SceneAutoScheduler key={s.id} scene={s} />
+        <SceneAutoScheduler key={s.id} scene={s}/>
       ))}
     </Box>
   );
 }
 
-function FavoriteSceneButton({ sceneId, favorite}: Readonly<{
+function FavoriteSceneButton({sceneId, favorite}: Readonly<{
   sceneId: string;
   favorite: boolean | undefined;
 }>) {
@@ -223,18 +224,18 @@ function FavoriteSceneButton({ sceneId, favorite}: Readonly<{
           color={favorite ? 'warning' : 'default'}
           onClick={(e) => {
             e.stopPropagation();
-            update.mutate({ favorite: !favorite });
+            update.mutate({favorite: !favorite});
           }}
           disabled={update.isPending}
         >
-          {favorite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+          {favorite ? <StarIcon fontSize="small"/> : <StarBorderIcon fontSize="small"/>}
         </IconButton>
       </span>
     </Tooltip>
   );
 }
 
-function SceneAutoScheduler({ scene }: Readonly<{ scene: Scene }>) {
+function SceneAutoScheduler({scene}: Readonly<{ scene: Scene }>) {
   const trigger = useTriggerScene();
   // If no schedule, use an impossible minute value to never trigger
   const effectiveSchedule = scene.schedule ?? {
