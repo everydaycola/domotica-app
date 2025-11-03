@@ -109,7 +109,13 @@ export function FloorPage() {
             {domoticaIsLoading ? (
               <DomoticaListSkeleton />
             ) : (
-              <DomoticaList floorId={floorNumber} domotica={domotica} selectedRoomId={selectedRoom?.id ?? null} clearRoomSelection={() => setSelectedRoom(null)} />
+              <DomoticaList
+                floorId={floorNumber}
+                rooms={rooms}
+                domotica={domotica}
+                selectedRoomId={selectedRoom?.id ?? null}
+                clearRoomSelection={() => setSelectedRoom(null)}
+              />
             )}
           </Box>
           <Box sx={{ flex: 2, minWidth: 320 }}>

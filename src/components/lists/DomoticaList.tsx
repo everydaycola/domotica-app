@@ -25,7 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import type {Domotica, DomoticaType} from "../../model";
+import type {Domotica, DomoticaType, Room} from "../../model";
 import {useCreateDomotica, useDeleteDomotica, useDomoticaFiltered, useUpdateDomotica} from "../../hooks";
 import {EditValueDialog, typeIcon, EditDomoticaDialog, AddDomoticaDialog} from "../dialogs/domotica";
 import {DeleteConfirmDialog} from "../dialogs/DeleteConfirmDialog.tsx";
@@ -33,12 +33,13 @@ import {GeneralContext} from "../../context/GeneralContext.ts";
 
 export type DomoticaListProps = {
   floorId: string;
+  rooms: Room[]
   domotica: Domotica[] | undefined;
   selectedRoomId: number | null;
   clearRoomSelection: () => void;
 };
 
-export function DomoticaList({floorId, domotica, selectedRoomId, clearRoomSelection}: Readonly<DomoticaListProps>) {
+export function DomoticaList({floorId, rooms, domotica, selectedRoomId, clearRoomSelection}: Readonly<DomoticaListProps>) {
   const {isAdmin} = useContext(GeneralContext);
   // filtering
   const [search, setSearch] = useState("");
@@ -164,6 +165,7 @@ export function DomoticaList({floorId, domotica, selectedRoomId, clearRoomSelect
       <AddDomoticaDialog
         open={openCreate}
         floorId={floorId}
+        rooms={rooms}
         initialRoomId={selectedRoomId ?? undefined}
         onClose={() => setOpenCreate(false)}
         onCreate={async (payload: Omit<Domotica, "id">) => {
@@ -178,6 +180,7 @@ export function DomoticaList({floorId, domotica, selectedRoomId, clearRoomSelect
         open={!!editingDetails}
         domotica={editingDetails}
         floorId={floorId}
+        rooms={rooms}
         onClose={() => setEditingDetails(null)}
         onSave={async (payload) => {
           if (!isAdmin || !editingDetails?.id) return;

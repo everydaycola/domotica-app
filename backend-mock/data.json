@@ -151,7 +151,7 @@
         "playlistId": "1"
       },
       "value": {
-        "volume": 35
+        "volume": 20
       },
       "favorite": false,
       "lastChange": "2025-10-29T18:45:00Z"
@@ -170,7 +170,7 @@
         "open": false
       },
       "value": {
-        "open": true
+        "open": false
       },
       "favorite": false,
       "lastChange": "2025-11-01T23:35:23.033Z"
@@ -190,8 +190,8 @@
         "brightness": 100
       },
       "value": {
-        "on": true,
-        "brightness": 100
+        "on": false,
+        "brightness": 10
       },
       "favorite": true,
       "lastChange": "2025-11-01T23:55:00Z"
@@ -302,7 +302,7 @@
       ],
       "isCustom": false,
       "favorite": true,
-      "lastTrigger": "2025-11-01T23:35:35.451Z"
+      "lastTrigger": "2025-11-03T20:53:12.212Z"
     },
     {
       "id": "2002",

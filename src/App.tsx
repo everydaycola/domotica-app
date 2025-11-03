@@ -1,6 +1,6 @@
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import {CssBaseline} from "@mui/material";
-import { ThemeProvider } from "@mui/material/styles";
+import {ThemeProvider} from "@mui/material/styles";
 import {FloorPage} from "./pages/FloorPage.tsx";
 import {GeneralContextProvider} from "./context/GeneralContextProvider.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
@@ -15,10 +15,10 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <ThemeProvider theme={theme} defaultMode="system">
+        <ThemeProvider theme={theme} defaultMode="light">
+          <CssBaseline enableColorScheme/>
           <GeneralContextProvider>
-            <CssBaseline/>
-            <CustomAppBar title={`Commando`} />
+            <CustomAppBar title={`Commando`}/>
             <Routes>
               <Route path="/floor/:id" element={<FloorPage/>}/>
               <Route path="/floor" element={<Navigate to="/floor/0"/>}/>

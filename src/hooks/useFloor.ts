@@ -15,7 +15,7 @@ export function useFloorsList() {
     queryKey: ['floors'],
     queryFn: () => readAllFloors()
   });
-  return {isLoading, isError, floors: floors ?? []};
+  return {isLoading, isError, floors: (floors ?? [])};
 }
 
 export function useUpdateFloor(id: string) {

@@ -1,11 +1,6 @@
 import type { DomoticaValue } from './domotica';
 import type { CronSchedule } from './schedule';
 
-export type SceneControl = {
-  domoticaId: string;
-  value: DomoticaValue;
-};
-
 export type Scene = {
   id: string;
   name: string;
@@ -16,4 +11,9 @@ export type Scene = {
   favorite?: boolean;
   lastTrigger?: string | null;
   schedule?: CronSchedule | null;
+};
+
+export type SceneControl = {
+  domoticaId: string;
+  value: DomoticaValue;
 };

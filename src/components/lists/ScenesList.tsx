@@ -34,11 +34,10 @@ import {
   useTriggerScene,
   useUpdateScene,
   cronToString,
-  useEventScheduler
+  useEventScheduler, getFilteredAndSortedScenes
 } from '../../hooks';
 import {AddSceneDialog, EditSceneDialog} from '../dialogs/scenes';
 import {DeleteConfirmDialog} from '../dialogs/DeleteConfirmDialog';
-import {getFilteredAndSortedScenes} from "../../hooks/useFilter.ts";
 
 export type ScenesListProps = {
   scenes: Scene[]

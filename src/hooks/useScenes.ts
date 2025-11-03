@@ -12,6 +12,28 @@ export function useScenes() {
   return { isLoading, isError, scenes: (data ?? []) };
 }
 
+export function getFilteredAndSortedScenes(scenes: Scene[] | undefined, search: string) {
+  return (scenes ?? [])
+    .filter(s =>
+      `${s.name} ${s.description ?? ''}`
+        .toLowerCase()
+        .includes(
+          (search ?? '')
+            .trim()
+            .toLowerCase()
+        )
+    )
+    .slice()
+    .sort((a, b) => {
+      const favDiff = Number(!!b.favorite) - Number(!!a.favorite);
+      if (favDiff !== 0) return favDiff;
+      const ta = a.lastTrigger ? Date.parse(a.lastTrigger) : 0;
+      const tb = b.lastTrigger ? Date.parse(b.lastTrigger) : 0;
+      if (tb !== ta) return tb - ta;
+      return a.name.localeCompare(b.name);
+    });
+}
+
 export function useCreateScene() {
   const queryClient = useQueryClient();
   const { isAdmin } = useContext(GeneralContext);
@@ -31,7 +53,7 @@ export function useUpdateScene(sceneId: string) {
   const { isAdmin } = useContext(GeneralContext);
   return useMutation({
     mutationFn: async (updates: Partial<Scene>) => {
-      const existing = (queryClient.getQueryData(['scenes']) as Scene[] | undefined)?.find(s => String(s.id) === String(sceneId));
+      const existing = (queryClient.getQueryData(['scenes']) as (Scene[] | undefined))?.find(s => String(s.id) === String(sceneId));
       if (existing) {
         if (!isAdmin && !existing.isCustom) {
           throw new Error('Default scenes can only be modified by admins.');
@@ -55,7 +77,7 @@ export function useDeleteScene(sceneId: string) {
   const { isAdmin } = useContext(GeneralContext);
   return useMutation({
     mutationFn: async () => {
-      const existing = (queryClient.getQueryData(['scenes']) as Scene[] | undefined)?.find(s => String(s.id) === String(sceneId));
+      const existing = (queryClient.getQueryData(['scenes']) as (Scene[] | undefined))?.find(s => String(s.id) === String(sceneId));
       if (existing && !isAdmin && !existing.isCustom) {
         throw new Error('Default scenes can only be deleted by admins.');
       }

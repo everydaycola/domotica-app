@@ -18,9 +18,8 @@ import {GeneralContext} from "../../context/GeneralContext.ts";
 import {useContext, useState} from "react";
 import {RoomDialog} from "../dialogs/room";
 import {DeleteConfirmDialog} from "../dialogs/DeleteConfirmDialog.tsx";
-import {useCreateRoom, useDeleteRoom, useUpdateRoom} from "../../hooks";
+import {useCreateRoom, useDeleteRoom, useUpdateRoom, useRoomFiltered} from "../../hooks";
 import SearchIcon from "@mui/icons-material/Search";
-import {useRoomFiltered} from "../../hooks/useFilter.ts";
 
 export type RoomsListProps = {
   floor: Floor,

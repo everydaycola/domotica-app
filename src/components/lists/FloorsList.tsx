@@ -95,13 +95,15 @@ export function FloorsList({activeFloor, onFloorChange}: Readonly<BuildingFloors
                         </IconButton>
                       </Tooltip>
                       <Tooltip title={f.id === '0' ? 'Cannot delete ground floor' : 'Delete floor'}>
-                        <IconButton
-                          color="error"
-                          size="small"
-                          onClick={() => isAdmin && setDeleteTarget(f)}
-                          disabled={f.id === '0'}>
-                          <DeleteForeverIcon/>
-                        </IconButton>
+                        <div>
+                          <IconButton
+                            color="error"
+                            size="small"
+                            onClick={() => isAdmin && setDeleteTarget(f)}
+                            disabled={f.id === '0'}>
+                            <DeleteForeverIcon/>
+                          </IconButton>
+                        </div>
                       </Tooltip>
                     </Stack>
                   )}

@@ -1,16 +1,17 @@
 import {DomoticaDialogBase, type DomoticaFormValues } from './DomoticaDialogBase.tsx';
-import type { Domotica, DomoticaValue } from '../../../model';
+import type {Domotica, DomoticaValue, Room} from '../../../model';
 import { getDefaultValueForType } from './DomoticaTypeHelpers.tsx';
 
 export interface AddDomoticaDialogProps {
   open: boolean;
   floorId: string;
+  rooms: Room[]
   initialRoomId?: number;
   onClose: () => void;
   onCreate?: (payload: Omit<Domotica, 'id'>) => void | Promise<void>;
 }
 
-export function AddDomoticaDialog({ open, floorId, initialRoomId, onClose, onCreate }: Readonly<AddDomoticaDialogProps>) {
+export function AddDomoticaDialog({ open, floorId, rooms, initialRoomId, onClose, onCreate }: Readonly<AddDomoticaDialogProps>) {
   const handleSubmit = async (values: DomoticaFormValues) => {
     if (!onCreate) return;
     const v = getDefaultValueForType(values.type) as DomoticaValue;
@@ -35,6 +36,7 @@ export function AddDomoticaDialog({ open, floorId, initialRoomId, onClose, onCre
       onClose={onClose}
       mode="add"
       floorId={floorId}
+      rooms={rooms}
       initialValues={{
         floorId,
         roomId: initialRoomId ?? 0,

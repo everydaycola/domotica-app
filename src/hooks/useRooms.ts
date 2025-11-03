@@ -10,6 +10,19 @@ export function useRooms(floorId: string) {
   return {isLoading, isError, rooms: (rooms ?? [])};
 }
 
+export function useRoomFiltered(rooms: Room[] | undefined, search: string) {
+  return (rooms ?? [])
+    .filter(s =>
+      `${s.name} ${s.description ?? ''}`
+        .toLowerCase()
+        .includes(
+          (search ?? '')
+            .trim()
+            .toLowerCase()
+        )
+    )
+}
+
 export function useCreateRoom(floorId: string) {
   const queryClient = useQueryClient();
   return useMutation({

@@ -1,15 +1,16 @@
 import {DomoticaDialogBase, type DomoticaFormValues } from './DomoticaDialogBase.tsx';
-import type { Domotica } from '../../../model';
+import type {Domotica, Room} from '../../../model';
 
 export interface EditDomoticaDialogProps {
   open: boolean;
   domotica: Domotica | null;
   floorId: string;
+  rooms: Room[]
   onClose: () => void;
   onSave?: (payload: Partial<Domotica>) => void | Promise<void>;
 }
 
-export function EditDomoticaDialog({ open, domotica, floorId, onClose, onSave }: Readonly<EditDomoticaDialogProps>) {
+export function EditDomoticaDialog({ open, domotica, floorId, rooms, onClose, onSave }: Readonly<EditDomoticaDialogProps>) {
   if (!domotica) return null;
 
   const handleSubmit = async (values: DomoticaFormValues) => {
@@ -34,6 +35,7 @@ export function EditDomoticaDialog({ open, domotica, floorId, onClose, onSave }:
       onClose={onClose}
       mode="edit"
       floorId={floorId}
+      rooms={rooms}
       initialValues={{
         floorId: domotica.floorId,
         roomId: domotica.roomId,
