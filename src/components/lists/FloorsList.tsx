@@ -1,4 +1,4 @@
-import {Box, CircularProgress, IconButton, Stack, Tooltip, Typography} from "@mui/material";
+import {Box , IconButton, Stack, Tooltip, Typography} from "@mui/material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -8,6 +8,7 @@ import {DeleteConfirmDialog} from "../dialogs/DeleteConfirmDialog.tsx";
 import {useContext, useState} from "react";
 import type {Floor} from "../../model";
 import {GeneralContext} from "../../context/GeneralContext.ts";
+import {FloorsListSkeleton} from "../skeletons";
 
 export interface BuildingFloorsListProps {
   activeFloor: string;
@@ -27,6 +28,12 @@ export function FloorsList({activeFloor, onFloorChange}: Readonly<BuildingFloors
   const deleteFloorMutation = useDeleteFloor(deleteTarget?.id || '');
 
   const sorted = (floors ?? []).slice().sort((a, b) => Number.parseInt(b.id) - Number.parseInt(a.id));
+
+  if (isLoading) {
+    return (
+      <FloorsListSkeleton/>
+    )
+  }
 
   return (
     <Box sx={{width: '100%'}}>
@@ -51,17 +58,6 @@ export function FloorsList({activeFloor, onFloorChange}: Readonly<BuildingFloors
         py: 1,
         backgroundColor: 'background.paper'
       }}>
-        {isLoading ? (
-          <Stack alignItems="center" sx={{py: 3}}>
-            <CircularProgress size={24}/>
-          </Stack>
-        ) : sorted.length === 0 ? (
-          <Stack alignItems="center" sx={{py: 2}}>
-            <Typography variant="body2" color="text.secondary">
-              No floors available
-            </Typography>
-          </Stack>
-        ) : (
           <Stack>
             {sorted.map((f) => {
               const isActive = f.id === activeFloor;
@@ -113,7 +109,6 @@ export function FloorsList({activeFloor, onFloorChange}: Readonly<BuildingFloors
               )
             })}
           </Stack>
-        )}
       </Box>
 
       <AddFloorDialog

@@ -17,7 +17,7 @@ export function App() {
         <ThemeProvider theme={theme}>
           <GeneralContextProvider>
             <CssBaseline/>
-            <CustomAppBar title={`app name`} />
+            <CustomAppBar title={`Commando`} />
             <Routes>
               <Route path="/floor/:id" element={<FloorPage/>}/>
               <Route path="/floor" element={<Navigate to="/floor/0"/>}/>
