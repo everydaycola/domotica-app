@@ -84,7 +84,6 @@ export function RoomDialog({ open, onClose, title = 'Room', initialValues, onSub
             label="Name"
             type="text"
             fullWidth
-            variant="standard"
             error={!!errors.name}
             helperText={errors.name?.message}
             {...register('name')}
@@ -94,7 +93,6 @@ export function RoomDialog({ open, onClose, title = 'Room', initialValues, onSub
             label="Description (optional)"
             type="text"
             fullWidth
-            variant="standard"
             error={!!errors.description}
             helperText={errors.description?.message}
             {...register('description')}
@@ -105,7 +103,6 @@ export function RoomDialog({ open, onClose, title = 'Room', initialValues, onSub
             label="X (mm from left)"
             type="number"
             fullWidth
-            variant="standard"
             error={!!errors.xMm}
             helperText={errors.xMm?.message}
             {...register('xMm')}
@@ -116,7 +113,6 @@ export function RoomDialog({ open, onClose, title = 'Room', initialValues, onSub
             label="Y (mm from top)"
             type="number"
             fullWidth
-            variant="standard"
             error={!!errors.yMm}
             helperText={errors.yMm?.message}
             {...register('yMm')}
@@ -127,7 +123,6 @@ export function RoomDialog({ open, onClose, title = 'Room', initialValues, onSub
             label="Width (mm)"
             type="number"
             fullWidth
-            variant="standard"
             error={!!errors.widthMm}
             helperText={errors.widthMm?.message}
             {...register('widthMm')}
@@ -138,7 +133,6 @@ export function RoomDialog({ open, onClose, title = 'Room', initialValues, onSub
             label="Height (mm)"
             type="number"
             fullWidth
-            variant="standard"
             error={!!errors.heightMm}
             helperText={errors.heightMm?.message}
             {...register('heightMm')}

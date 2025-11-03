@@ -16,6 +16,7 @@ import {
   TextField,
   Typography,
   Slider,
+  Divider,
 } from '@mui/material';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -29,7 +30,8 @@ import type {
   doorValue,
   audioValue,
   Scene,
-  SceneControl
+  SceneControl,
+  CronSchedule,
 } from '../../../model';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -78,6 +80,14 @@ export function SceneDialogBase(
   });
 
   const [controls, setControls] = useState<SceneControl[]>(initialValues?.controls ?? []);
+  const [scheduleEnabled, setScheduleEnabled] = useState<boolean>(!!initialValues?.schedule);
+  const [schedule, setSchedule] = useState<CronSchedule>(initialValues?.schedule ?? {
+    minute: '*',
+    hour: '*',
+    dayOfMonth: '*',
+    month: '*',
+    dayOfWeek: '*',
+  });
 
 
   const addControl = () => {
@@ -100,6 +110,7 @@ export function SceneDialogBase(
       description: values.description?.trim() || undefined,
       image: values.image?.trim() || undefined,
       controls,
+      schedule: scheduleEnabled ? schedule : null,
     } as Omit<Scene, 'id' | 'isCustom'>;
     await onSubmit(payload);
     handleClose();
@@ -110,6 +121,7 @@ export function SceneDialogBase(
     // reset after close
     reset({name: '', description: '', image: ''});
     setControls([]);
+    setScheduleEnabled(false);
   };
 
   const resolvedTitle = title ?? (isAdd ? 'Add scene' : 'Edit scene');
@@ -132,6 +144,61 @@ export function SceneDialogBase(
                          startAdornment: (<InputAdornment position="start"><SearchIcon/></InputAdornment>),
                        },
                      }}/>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} alignItems="center">
+            <Typography variant="subtitle1" sx={{ flex: 1 }}>Scheduling</Typography>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography variant="body2">{scheduleEnabled ? "Disable" : "Enable"}</Typography>
+              <Switch checked={scheduleEnabled} onChange={(e) => setScheduleEnabled(e.target.checked)} />
+            </Stack>
+          </Stack>
+
+          {scheduleEnabled && (
+            <Stack spacing={1}>
+              <Typography variant="caption" color="text.secondary">
+                Use cron-like patterns. Examples: *, 0-59, 1,15,30, */5
+              </Typography>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+                <TextField
+                  label="Minute"
+                  size="small"
+                  value={schedule.minute}
+                  onChange={(e) => setSchedule({ ...schedule, minute: e.target.value })}
+                  helperText="0-59, ranges/lists/steps, or *"
+                />
+                <TextField
+                  label="Hour"
+                  size="small"
+                  value={schedule.hour}
+                  onChange={(e) => setSchedule({ ...schedule, hour: e.target.value })}
+                  helperText="0-23 or *"
+                />
+                <TextField
+                  label="Day of month"
+                  size="small"
+                  value={schedule.dayOfMonth}
+                  onChange={(e) => setSchedule({ ...schedule, dayOfMonth: e.target.value })}
+                  helperText="1-31 or *"
+                />
+                <TextField
+                  label="Month"
+                  size="small"
+                  value={schedule.month}
+                  onChange={(e) => setSchedule({ ...schedule, month: e.target.value })}
+                  helperText="1-12 or *"
+                />
+                <TextField
+                  label="Day of week"
+                  size="small"
+                  value={schedule.dayOfWeek}
+                  onChange={(e) => setSchedule({ ...schedule, dayOfWeek: e.target.value })}
+                  helperText="1-7 (Mon=1) or *"
+                />
+              </Stack>
+            </Stack>
+          )}
+
+          <Divider />
 
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="subtitle1">Controls</Typography>

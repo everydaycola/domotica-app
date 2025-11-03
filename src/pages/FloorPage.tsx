@@ -26,8 +26,8 @@ export function FloorPage() {
   if (!floor) return <div>Error</div> // fallback
 
   return (
-    <>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, alignItems: 'flex-start', m: 3, gap: 3, width: '100%' }}>
+    <Box sx={{px: 2}}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, alignItems: 'flex-start', gap: 3, width: '100%' }}>
         <Box sx={{ width: { xs: '100%', lg: 360 } }}>
           <FloorsList
             activeFloor={floorNumber}
@@ -58,6 +58,8 @@ export function FloorPage() {
         </Box>
       </Box>
 
+      <Divider/>
+
       <Box sx={{ px: 3 }}>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ width: '100%', mt: 2, alignItems: 'flex-start' }}>
           <RoomsList
@@ -79,6 +81,6 @@ export function FloorPage() {
           </Box>
         </Stack>
       </Box>
-    </>
+    </Box>
   );
 }

@@ -332,7 +332,14 @@
       ],
       "isCustom": true,
       "favorite": false,
-      "lastTrigger": "2025-11-01T23:35:36.279Z"
+      "lastTrigger": "2025-11-03T15:37:40.968Z",
+      "schedule": {
+        "minute": "0",
+        "hour": "18",
+        "dayOfMonth": "*",
+        "month": "*",
+        "dayOfWeek": "1-5"
+      }
     }
   ]
 }

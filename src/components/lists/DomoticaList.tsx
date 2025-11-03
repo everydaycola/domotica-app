@@ -37,29 +37,6 @@ export type DomoticaListProps = {
   clearRoomSelection: () => void;
 };
 
-function FavoriteDomoticaButton({ id, floorId, favorite, disabled }: { id: string; floorId: string; favorite: boolean | undefined; disabled: boolean }) {
-  const update = useUpdateDomotica(id, floorId);
-  return (
-    <Tooltip title={favorite ? 'Unfavorite' : 'Mark favorite'}>
-      <span>
-        <IconButton
-          edge="end"
-          size="small"
-          color={favorite ? 'warning' : 'default'}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (disabled) return;
-            update.mutate({ favorite: !favorite });
-          }}
-          disabled={disabled || update.isPending}
-        >
-          {favorite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
-        </IconButton>
-      </span>
-    </Tooltip>
-  );
-}
-
 export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Readonly<DomoticaListProps>) {
   const { isAdmin } = useContext(GeneralContext);
   // filtering
@@ -229,5 +206,31 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
         />
 
     </Box>
+  );
+}
+
+function FavoriteDomoticaButton({ id, floorId, favorite }: Readonly<{
+  id: string;
+  floorId: string;
+  favorite: boolean | undefined;
+}>) {
+  const update = useUpdateDomotica(id, floorId);
+  return (
+    <Tooltip title={favorite ? 'Unfavorite' : 'Mark favorite'}>
+      <span>
+        <IconButton
+          edge="end"
+          size="small"
+          color={favorite ? 'warning' : 'default'}
+          onClick={(e) => {
+            e.stopPropagation();
+            update.mutate({ favorite: !favorite });
+          }}
+          disabled={update.isPending}
+        >
+          {favorite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+        </IconButton>
+      </span>
+    </Tooltip>
   );
 }

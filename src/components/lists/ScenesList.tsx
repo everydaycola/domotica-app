@@ -26,9 +26,10 @@ import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import type {Scene} from '../../model';
 import {GeneralContext} from '../../context/GeneralContext';
-import {useCreateScene, useDeleteScene, useScenes, useTriggerScene, useUpdateScene} from '../../hooks';
+import {useCreateScene, useDeleteScene, useScenes, useTriggerScene, useUpdateScene, cronToString, useEventScheduler} from '../../hooks';
 import {AddSceneDialog, EditSceneDialog} from '../dialogs/scenes';
 import {DeleteConfirmDialog} from '../dialogs/DeleteConfirmDialog';
 
@@ -107,7 +108,7 @@ export function ScenesList() {
                           )}
                         </span>
                       </Tooltip>
-                      <FavoriteSceneButton sceneId={s.id} favorite={!!s.favorite} disabled={!isAdmin} />
+                      <FavoriteSceneButton sceneId={s.id} favorite={!!s.favorite} />
                       <Tooltip title={(!isAdmin && !s.isCustom) ? 'Default scene: Only admins can edit.' : 'Edit'}>
                         <span>
                           <IconButton size="small" onClick={() => setEditing(s)} disabled={!isAdmin && !s.isCustom}>
@@ -133,9 +134,17 @@ export function ScenesList() {
                   </Box>
                 )}
                 <CardContent>
-                  <Typography variant="body2" color="text.secondary">
-                    {s.controls?.length ?? 0} control{s.controls?.length === 1 ? '' : 's'}
-                  </Typography>
+                  <Stack spacing={0.5}>
+                    <Typography variant="body2" color="text.secondary">
+                      {s.controls?.length ?? 0} control{s.controls?.length === 1 ? '' : 's'}
+                    </Typography>
+                    <Stack direction="row" spacing={0.5} alignItems="center">
+                      <AccessTimeIcon fontSize="small" color={s.schedule ? 'action' : 'disabled'} />
+                      <Typography variant="caption" color="text.secondary">
+                        {cronToString(s.schedule ?? null)}
+                      </Typography>
+                    </Stack>
+                  </Stack>
                 </CardContent>
                 <CardActions>
                   <Button
@@ -192,14 +201,18 @@ export function ScenesList() {
         title={'Delete scene'}
         message={deleting ? `Are you sure you want to delete scene "${deleting.name}"?` : ''}
       />
+
+      {/* Invisible auto schedulers */}
+      {(scenes ?? []).map((s) => (
+        <SceneAutoScheduler key={s.id} scene={s} />
+      ))}
     </Box>
   );
 }
 
-function FavoriteSceneButton({ sceneId, favorite, disabled }: Readonly<{
+function FavoriteSceneButton({ sceneId, favorite}: Readonly<{
   sceneId: string;
   favorite: boolean | undefined;
-  disabled: boolean
 }>) {
   const update = useUpdateScene(sceneId);
   return (
@@ -210,14 +223,33 @@ function FavoriteSceneButton({ sceneId, favorite, disabled }: Readonly<{
           color={favorite ? 'warning' : 'default'}
           onClick={(e) => {
             e.stopPropagation();
-            if (disabled) return;
             update.mutate({ favorite: !favorite });
           }}
-          disabled={disabled || update.isPending}
+          disabled={update.isPending}
         >
           {favorite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
         </IconButton>
       </span>
     </Tooltip>
   );
+}
+
+function SceneAutoScheduler({ scene }: Readonly<{ scene: Scene }>) {
+  const trigger = useTriggerScene();
+  // If no schedule, use an impossible minute value to never trigger
+  const effectiveSchedule = scene.schedule ?? {
+    minute: '61', // never matches 0-59
+    hour: '*',
+    dayOfMonth: '*',
+    month: '*',
+    dayOfWeek: '*',
+  };
+
+  // can't call a hook conditionally, so we use an impossible schedule to never trigger
+  useEventScheduler(effectiveSchedule, () => {
+    if (trigger.isPending) return;
+    trigger.mutate(scene);
+  });
+
+  return null;
 }

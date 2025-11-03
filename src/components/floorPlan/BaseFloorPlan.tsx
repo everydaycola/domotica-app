@@ -15,15 +15,16 @@ export interface BaseFloorPlanProps {
   onSelectRoom?: (room: Room | null) => void;
 }
 
-export function BaseFloorPlan({
-                                widthMm,
-                                heightMm,
-                                floorId,
-                                rooms = [],
-                                selectedRoomId,
-                                onSelectRoom,
-                                domotica = []
-                              }: Readonly<BaseFloorPlanProps>) {
+export function BaseFloorPlan(
+  {
+    widthMm,
+    heightMm,
+    floorId,
+    rooms = [],
+    selectedRoomId,
+    onSelectRoom,
+    domotica = []
+  }: Readonly<BaseFloorPlanProps>) {
   const aspect = widthMm > 0 && heightMm > 0 ? widthMm / heightMm : 1;
 
   // quick controls dialog for domotica values

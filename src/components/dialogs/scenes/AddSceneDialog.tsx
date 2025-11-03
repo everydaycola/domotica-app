@@ -13,7 +13,7 @@ export function AddSceneDialog({ open, onClose, onCreate }: Readonly<AddSceneDia
       open={open}
       onClose={onClose}
       mode="add"
-      initialValues={{ name: '', description: '', image: '', controls: [] }}
+      initialValues={{ name: '', description: '', image: '', controls: [], schedule: null }}
       onSubmit={async (payload) => {
         if (onCreate) await onCreate(payload);
       }}

@@ -15,7 +15,7 @@ export function EditSceneDialog({ open, scene, onClose, onSave }: Readonly<EditS
       open={open}
       onClose={onClose}
       mode="edit"
-      initialValues={{ name: scene.name, description: scene.description, image: scene.image, controls: scene.controls }}
+      initialValues={{ name: scene.name, description: scene.description, image: scene.image, controls: scene.controls, schedule: scene.schedule ?? null }}
       onSubmit={async (payload) => {
         if (!onSave) return;
         const update: Partial<Scene> = {
@@ -24,6 +24,7 @@ export function EditSceneDialog({ open, scene, onClose, onSave }: Readonly<EditS
           description: payload.description,
           image: payload.image,
           controls: payload.controls,
+          schedule: payload.schedule ?? null,
         };
         await onSave(update);
       }}
