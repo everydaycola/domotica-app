@@ -105,7 +105,7 @@ export function DomoticaList({floorId, selectedRoomId, clearRoomSelection}: Read
                       disableGutters
                       secondaryAction={
                         <Stack direction="row" spacing={1}>
-                          <FavoriteDomoticaButton id={d.id} floorId={floorId} favorite={!!d.favorite} disabled={!isAdmin} />
+                          <FavoriteDomoticaButton id={d.id} floorId={floorId} favorite={!!d.favorite}/>
                           {isAdmin && (
                             <>
                               <Tooltip title="Edit details">

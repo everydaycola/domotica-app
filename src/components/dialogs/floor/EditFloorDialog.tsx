@@ -16,7 +16,7 @@ export interface EditFloorDialogProps {
 
 export function EditFloorDialog({ open, onClose, initialValues, onSubmit }: Readonly<EditFloorDialogProps>) {
   const handleSubmit = (values: FloorFormValues) => {
-    onSubmit({ name: values.name, description: values.description, widthMm: values.widthMm, heightMm: values.heightMm });
+    onSubmit({ name: values.name, description: values.description, widthMm: values.widthMm as number, heightMm: values.heightMm as number });
   };
 
   return (

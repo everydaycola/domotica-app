@@ -38,7 +38,7 @@ const schema = z.object({
   x: z.coerce.number().int('Must be an integer').min(0, 'Must be ≥ 0'),
   y: z.coerce.number().int('Must be an integer').min(0, 'Must be ≥ 0'),
 });
-export type DomoticaFormValues = z.input<typeof schema>;
+export type DomoticaFormValues = z.output<typeof schema>;
 
 export function DomoticaDialogBase(
   {

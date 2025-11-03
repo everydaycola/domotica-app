@@ -47,16 +47,16 @@ export function FloorDialogBase({ open, onClose, mode, initialValues, onSubmit }
     mode: 'onBlur',
     defaultValues: (isAdd
       ? { id: '', name: '', description: '', widthMm: 1000, heightMm: 1000 }
-      : { name: initialValues?.name ?? '', description: initialValues?.description ?? '', widthMm: initialValues?.widthMm ?? 0, heightMm: initialValues?.heightMm ?? 0 }) as any,
+      : { name: initialValues?.name ?? '', description: initialValues?.description ?? '', widthMm: initialValues?.widthMm ?? 0, heightMm: initialValues?.heightMm ?? 0 }) as FloorFormValues,
     resolver: zodResolver(schema),
   });
 
   const handleClose = () => {
     onClose();
     if (isAdd) {
-      reset({ id: '', name: '', description: '', widthMm: 1000, heightMm: 1000 } as any);
+      reset({ id: '', name: '', description: '', widthMm: 1000, heightMm: 1000 } as FloorFormValues);
     } else {
-      reset({ name: initialValues?.name ?? '', description: initialValues?.description ?? '', widthMm: initialValues?.widthMm ?? 0, heightMm: initialValues?.heightMm ?? 0 } as any);
+      reset({ name: initialValues?.name ?? '', description: initialValues?.description ?? '', widthMm: initialValues?.widthMm ?? 0, heightMm: initialValues?.heightMm ?? 0 } as FloorFormValues);
     }
   };
 
