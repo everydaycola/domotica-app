@@ -161,7 +161,7 @@ export function DomoticaList({
         domoticaTarget={editingValue}
         onClose={() => setEditingValue(null)}
         onSave={(value) => {
-          if (!editingValue || !isAdmin) return;
+          if (!editingValue) return;
           updateValueMutation.mutate({
             value,
             lastChange: new Date().toISOString()
