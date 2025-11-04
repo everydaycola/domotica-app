@@ -81,7 +81,7 @@ export function EditValueDialog({open, domoticaTarget, onClose, onSave}: Readonl
             <div>
               <Typography variant="caption">Volume</Typography>
               <Slider value={(local as audioValue).volume ?? 0}
-                      onChange={(_, val) => setLocal({ ...(local as audioValue), volume: val as number })}
+                      onChange={(_, val) => setLocal({ ...(local as audioValue), volume: val})}
                       step={1} min={0} max={100}
                       valueLabelDisplay="auto"/>
             </div>
@@ -91,7 +91,7 @@ export function EditValueDialog({open, domoticaTarget, onClose, onSave}: Readonl
                 labelId="playlist-select-label"
                 label="Playlist"
                 value={(local as audioValue).playlistId ?? ""}
-                onChange={(e) => setLocal({ ...(local as audioValue), playlistId: (e.target.value || null) as string | null })}
+                onChange={(e) => setLocal({ ...(local as audioValue), playlistId: e.target.value || null})}
               >
                 <MenuItem value=""><em>None</em></MenuItem>
                 {(domoticaTarget.playlists ?? []).map((p) => (

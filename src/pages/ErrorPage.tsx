@@ -8,7 +8,7 @@ export type ErrorPageProps = {
   onRetry: () => void;
 };
 
-export function ErrorPage({title, message, onRetry}: ErrorPageProps) {
+export function ErrorPage({title, message, onRetry}: Readonly<ErrorPageProps>) {
   return (
     <Container maxWidth="md" sx={{py: 6}}>
       <Paper elevation={2} sx={{p: {xs: 3, sm: 4}, textAlign: 'center'}}>

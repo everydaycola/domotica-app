@@ -32,7 +32,7 @@ export function getDefaultValueForType(type: DomoticaType) {
     default:
       return { volume: 0, playlistId: null } as audioValue;
   }
-};
+}
 
 export function valueLabel(d: Domotica) {
   switch (d.type) {

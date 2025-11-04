@@ -169,8 +169,8 @@ export function SceneDialogBase(
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} alignItems="center">
             <Typography variant="subtitle1" sx={{ flex: 1 }}>Scheduling</Typography>
             <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="body2">{(!canSchedule) ? 'Not available' : (scheduleEnabled ? 'Disable' : 'Enable')}</Typography>
-              <Switch checked={!!scheduleEnabled} onChange={(e) => setScheduleEnabled(e.target.checked)} disabled={!canSchedule} />
+              <Typography variant="body2">{(canSchedule) ? (scheduleEnabled ? 'Disable' : 'Enable') : 'Not available'}</Typography>
+              <Switch checked={scheduleEnabled} onChange={(e) => setScheduleEnabled(e.target.checked)} disabled={!canSchedule} />
             </Stack>
           </Stack>
 
