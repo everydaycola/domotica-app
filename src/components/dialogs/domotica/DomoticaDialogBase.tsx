@@ -29,7 +29,7 @@ export interface DomoticaDialogBaseProps {
 
 const schema = z.object({
   floorId: z.string().min(1),
-  roomId:  z.string().min(1),
+  roomId:  z.string().min(1, "Please select a room."),
   name: z.string().trim().min(1, 'Name is required').max(100, 'Max 100 characters'),
   description: z.string().trim().max(500, 'Max 500 characters').optional().or(z.literal('')),
   type: z.enum(['light','heating','door','audio']),
@@ -54,7 +54,7 @@ export function DomoticaDialogBase(
   const {control, handleSubmit, reset, register, formState: {errors}} = useForm<DomoticaFormValues>({
     defaultValues: {
       floorId: initialValues?.floorId ?? floorId,
-      roomId: initialValues?.roomId ?? (rooms?.[0]?.id ?? "0"),
+      roomId: initialValues?.roomId ?? '',
       name: initialValues?.name ?? "",
       description: initialValues?.description ?? "",
       type: (initialValues?.type ?? "light") as DomoticaType,
@@ -71,7 +71,7 @@ export function DomoticaDialogBase(
   useEffect(() => {
     reset({
       floorId: initialValues?.floorId ?? floorId,
-      roomId: initialValues?.roomId ?? (rooms?.[0]?.id ?? "0"),
+      roomId: initialValues?.roomId ?? '',
       name: initialValues?.name ?? "",
       description: initialValues?.description ?? "",
       type: (initialValues?.type ?? "light") as DomoticaType,
@@ -90,7 +90,7 @@ export function DomoticaDialogBase(
     onClose();
     reset({
       floorId,
-      roomId: rooms?.[0]?.id ?? "0",
+      roomId: '',
       name: '',
       description: '',
       type: 'light' as DomoticaType,
@@ -149,9 +149,12 @@ export function DomoticaDialogBase(
               control={control}
               render={({field}) => (
                 <FormControl fullWidth size="small" error={!!errors.roomId}>
-                  <Select {...field} displayEmpty onChange={(e) => field.onChange(Number(e.target.value))}>
+                  <Select {...field} displayEmpty onChange={(e) => field.onChange(String(e.target.value))}>
+                    <MenuItem value="">
+                      <em>Select room</em>
+                    </MenuItem>
                     {rooms?.map((r) => (
-                      <MenuItem key={r.id} value={r.id}>
+                      <MenuItem key={r.id} value={String(r.id)}>
                         {r.name}
                       </MenuItem>
                     ))}

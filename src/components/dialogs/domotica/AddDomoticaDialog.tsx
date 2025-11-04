@@ -37,15 +37,15 @@ export function AddDomoticaDialog({ open, floorId, rooms, initialRoomId, onClose
       floorId={floorId}
       rooms={rooms}
       initialValues={{
-        floorId,
-        roomId: initialRoomId ?? "0",
-        name: '',
-        description: '',
-        type: 'light',
-        upc: '',
-        x: 0,
-        y: 0,
-      }}
+          floorId,
+          roomId: initialRoomId ?? '',
+          name: '',
+          description: '',
+          type: 'light',
+          upc: '',
+          x: 0,
+          y: 0,
+        }}
       onSubmit={handleSubmit}
     />
   );
