@@ -24,7 +24,7 @@ export interface DomoticaDialogBaseProps {
   floorId: string,
   rooms: Room[],
   initialValues?: DomoticaFormValues // used in edit mode
-  onSubmit: (values: DomoticaFormValues) => void
+  onSubmit: (values: DomoticaFormValues) => void | Promise<void>
 }
 
 const schema = z.object({
@@ -100,8 +100,8 @@ export function DomoticaDialogBase(
     });
   };
 
-  const submit = (data: DomoticaFormValues) => {
-    onSubmit({
+  const submit = async (data: DomoticaFormValues) => {
+    await onSubmit({
       ...data,
       description: data.description?.trim() || undefined,
     });
