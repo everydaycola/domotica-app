@@ -1,6 +1,6 @@
 # project current state description
 
-This application is a simple practise application for a React course. 
+This application is a simple practice application for a React course.
 
 The main goal is to create a responsive web application for managing and controlling domotics (home automation) devices within a single building. The application should be optimized for both tablets and smartphones and will allow users to interact with controls like lighting, temperature, door locks, and audio systems.
 
@@ -22,6 +22,10 @@ This component contains a large scrollable floor plan. It is divided into rooms 
 ### RoomsList.tsx
 
 Below the base floor plan, there is a selectable list of rooms.
+
+### FloorsList.tsx
+
+A selectable list of floors.
 
 ### DomoticaList.tsx
 
@@ -52,7 +56,7 @@ There are several dialogs defined for forms for various crud actions
   - editing a scene: EditSceneDialog.tsx
   - adding or deleting a scene (other two dialogs refer to this one): SceneDialogBase.tsx
 
-### appBar.tsx (above every page, seperate of routing)
+### appBar.tsx (above every page, separate of routing)
 
 Currently, the application has one page. At the top there is an app bar with minimal information and a button to change the theme
 - Theme button: ThemeButton.tsx
@@ -60,6 +64,12 @@ Currently, the application has one page. At the top there is an app bar with min
 ### Helpers
 
 - tools to help with the domotica types: DomoticaTypeHelpers.tsx
+- skeletons for each base component
+  - BaseFloorPlanSkeleton.tsx
+  - RoomsListSkeleton.tsx
+  - FloorsListSkeleton.tsx
+  - DomoticaListSkeleton.tsx
+  - ScenesListSkeleton.tsx
 
 # hooks and backend communication
 - objects
@@ -67,12 +77,15 @@ Currently, the application has one page. At the top there is an app bar with min
   - room: room.ts
   - domotica like lights, heating, doors, or audio: domotica.ts
     - contains domoticaValues type for value and defaultValue (useful for casting)
+    - playlist.ts for audio
   - scenes: scene.ts
+  - schedule.ts for cron-like scheduling
 - custom hooks
   - crud for floor: useFloor.ts
   - crud for room: useRoom.ts
   - crud for domotica: useDomotica.ts
   - crud for scenes: useScene.ts
+  - event scheduling for schenes: useEventScheduler.ts
 - data services
   - floor: floorService.ts
   - room: roomService.ts

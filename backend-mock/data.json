@@ -139,7 +139,7 @@
         "volume": 35
       },
       "favorite": false,
-      "lastChange": "2025-11-03T22:06:39.368Z"
+      "lastChange": "2025-11-04T01:13:21.856Z"
     },
     {
       "id": "1005",
@@ -155,7 +155,7 @@
         "open": true
       },
       "favorite": false,
-      "lastChange": "2025-11-04T00:08:37.982Z"
+      "lastChange": "2025-11-04T01:19:34.036Z"
     },
     {
       "id": "1006",
@@ -254,7 +254,7 @@
       ],
       "isCustom": true,
       "favorite": false,
-      "lastTrigger": "2025-11-03T22:48:11.235Z",
+      "lastTrigger": "2025-11-04T01:20:08.571Z",
       "schedule": null
     },
     {
@@ -285,7 +285,7 @@
       ],
       "isCustom": false,
       "favorite": false,
-      "lastTrigger": "2025-11-04T00:08:50.627Z",
+      "lastTrigger": "2025-11-04T01:19:44.064Z",
       "schedule": {
         "minute": "0",
         "hour": "18",

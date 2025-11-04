@@ -1,0 +1,18 @@
+notities UX test 1 
+
+Het grootste ding dat hieruit kwam was dat de gebruiker steeds op de floorplan zat te klikken. Dit doet niks en dus moet de user dan even nadenken omdat de app niet doet wat de user verwacht had. De app doet niks en de user twijfelt een paar seconden over of dat er nog iets gaat gebeuren of niet. De user probeerde ook te pannen en zoemen over de floorplan
+
+Ik zal er voor zorgen dat het floorplan meer interactief is
+panning en zoemen ga ik niet implementeren omdat 
+
+
+
+ux test 2
+
+Het was niet duidelijk welke kamer er momenteel geselecteerd was, wanneer de user wisselde van verdieping bleef de kamer geselecteerd wat alles nog verwarrender maakte, hierdoor toont de verdieping ook geen domotica.
+
+Dit ga ik direct oplossen, het wisselen van verdieping zou de geselecteerde kamer moeten wissen, ook zou het zeer duidelijk moeten zijn dat je een kamer hebt geselecteerd en dat je dus aan het filteren bent.
+
+ux test 3
+
+Ik kreeg vooral feedback op veel woorden zoals de value van een deur was "on" of "off" ipv open/closed. Dit is allemaal snel opgelost.  Er warer ook wat fouten in form validatie die nu hopelijk allemaal weg zijn. 
