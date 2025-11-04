@@ -1,5 +1,7 @@
+import {useContext} from 'react';
 import {SceneDialogBase} from './SceneDialogBase';
 import type { Scene } from '../../../model';
+import {GeneralContext} from '../../../context/GeneralContext';
 
 export interface AddSceneDialogProps {
   open: boolean;
@@ -8,6 +10,7 @@ export interface AddSceneDialogProps {
 }
 
 export function AddSceneDialog({ open, onClose, onCreate }: Readonly<AddSceneDialogProps>) {
+  const { isAdmin } = useContext(GeneralContext);
   return (
     <SceneDialogBase
       open={open}
@@ -19,6 +22,7 @@ export function AddSceneDialog({ open, onClose, onCreate }: Readonly<AddSceneDia
       }}
       title="Add scene"
       submitLabel="Create"
+      canSchedule={isAdmin}
     />
   );
 }

@@ -29,13 +29,11 @@ export interface DomoticaDialogBaseProps {
 
 const schema = z.object({
   floorId: z.string().min(1),
-  roomId: z.coerce.number()
-    .int('Room is required')
-    .min(1, 'Room is required'),
+  roomId:  z.string().min(1),
   name: z.string().trim().min(1, 'Name is required').max(100, 'Max 100 characters'),
   description: z.string().trim().max(500, 'Max 500 characters').optional().or(z.literal('')),
   type: z.enum(['light','heating','door','audio']),
-  upc: z.string().trim().min(1, 'UPC is required'),
+  upc: z.string().trim().length(13, 'UPC must be 13 characters'),
   x: z.coerce.number().int('Must be an integer').min(0, 'Must be ≥ 0'),
   y: z.coerce.number().int('Must be an integer').min(0, 'Must be ≥ 0'),
 });
@@ -56,7 +54,7 @@ export function DomoticaDialogBase(
   const {control, handleSubmit, reset, register, formState: {errors}} = useForm<DomoticaFormValues>({
     defaultValues: {
       floorId: initialValues?.floorId ?? floorId,
-      roomId: initialValues?.roomId ?? (rooms?.[0]?.id ?? 0),
+      roomId: initialValues?.roomId ?? (rooms?.[0]?.id ?? "0"),
       name: initialValues?.name ?? "",
       description: initialValues?.description ?? "",
       type: (initialValues?.type ?? "light") as DomoticaType,
@@ -73,7 +71,7 @@ export function DomoticaDialogBase(
   useEffect(() => {
     reset({
       floorId: initialValues?.floorId ?? floorId,
-      roomId: initialValues?.roomId ?? (rooms?.[0]?.id ?? 0),
+      roomId: initialValues?.roomId ?? (rooms?.[0]?.id ?? "0"),
       name: initialValues?.name ?? "",
       description: initialValues?.description ?? "",
       type: (initialValues?.type ?? "light") as DomoticaType,
@@ -92,7 +90,7 @@ export function DomoticaDialogBase(
     onClose();
     reset({
       floorId,
-      roomId: rooms?.[0]?.id ?? 0,
+      roomId: rooms?.[0]?.id ?? "0",
       name: '',
       description: '',
       type: 'light' as DomoticaType,

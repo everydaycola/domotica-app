@@ -33,7 +33,7 @@ export function useCreateRoom(floorId: string) {
   });
 }
 
-export function useUpdateRoom(roomId: number, floorId: string) {
+export function useUpdateRoom(roomId: string, floorId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (updates: Partial<Omit<Room, "id" | "floorId">>) => updateRoom(roomId, updates),
@@ -43,7 +43,7 @@ export function useUpdateRoom(roomId: number, floorId: string) {
   });
 }
 
-export function useDeleteRoom(roomId: number, floorId: string) {
+export function useDeleteRoom(roomId: string, floorId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => deleteRoom(roomId),

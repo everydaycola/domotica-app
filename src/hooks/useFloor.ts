@@ -18,13 +18,14 @@ export function useFloorsList() {
   return {isLoading, isError, floors: (floors ?? [])};
 }
 
-export function useUpdateFloor(id: string) {
+export function useUpdateFloor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (updates: Partial<Floor>) => updateFloor(id, updates),
-    onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['floor', String(id)]});
-      queryClient.invalidateQueries({queryKey: ['floors']});
+    mutationFn: (vars: { id: string; updates: Partial<Floor> }) => updateFloor(vars.id, vars.updates),
+    onSuccess: (_data, variables) => {
+      console.log('onSuccess');
+      queryClient.invalidateQueries({ queryKey: ['floor', String(variables.id)] });
+      queryClient.invalidateQueries({ queryKey: ['floors'] });
     }
   });
 }

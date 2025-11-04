@@ -40,6 +40,10 @@ export function useCreateScene() {
   return useMutation({
     mutationFn: (scene: Omit<Scene, 'id' | 'isCustom'>) => {
       const withFlag: Omit<Scene, 'id'> = { ...scene, isCustom: !isAdmin } as Omit<Scene, 'id'>;
+      // If not admin (custom), strip any provided schedule to enforce no scheduling
+      if (!isAdmin) {
+        (withFlag as any).schedule = null;
+      }
       return createScene(withFlag);
     },
     onSuccess: () => {
@@ -58,8 +62,12 @@ export function useUpdateScene(sceneId: string) {
         if (!isAdmin && !existing.isCustom) {
           throw new Error('Default scenes can only be modified by admins.');
         }
-        const patch: Partial<Scene> = { ...updates, isCustom: existing.isCustom };
-        return updateScene(String(sceneId), patch);
+        const sanitizedUpdates: Partial<Scene> = { ...updates, isCustom: existing.isCustom };
+        // If existing is custom, force schedule to null regardless of incoming updates
+        if (existing.isCustom) {
+          sanitizedUpdates.schedule = null;
+        }
+        return updateScene(String(sceneId), sanitizedUpdates);
       }
       if (!isAdmin) {
         throw new Error('Insufficient permissions to modify this scene.');

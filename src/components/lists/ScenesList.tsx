@@ -44,8 +44,6 @@ export type ScenesListProps = {
 };
 
 
-
-
 export function ScenesList({scenes}: Readonly<ScenesListProps>) {
   const {isAdmin} = useContext(GeneralContext);
   const [search, setSearch] = useState('');
@@ -141,12 +139,14 @@ export function ScenesList({scenes}: Readonly<ScenesListProps>) {
                   <Typography variant="body2" color="text.secondary">
                     {s.controls?.length ?? 0} control{s.controls?.length === 1 ? '' : 's'}
                   </Typography>
-                  <Stack direction="row" spacing={0.5} alignItems="center">
-                    <AccessTimeIcon fontSize="small" color={s.schedule ? 'action' : 'disabled'}/>
-                    <Typography variant="caption" color="text.secondary">
-                      {cronToString(s.schedule ?? null)}
-                    </Typography>
-                  </Stack>
+                  {!s.isCustom && (
+                    <Stack direction="row" spacing={0.5} alignItems="center">
+                      <AccessTimeIcon fontSize="small" color={(s.isCustom || !s.schedule) ? 'disabled' : 'action'}/>
+                      <Typography variant="caption" color="text.secondary">
+                        {s.isCustom ? 'Not scheduled' : cronToString(s.schedule ?? null)}
+                      </Typography>
+                    </Stack>
+                  )}
                 </Stack>
               </CardContent>
               <CardActions>
@@ -236,14 +236,14 @@ function FavoriteSceneButton({sceneId, favorite}: Readonly<{
 
 function SceneAutoScheduler({scene}: Readonly<{ scene: Scene }>) {
   const trigger = useTriggerScene();
-  // If no schedule, use an impossible minute value to never trigger
-  const effectiveSchedule = scene.schedule ?? {
+  // If custom or no schedule, use an impossible minute value to never trigger
+  const effectiveSchedule = (scene.isCustom || !scene.schedule) ? {
     minute: '61', // never matches 0-59
     hour: '*',
     dayOfMonth: '*',
     month: '*',
     dayOfWeek: '*',
-  };
+  } : scene.schedule;
 
   // can't call a hook conditionally, so we use an impossible schedule to never trigger
   useEventScheduler(effectiveSchedule, () => {

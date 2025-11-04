@@ -24,7 +24,7 @@ export function FloorsList({activeFloor, onFloorChange}: Readonly<BuildingFloors
   const [deleteTarget, setDeleteTarget] = useState<Floor | null>(null);
 
   const createFloorMutation = useCreateFloor();
-  const updateFloorMutation = useUpdateFloor(editTarget?.id || '');
+  const updateFloorMutation = useUpdateFloor();
   const deleteFloorMutation = useDeleteFloor(deleteTarget?.id || '');
 
   const sorted = (floors ?? []).slice().sort((a, b) => Number.parseInt(b.id) - Number.parseInt(a.id));
@@ -136,8 +136,13 @@ export function FloorsList({activeFloor, onFloorChange}: Readonly<BuildingFloors
         onSubmit={({name, description, widthMm, heightMm}) => {
           if (!editTarget) return;
           if (!isAdmin) { setEditTarget(null); return; }
-          updateFloorMutation.mutate({name, description: description || undefined, widthMm, heightMm});
-          setEditTarget(null);
+          console.log(editTarget, name, description, widthMm, heightMm);
+          updateFloorMutation.mutate({ id: editTarget.id, updates: { name, description: description || undefined, widthMm, heightMm } }, {
+            onSuccess: (updatedFloor) => {
+              onFloorChange(updatedFloor.id);
+              setEditTarget(null);
+            },
+          });
         }}
       />
 
@@ -147,6 +152,7 @@ export function FloorsList({activeFloor, onFloorChange}: Readonly<BuildingFloors
         onConfirm={() => {
           if (!deleteTarget || deleteTarget.id === '0') return; // just to be sure
           if (!isAdmin) { setDeleteTarget(null); return; }
+          console.log(deleteTarget);
           deleteFloorMutation.mutate(undefined, {
               onSuccess: () => {
                 setDeleteTarget(null);

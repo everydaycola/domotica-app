@@ -73,7 +73,7 @@ export function EditValueDialog({open, domoticaTarget, onClose, onSave}: Readonl
             <FormControlLabel control={<Switch checked={(local as doorValue).open ?? false} onChange={(e) => setLocal({
               ...(local as doorValue),
               open: e.target.checked
-            })}/>} label={(local as doorValue).open ? "on" : "off"}/>
+            })}/>} label={(local as doorValue).open ? "open" : "closed"}/>
           </Stack>
         )}
         {domoticaTarget.type === "audio" && (

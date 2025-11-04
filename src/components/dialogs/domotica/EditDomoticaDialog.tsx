@@ -18,7 +18,7 @@ export function EditDomoticaDialog({ open, domotica, floorId, rooms, onClose, on
     const update: Partial<Domotica> = {
       id: domotica.id,
       floorId: values.floorId,
-      roomId: values.roomId as number,
+      roomId: values.roomId,
       name: values.name,
       description: values.description,
       type: values.type,

@@ -11,7 +11,7 @@ export interface BaseFloorPlanProps {
   floorId: string;
   rooms?: Room[];
   domotica?: Domotica[];
-  selectedRoomId?: number | null;
+  selectedRoomId?: string | null;
   onSelectRoom?: (room: Room | null) => void;
 }
 
@@ -36,7 +36,7 @@ export function BaseFloorPlan(
     const items = map.get(d.roomId) ?? [];
     map.set(d.roomId, [...items, d]);
     return map;
-  }, new Map<number, Domotica[]>());
+  }, new Map<string, Domotica[]>());
 
   return (
     <Box className="floor-plan-container">

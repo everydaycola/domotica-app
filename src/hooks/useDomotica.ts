@@ -20,7 +20,7 @@ export function useAllDomotica() {
 
 export function useDomoticaFiltered(
   domotica: Domotica[],
-  roomId: number | null,
+  roomId: string | null,
   search: string,
   type: DomoticaType | null
 ) {

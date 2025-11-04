@@ -40,8 +40,8 @@ export function RoomsList({
   const [openRoomDelete, setOpenRoomDelete] = useState(false);
 
   const createRoomMutation = useCreateRoom(floor.id);
-  const updateRoomMutation = useUpdateRoom(selectedRoom ? selectedRoom.id : 0, floor.id);
-  const deleteRoomMutation = useDeleteRoom(selectedRoom ? selectedRoom.id : 0, floor.id);
+  const updateRoomMutation = useUpdateRoom(selectedRoom ? selectedRoom.id : "0", floor.id);
+  const deleteRoomMutation = useDeleteRoom(selectedRoom ? selectedRoom.id : "0", floor.id);
 
   const [search, setSearch] = useState('');
   const filtered = useRoomFiltered(rooms, search);
@@ -130,6 +130,7 @@ export function RoomsList({
         floorWidthMm={floor.widthMm}
         floorHeightMm={floor.heightMm}
         onSubmit={({name, description, xMm, yMm, widthMm, heightMm}) => {
+          // @ts-ignore - zod validation says this is unknown but also garantees it's a number
           createRoomMutation.mutate({name, description, xMm, yMm, widthMm, heightMm});
         }}
       />
@@ -151,6 +152,7 @@ export function RoomsList({
         floorHeightMm={floor.heightMm}
         onSubmit={({name, description, xMm, yMm, widthMm, heightMm}) => {
           if (!selectedRoom) return;
+          // @ts-ignore - zod validation says this is unknown but also garantees it's a number
           updateRoomMutation.mutate({name, description, xMm, yMm, widthMm, heightMm});
         }}
       />

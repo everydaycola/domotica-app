@@ -136,7 +136,7 @@
       "x": 2000,
       "y": 1500,
       "value": {
-        "volume": 20
+        "volume": 35
       },
       "favorite": false,
       "lastChange": "2025-11-03T22:06:39.368Z"
@@ -152,10 +152,10 @@
       "x": 500,
       "y": 1500,
       "value": {
-        "open": false
+        "open": true
       },
       "favorite": false,
-      "lastChange": "2025-11-03T21:36:38.317Z"
+      "lastChange": "2025-11-04T00:08:37.982Z"
     },
     {
       "id": "1006",
@@ -168,8 +168,8 @@
       "x": 5500,
       "y": 1500,
       "value": {
-        "on": false,
-        "brightness": 10
+        "on": true,
+        "brightness": 100
       },
       "favorite": true,
       "lastChange": "2025-11-03T22:44:32.103Z"
@@ -206,21 +206,6 @@
       },
       "favorite": true,
       "lastChange": "2025-11-01T05:00:00Z"
-    },
-    {
-      "id": "8e74",
-      "floorId": "1",
-      "roomId": 2,
-      "name": "testing",
-      "description": "what",
-      "type": "light",
-      "upc": "1234567890123",
-      "x": 1000,
-      "y": 1000,
-      "value": {
-        "on": false,
-        "brightness": 100
-      }
     }
   ],
   "playlists": [
@@ -267,8 +252,8 @@
           }
         }
       ],
-      "isCustom": false,
-      "favorite": true,
+      "isCustom": true,
+      "favorite": false,
       "lastTrigger": "2025-11-03T22:48:11.235Z",
       "schedule": null
     },
@@ -298,9 +283,9 @@
           }
         }
       ],
-      "isCustom": true,
+      "isCustom": false,
       "favorite": false,
-      "lastTrigger": "2025-11-03T17:00:23.242Z",
+      "lastTrigger": "2025-11-04T00:08:50.627Z",
       "schedule": {
         "minute": "0",
         "hour": "18",

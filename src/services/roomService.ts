@@ -12,12 +12,12 @@ export async function createRoom(floorId: string, room: Omit<Room, 'id' | 'floor
   return data as Room;
 }
 
-export async function updateRoom(id: number, updates: Partial<Omit<Room, 'id' | 'floorId'>> & Partial<Pick<Room, 'floorId'>>) {
+export async function updateRoom(id: string, updates: Partial<Omit<Room, 'id' | 'floorId'>> & Partial<Pick<Room, 'floorId'>>) {
   const {data} = await axios.patch(`/rooms/${id}`, updates);
   return data as Room;
 }
 
-export async function deleteRoom(id: number) {
+export async function deleteRoom(id: string) {
   await axios.delete(`/rooms/${id}`);
-  return {id} as { id: number };
+  return {id} as { id: string };
 }

@@ -35,7 +35,7 @@ export type DomoticaListProps = {
   floorId: string;
   rooms: Room[]
   domotica: Domotica[] | undefined;
-  selectedRoomId: number | null;
+  selectedRoomId: string | null;
   clearRoomSelection: () => void;
 };
 

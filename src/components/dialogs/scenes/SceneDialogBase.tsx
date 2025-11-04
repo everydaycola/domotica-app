@@ -46,6 +46,7 @@ export interface SceneDialogBaseProps {
   onSubmit: (payload: Omit<Scene, 'id' | 'isCustom'>) => void | Promise<void>;
   title?: string;
   submitLabel?: string;
+  canSchedule?: boolean; // when false, schedule cannot be set (e.g., custom scenes)
 }
 
 const schema = z.object({
@@ -64,10 +65,12 @@ export function SceneDialogBase(
     initialValues,
     onSubmit,
     title,
-    submitLabel
+    submitLabel,
+    canSchedule: canScheduleProp,
   }: Readonly<SceneDialogBaseProps>) {
   const isAdd = mode === 'add';
   const {domotica} = useAllDomotica();
+  const canSchedule = canScheduleProp ?? true;
 
   const {register, handleSubmit, formState: {errors}, reset} = useForm<SceneFormValues>({
     defaultValues: {
@@ -80,7 +83,7 @@ export function SceneDialogBase(
   });
 
   const [controls, setControls] = useState<SceneControl[]>(initialValues?.controls ?? []);
-  const [scheduleEnabled, setScheduleEnabled] = useState<boolean>(!!initialValues?.schedule);
+  const [scheduleEnabled, setScheduleEnabled] = useState<boolean>(canSchedule ? !!initialValues?.schedule : false);
   const [schedule, setSchedule] = useState<CronSchedule>(initialValues?.schedule ?? {
     minute: '*',
     hour: '*',
@@ -110,7 +113,7 @@ export function SceneDialogBase(
       description: values.description?.trim() || undefined,
       image: values.image?.trim() || undefined,
       controls,
-      schedule: scheduleEnabled ? schedule : null,
+      schedule: (canSchedule && scheduleEnabled) ? schedule : null,
     } as Omit<Scene, 'id' | 'isCustom'>;
     await onSubmit(payload);
     handleClose();
@@ -132,7 +135,7 @@ export function SceneDialogBase(
       image: initialValues?.image ?? '',
     });
     setControls(initialValues?.controls ?? []);
-    setScheduleEnabled(!!initialValues?.schedule);
+    setScheduleEnabled(canSchedule ? !!initialValues?.schedule : false);
     setSchedule(initialValues?.schedule ?? {
       minute: '*',
       hour: '*',
@@ -166,8 +169,8 @@ export function SceneDialogBase(
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} alignItems="center">
             <Typography variant="subtitle1" sx={{ flex: 1 }}>Scheduling</Typography>
             <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="body2">{scheduleEnabled ? "Disable" : "Enable"}</Typography>
-              <Switch checked={scheduleEnabled} onChange={(e) => setScheduleEnabled(e.target.checked)} />
+              <Typography variant="body2">{(!canSchedule) ? 'Not available' : (scheduleEnabled ? 'Disable' : 'Enable')}</Typography>
+              <Switch checked={!!scheduleEnabled} onChange={(e) => setScheduleEnabled(e.target.checked)} disabled={!canSchedule} />
             </Stack>
           </Stack>
 

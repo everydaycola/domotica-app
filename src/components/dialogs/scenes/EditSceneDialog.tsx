@@ -30,6 +30,7 @@ export function EditSceneDialog({ open, scene, onClose, onSave }: Readonly<EditS
       }}
       title="Edit scene"
       submitLabel="Save"
+      canSchedule={!scene.isCustom}
     />
   );
 }

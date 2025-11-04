@@ -6,7 +6,7 @@ export interface AddDomoticaDialogProps {
   open: boolean;
   floorId: string;
   rooms: Room[]
-  initialRoomId?: number;
+  initialRoomId?: string;
   onClose: () => void;
   onCreate?: (payload: Omit<Domotica, 'id'>) => void | Promise<void>;
 }
@@ -17,7 +17,7 @@ export function AddDomoticaDialog({ open, floorId, rooms, initialRoomId, onClose
     const v = getDefaultValueForType(values.type) as DomoticaValue;
     const payload: Omit<Domotica, 'id'> = {
       floorId: values.floorId,
-      roomId: values.roomId as number,
+      roomId: values.roomId,
       name: values.name,
       description: values.description,
       type: values.type,
@@ -38,7 +38,7 @@ export function AddDomoticaDialog({ open, floorId, rooms, initialRoomId, onClose
       rooms={rooms}
       initialValues={{
         floorId,
-        roomId: initialRoomId ?? 0,
+        roomId: initialRoomId ?? "0",
         name: '',
         description: '',
         type: 'light',

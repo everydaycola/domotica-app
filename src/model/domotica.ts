@@ -3,7 +3,7 @@ import type {Playlist} from "./playlist.ts";
 export type Domotica = {
     id: string;
     floorId: string;
-    roomId: number;
+    roomId: string;
     name: string;
     description?: string;
     type: DomoticaType;
